@@ -1,0 +1,15 @@
+# Eclipse specific
+.classpath
+.project
+.settings/
+
+# IntelliJ
+.idea/
+*.iml
+
+# more
+/target/
+/local/
+/config_samples/
+/config/
+/data/
