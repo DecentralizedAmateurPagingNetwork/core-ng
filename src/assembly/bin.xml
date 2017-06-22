@@ -1,0 +1,44 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+	<id>bin</id>
+	<formats>
+		<format>tar.gz</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<dependencySets>
+		<dependencySet>
+			<useProjectArtifact>false</useProjectArtifact>
+			<outputDirectory>lib</outputDirectory>
+			<unpack>false</unpack>
+		</dependencySet>
+	</dependencySets>
+	<fileSets>
+		<fileSet>
+			<directory>${project.build.directory}</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>${project.build.finalName}.${project.packaging}</include>
+				<include>Licences.txt</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<outputDirectory></outputDirectory>
+			<includes>
+				<include>Licences.txt</include>
+				<include>README.md</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/example_config</directory>
+			<outputDirectory>example_config</outputDirectory>
+			<includes>
+				<include>ClusterConfig.xml</include>
+				<include>LogSettings_REST.xml</include>
+				<include>Settings.json</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>
