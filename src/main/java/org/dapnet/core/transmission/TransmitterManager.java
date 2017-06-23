@@ -1,14 +1,13 @@
 package org.dapnet.core.transmission;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dapnet.core.Service;
 import org.dapnet.core.events.Event;
-import org.dapnet.core.events.EventArgs;
-import org.dapnet.core.events.EventListener;
-import org.dapnet.core.events.SimpleEvent;
+import org.dapnet.core.events.EventManager;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
@@ -27,26 +26,13 @@ public final class TransmitterManager implements Service {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final EventLoopGroup workerGroup = new NioEventLoopGroup();
-	private final Event<TransmitterEventArgs> connectEvent = new SimpleEvent<>();
-	private final Event<TransmitterEventArgs> disconnectEvent = new SimpleEvent<>();
-	private final Event<TransmitterErrorEventArgs> errorEvent = new SimpleEvent<>();
 	private final TransmitterEventListener listener = new ListenerImpl();
+	private final EventManager eventManager;
 	private final int port;
 
-	public TransmitterManager(int port) {
+	public TransmitterManager(EventManager eventManager, int port) {
+		this.eventManager = eventManager;
 		this.port = port;
-	}
-
-	public void addConnectListener(EventListener<TransmitterEventArgs> listener) {
-		connectEvent.addListener(listener);
-	}
-
-	public void addDisconnectListener(EventListener<TransmitterEventArgs> listener) {
-		disconnectEvent.addListener(listener);
-	}
-
-	public void addErrorListener(EventListener<TransmitterErrorEventArgs> listener) {
-		errorEvent.addListener(listener);
 	}
 
 	@Override
@@ -87,66 +73,23 @@ public final class TransmitterManager implements Service {
 
 		@Override
 		public void onConnect(TransmitterClient client) {
-			connectEvent.raiseEvent(this, new TransmitterEventArgs(client));
+			if (eventManager != null) {
+				eventManager.fireEvent(TransmitterManager.this, new ConnectEvent());
+			}
 		}
 
 		@Override
 		public void onDisconnect(TransmitterClient client) {
-			disconnectEvent.raiseEvent(this, new TransmitterEventArgs(client));
+			if (eventManager != null) {
+				eventManager.fireEvent(TransmitterManager.this, new DisconnectEvent());
+			}
 		}
 
 		@Override
 		public void onException(TransmitterClient client, Throwable cause) {
-			errorEvent.raiseEvent(this, new TransmitterErrorEventArgs(client, cause));
-		}
-
-	}
-
-	/**
-	 * This class represents the transmitter event arguments.
-	 * 
-	 * @author Philipp Thiel
-	 */
-	public static class TransmitterEventArgs extends EventArgs {
-
-		private final TransmitterClient client;
-
-		private TransmitterEventArgs(TransmitterClient client) {
-			this.client = client;
-		}
-
-		/**
-		 * Gets the associated transmitter client.
-		 * 
-		 * @return Transmitter client
-		 */
-		public TransmitterClient getClient() {
-			return client;
-		}
-
-	}
-
-	/**
-	 * This class represents the transmitter error event arguments.
-	 * 
-	 * @author Philipp Thiel
-	 */
-	public static class TransmitterErrorEventArgs extends TransmitterEventArgs {
-
-		private final Throwable cause;
-
-		private TransmitterErrorEventArgs(TransmitterClient client, Throwable cause) {
-			super(client);
-			this.cause = cause;
-		}
-
-		/**
-		 * Gets the exception that caused the error event.
-		 * 
-		 * @return Exception
-		 */
-		public Throwable getCause() {
-			return cause;
+			if (eventManager != null) {
+				eventManager.fireEvent(TransmitterManager.this, new ErrorEvent(cause));
+			}
 		}
 
 	}
@@ -177,6 +120,28 @@ public final class TransmitterManager implements Service {
 			p.addLast(new TransmitterServerHandler(listener));
 		}
 
+	}
+
+	public static final class ConnectEvent extends Event {
+		private static final long serialVersionUID = -2358646055141632404L;
+
+	}
+
+	public static final class DisconnectEvent extends Event {
+		private static final long serialVersionUID = -2358646055141632405L;
+	}
+
+	public static final class ErrorEvent extends Event {
+		private static final long serialVersionUID = -2358646055141632404L;
+		private final Throwable cause;
+
+		private ErrorEvent(Throwable cause) {
+			this.cause = Objects.requireNonNull(cause);
+		}
+
+		public Throwable getCause() {
+			return cause;
+		}
 	}
 
 }

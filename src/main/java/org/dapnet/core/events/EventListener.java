@@ -9,16 +9,16 @@ package org.dapnet.core.events;
  *            Event arguments.
  */
 @FunctionalInterface
-public interface EventListener<T extends EventArgs> {
+public interface EventListener<T extends Event> {
 
 	/**
 	 * Callback for handling the event.
 	 * 
 	 * @param sender
-	 *            Object which raised the event.
-	 * @param eventArgs
-	 *            Event arguments.
+	 *            Object that caused the event.
+	 * @param event
+	 *            The event object.
 	 */
-	void onEvent(Object sender, T eventArgs);
+	void onEvent(Object sender, T event);
 
 }
