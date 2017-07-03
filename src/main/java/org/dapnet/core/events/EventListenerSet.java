@@ -3,6 +3,8 @@ package org.dapnet.core.events;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * A simple event listener list implementation based on a synchronized set.
@@ -15,6 +17,7 @@ import java.util.Set;
 final class EventListenerSet<T extends Event> {
 
 	private final Set<EventListener<T>> listeners = new HashSet<>();
+	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
 	/**
 	 * Adds an event listener.
@@ -24,8 +27,11 @@ final class EventListenerSet<T extends Event> {
 	 * @return {@code true} if the event listener has been added to the set.
 	 */
 	public boolean add(EventListener<T> listener) {
-		synchronized (listeners) {
+		lock.writeLock().lock();
+		try {
 			return listeners.add(Objects.requireNonNull(listener));
+		} finally {
+			lock.writeLock().unlock();
 		}
 	}
 
@@ -37,8 +43,11 @@ final class EventListenerSet<T extends Event> {
 	 * @return {@code true} if the event listener has been removed from the set.
 	 */
 	public boolean remove(EventListener<T> listener) {
-		synchronized (listeners) {
+		lock.writeLock().lock();
+		try {
 			return listeners.remove(Objects.requireNonNull(listener));
+		} finally {
+			lock.writeLock().unlock();
 		}
 	}
 
@@ -51,8 +60,11 @@ final class EventListenerSet<T extends Event> {
 	 *            Actual event data.
 	 */
 	public void dispatchEvent(Object sender, T event) {
-		synchronized (listeners) {
+		lock.readLock().lock();
+		try {
 			listeners.forEach(l -> l.onEvent(sender, event));
+		} finally {
+			lock.readLock().unlock();
 		}
 	}
 

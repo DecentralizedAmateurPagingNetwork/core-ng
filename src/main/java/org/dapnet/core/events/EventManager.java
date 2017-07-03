@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 public class EventManager {
 
 	private final ConcurrentMap<Class<?>, EventListenerSet<?>> listeners = new ConcurrentHashMap<>();
+	private final EventDispatcher dispatcher = new EventDispatcher();
 	private final String name;
 
 	/**
@@ -89,9 +90,9 @@ public class EventManager {
 	 */
 	public <T extends Event> void fireEvent(Object sender, T event) {
 		@SuppressWarnings("unchecked")
-		EventListenerSet<T> ell = (EventListenerSet<T>) listeners.get(event);
+		EventListenerSet<T> ell = (EventListenerSet<T>) listeners.get(event.getClass());
 		if (ell != null) {
-			ell.dispatchEvent(sender, event);
+			dispatcher.dispatchEvent(ell, sender, event);
 		}
 	}
 
