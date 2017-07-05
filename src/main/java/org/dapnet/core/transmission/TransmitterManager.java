@@ -27,12 +27,15 @@ public final class TransmitterManager implements Service {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final EventLoopGroup workerGroup = new NioEventLoopGroup();
 	private final TransmitterEventListener listener = new ListenerImpl();
+	private final PagerProtocolSettings protocolSettings;
 	private final EventManager eventManager;
 	private final int port;
 
-	public TransmitterManager(EventManager eventManager, int port) {
+	public TransmitterManager(TransmissionSettings transmissionSettings, PagerProtocolSettings protocolSettings,
+			EventManager eventManager) {
+		this.protocolSettings = Objects.requireNonNull(protocolSettings);
 		this.eventManager = eventManager;
-		this.port = port;
+		this.port = Objects.requireNonNull(transmissionSettings).getServerPort();
 	}
 
 	@Override
@@ -41,7 +44,7 @@ public final class TransmitterManager implements Service {
 			ServerBootstrap b = new ServerBootstrap();
 			b.group(workerGroup);
 			b.channel(NioServerSocketChannel.class);
-			b.childHandler(new ServerInitializer(listener));
+			b.childHandler(new ServerInitializer(protocolSettings, listener));
 			b.childOption(ChannelOption.SO_KEEPALIVE, true);
 			b.bind(port).sync();
 
@@ -61,6 +64,7 @@ public final class TransmitterManager implements Service {
 			workerGroup.shutdownGracefully().sync();
 		} catch (InterruptedException ex) {
 			LOGGER.warn("Server shutdown interrupted.");
+			// TODO Reset interruption status?
 			// Thread.currentThread().interrupt();
 		} catch (Exception e) {
 			LOGGER.warn("Failed to shut down worker group.", e);
@@ -103,10 +107,11 @@ public final class TransmitterManager implements Service {
 
 		private static final StringEncoder STRING_ENCODER = new StringEncoder(StandardCharsets.US_ASCII);
 		private static final StringDecoder STRING_DECODER = new StringDecoder(StandardCharsets.US_ASCII);
-		private static final MessageEncoder MSG_ENCODER = new MessageEncoder();
+		private final MessageEncoder messageEncoder;
 		private final TransmitterEventListener listener;
 
-		public ServerInitializer(TransmitterEventListener listener) {
+		public ServerInitializer(PagerProtocolSettings settings, TransmitterEventListener listener) {
+			this.messageEncoder = new MessageEncoder(settings);
 			this.listener = listener;
 		}
 
@@ -116,7 +121,7 @@ public final class TransmitterManager implements Service {
 			p.addLast(new DelimiterBasedFrameDecoder(2048, Delimiters.lineDelimiter()));
 			p.addLast(STRING_DECODER);
 			p.addLast(STRING_ENCODER);
-			p.addLast(MSG_ENCODER);
+			p.addLast(messageEncoder);
 			p.addLast(new TransmitterServerHandler(listener));
 		}
 

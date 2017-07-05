@@ -12,8 +12,21 @@ import java.util.concurrent.ConcurrentMap;
 public class EventManager {
 
 	private final ConcurrentMap<Class<?>, EventListenerSet<?>> listeners = new ConcurrentHashMap<>();
-	private final EventDispatcher dispatcher = new EventDispatcher();
 	private final String name;
+	private final EventDispatcher dispatcher;
+
+	/**
+	 * Constructs a new event manager.
+	 * 
+	 * @param name
+	 *            Event manager name.
+	 * @param dispatcher
+	 *            Dispatcher to use.
+	 */
+	protected EventManager(String name, EventDispatcher dispatcher) {
+		this.name = Objects.requireNonNull(name);
+		this.dispatcher = Objects.requireNonNull(dispatcher);
+	}
 
 	/**
 	 * Constructs an event manager with the given name.
@@ -22,7 +35,7 @@ public class EventManager {
 	 *            Name
 	 */
 	public EventManager(String name) {
-		this.name = Objects.requireNonNull(name);
+		this(name, new EventDispatcher());
 	}
 
 	/**
