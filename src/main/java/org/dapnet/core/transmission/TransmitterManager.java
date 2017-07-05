@@ -44,7 +44,7 @@ public final class TransmitterManager implements Service {
 			ServerBootstrap b = new ServerBootstrap();
 			b.group(workerGroup);
 			b.channel(NioServerSocketChannel.class);
-			b.childHandler(new ServerInitializer(protocolSettings, listener));
+			b.childHandler(new ServerInitializer(listener));
 			b.childOption(ChannelOption.SO_KEEPALIVE, true);
 			b.bind(port).sync();
 
@@ -107,11 +107,10 @@ public final class TransmitterManager implements Service {
 
 		private static final StringEncoder STRING_ENCODER = new StringEncoder(StandardCharsets.US_ASCII);
 		private static final StringDecoder STRING_DECODER = new StringDecoder(StandardCharsets.US_ASCII);
-		private final MessageEncoder messageEncoder;
+		private static final MessageEncoder MESSAGE_ENCODER = new MessageEncoder();
 		private final TransmitterEventListener listener;
 
-		public ServerInitializer(PagerProtocolSettings settings, TransmitterEventListener listener) {
-			this.messageEncoder = new MessageEncoder(settings);
+		public ServerInitializer(TransmitterEventListener listener) {
 			this.listener = listener;
 		}
 
@@ -121,7 +120,7 @@ public final class TransmitterManager implements Service {
 			p.addLast(new DelimiterBasedFrameDecoder(2048, Delimiters.lineDelimiter()));
 			p.addLast(STRING_DECODER);
 			p.addLast(STRING_ENCODER);
-			p.addLast(messageEncoder);
+			p.addLast(MESSAGE_ENCODER);
 			p.addLast(new TransmitterServerHandler(listener));
 		}
 

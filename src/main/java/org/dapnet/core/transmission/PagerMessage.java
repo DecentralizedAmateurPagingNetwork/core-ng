@@ -22,6 +22,7 @@ final class PagerMessage implements Comparable<PagerMessage> {
 	private final MessagePriority priority;
 	private final MessageType type;
 	private final int address;
+	private final PagerBaudRate baudRate;
 
 	/**
 	 * Creates a new message with the current timestamp.
@@ -34,9 +35,11 @@ final class PagerMessage implements Comparable<PagerMessage> {
 	 *            Message type
 	 * @param address
 	 *            Pager address
+	 * @param baudRate
+	 *            Pager baud rate to use.
 	 */
-	public PagerMessage(String text, MessagePriority priority, MessageType type, int address) {
-		this(Instant.now(), text, priority, type, address);
+	public PagerMessage(String text, MessagePriority priority, MessageType type, int address, PagerBaudRate baudRate) {
+		this(Instant.now(), text, priority, type, address, baudRate);
 	}
 
 	/**
@@ -52,13 +55,17 @@ final class PagerMessage implements Comparable<PagerMessage> {
 	 *            Message type
 	 * @param address
 	 *            Pager address
+	 * @param baudRate
+	 *            Pager baud rate to use.
 	 */
-	public PagerMessage(Instant timestamp, String text, MessagePriority priority, MessageType type, int address) {
+	public PagerMessage(Instant timestamp, String text, MessagePriority priority, MessageType type, int address,
+			PagerBaudRate baudRate) {
 		this.timestamp = timestamp;
 		this.text = text;
 		this.priority = priority;
 		this.type = type;
 		this.address = address;
+		this.baudRate = baudRate;
 	}
 
 	/**
@@ -82,7 +89,7 @@ final class PagerMessage implements Comparable<PagerMessage> {
 	/**
 	 * Gets the message priority.
 	 * 
-	 * @return Priority.
+	 * @return Priority
 	 */
 	public MessagePriority getPriority() {
 		return priority;
@@ -100,10 +107,19 @@ final class PagerMessage implements Comparable<PagerMessage> {
 	/**
 	 * Gets the pager address.
 	 * 
-	 * @return Pager address.
+	 * @return Pager address
 	 */
 	public int getAddress() {
 		return address;
+	}
+
+	/**
+	 * Gets the pager baud rate to use.
+	 * 
+	 * @return Pager baud rate
+	 */
+	public PagerBaudRate getBaudRate() {
+		return baudRate;
 	}
 
 	@Override
