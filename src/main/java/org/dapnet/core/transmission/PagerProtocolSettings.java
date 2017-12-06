@@ -20,32 +20,12 @@ public final class PagerProtocolSettings {
 	}
 
 	/**
-	 * Sets the baud rate to use.
-	 * 
-	 * @param baudRate
-	 *            Baud rate
-	 */
-	public void setBaudRate(PagerBaudRate baudRate) {
-		this.baudRate = baudRate;
-	}
-
-	/**
 	 * Gets the activation code.
 	 * 
 	 * @return Activation code
 	 */
 	public String getActivationCode() {
 		return activationCode;
-	}
-
-	/**
-	 * Sets the activation code.
-	 * 
-	 * @param activationCode
-	 *            Activation code
-	 */
-	public void setActivationCode(String activationCode) {
-		this.activationCode = activationCode;
 	}
 
 }

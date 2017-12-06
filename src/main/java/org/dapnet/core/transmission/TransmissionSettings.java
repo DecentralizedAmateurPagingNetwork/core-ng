@@ -1,15 +1,19 @@
 package org.dapnet.core.transmission;
 
+import org.dapnet.core.AbstractSettings;
+import org.dapnet.core.SettingsManager;
+
 /**
  * This class contains the settings related to connected transmitters and the
  * transmitter server.
  * 
  * @author Philipp Thiel
  */
-public final class TransmissionSettings {
+public final class TransmissionSettings extends AbstractSettings {
 
-	private int numSyncLoops = 5;
-	private int serverPort = 43434;
+	public TransmissionSettings(SettingsManager file) {
+		super(file);
+	}
 
 	/**
 	 * Gets the number of synchronization loops a transmitter must perform during
@@ -18,18 +22,7 @@ public final class TransmissionSettings {
 	 * @return Number of sync loops
 	 */
 	public int getNumSyncLoops() {
-		return numSyncLoops;
-	}
-
-	/**
-	 * Sets the number of synchronization loops a transmitter must perform during
-	 * connect.
-	 * 
-	 * @param numSyncLoops
-	 *            Number of sync loops
-	 */
-	public void setNumSyncLoops(int numSyncLoops) {
-		this.numSyncLoops = numSyncLoops;
+		return getInteger("transmission.num_sync_loops", 5);
 	}
 
 	/**
@@ -38,17 +31,7 @@ public final class TransmissionSettings {
 	 * @return Port number
 	 */
 	public int getServerPort() {
-		return serverPort;
-	}
-
-	/**
-	 * Sets the transmitter server port number.
-	 * 
-	 * @param serverPort
-	 *            Port number
-	 */
-	public void setServerPort(int serverPort) {
-		this.serverPort = serverPort;
+		return getInteger("transmission.server_port", 43434);
 	}
 
 }

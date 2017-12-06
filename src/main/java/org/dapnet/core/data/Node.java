@@ -13,13 +13,13 @@ public final class Node implements NamedObject, Serializable {
 	private Status status = Status.UNKNOWN;
 	private String name;
 
-	@Override
-	public String getName() {
-		return name;
-	}
-
 	public Status getStatus() {
 		return status;
+	}
+
+	@Override
+	public String getNormalizedName() {
+		return name;
 	}
 
 }

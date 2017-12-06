@@ -22,7 +22,7 @@ import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
-public final class TransmitterManager implements Service {
+public final class TransmitterService implements Service {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -31,7 +31,7 @@ public final class TransmitterManager implements Service {
 	private final EventManager eventManager;
 	private final int port;
 
-	public TransmitterManager(TransmissionSettings transmissionSettings, PagerProtocolSettings protocolSettings,
+	public TransmitterService(TransmissionSettings transmissionSettings, PagerProtocolSettings protocolSettings,
 			EventManager eventManager) {
 		this.protocolSettings = Objects.requireNonNull(protocolSettings);
 		this.eventManager = eventManager;
@@ -78,21 +78,21 @@ public final class TransmitterManager implements Service {
 		@Override
 		public void onConnect(TransmitterClient client) {
 			if (eventManager != null) {
-				eventManager.fireEvent(TransmitterManager.this, new ConnectEvent());
+				eventManager.fireEvent(TransmitterService.this, new ConnectEvent());
 			}
 		}
 
 		@Override
 		public void onDisconnect(TransmitterClient client) {
 			if (eventManager != null) {
-				eventManager.fireEvent(TransmitterManager.this, new DisconnectEvent());
+				eventManager.fireEvent(TransmitterService.this, new DisconnectEvent());
 			}
 		}
 
 		@Override
 		public void onException(TransmitterClient client, Throwable cause) {
 			if (eventManager != null) {
-				eventManager.fireEvent(TransmitterManager.this, new ErrorEvent(cause));
+				eventManager.fireEvent(TransmitterService.this, new ErrorEvent(cause));
 			}
 		}
 

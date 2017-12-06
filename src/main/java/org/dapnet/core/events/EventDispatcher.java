@@ -2,7 +2,7 @@ package org.dapnet.core.events;
 
 /**
  * A synchronous event dispatcher that simply forwards incoming events to the
- * event listeners. Events are dispatched within the calling thread.
+ * event listeners. Events are dispatched from within the calling thread.
  * 
  * @author Philipp Thiel
  */
