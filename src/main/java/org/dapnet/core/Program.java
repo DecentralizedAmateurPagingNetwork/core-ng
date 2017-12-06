@@ -28,8 +28,8 @@ public final class Program {
 
 	private static Options parseArgs(String[] args) throws ParseException {
 		Options opts = new Options();
-
 		opts.addOption("h", "help", false, "print help text");
+		opts.addOption("v", "version", false, "print version information");
 		opts.addOption("c", "config", true, "configuration file to use");
 
 		CommandLineParser parser = new DefaultParser();
@@ -43,6 +43,10 @@ public final class Program {
 		formatter.printHelp("dapnet-core [options]", opts);
 	}
 
+	private static void showVersion() {
+		System.out.println("TODO Version");
+	}
+
 	public static void main(String[] args) {
 		Options opts = null;
 		try {
@@ -52,9 +56,11 @@ public final class Program {
 			return;
 		}
 
-		// Print help and exit?
 		if (opts.hasOption("help")) {
 			showHelp(opts);
+			return;
+		} else if (opts.hasOption("version")) {
+			showVersion();
 			return;
 		}
 

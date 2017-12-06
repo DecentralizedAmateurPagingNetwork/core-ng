@@ -90,4 +90,5 @@ public final class SettingsManager {
 	void remove(String key) {
 		props.remove(key);
 	}
+
 }

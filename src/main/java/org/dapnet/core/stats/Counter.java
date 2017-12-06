@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * An integer-based statistic counter.
+ * An integer-based statistics counter.
  * 
  * @author Philipp Thiel
  */
