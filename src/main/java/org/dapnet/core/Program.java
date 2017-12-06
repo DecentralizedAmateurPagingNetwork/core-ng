@@ -2,6 +2,7 @@ package org.dapnet.core;
 
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
@@ -28,10 +29,18 @@ public final class Program {
 	private static Options parseArgs(String[] args) throws ParseException {
 		Options opts = new Options();
 
+		opts.addOption("h", "help", false, "print help text");
+		opts.addOption("c", "config", true, "configuration file to use");
+
 		CommandLineParser parser = new DefaultParser();
 		parser.parse(opts, args);
 
 		return opts;
+	}
+
+	private static void showHelp(Options opts) {
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.printHelp("dapnet-core [options]", opts);
 	}
 
 	public static void main(String[] args) {
@@ -39,7 +48,14 @@ public final class Program {
 		try {
 			opts = parseArgs(args);
 		} catch (ParseException ex) {
-			ex.printStackTrace();
+			LOGGER.fatal("Failed to parse command line arguments.", ex);
+			return;
+		}
+
+		// Print help and exit?
+		if (opts.hasOption("help")) {
+			showHelp(opts);
+			return;
 		}
 
 		// Register shutdown hook
