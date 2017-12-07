@@ -8,6 +8,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.dapnet.core.util.ConfigurationManager;
 
 public final class Program {
 
@@ -37,12 +38,11 @@ public final class Program {
 			return;
 		}
 
-		// Perform startup
 		try {
-			// Load settings
+			// Load configuration file
 			String configFile = cli.getOptionValue("c", "dapnet-core.properties");
-			LOGGER.debug("Loading configuration file {}", configFile);
-			SettingsManager settings = new SettingsManager(configFile);
+			LOGGER.debug("Loading configuration from {}", configFile);
+			ConfigurationManager configManager = new ConfigurationManager(configFile);
 		} catch (Exception ex) {
 			LOGGER.fatal("Core startup failed.", ex);
 		}

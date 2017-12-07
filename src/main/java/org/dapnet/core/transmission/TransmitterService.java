@@ -31,7 +31,7 @@ public final class TransmitterService implements Service {
 	private final EventManager eventManager;
 	private final int port;
 
-	public TransmitterService(TransmissionSettings transmissionSettings, PagerProtocolSettings protocolSettings,
+	public TransmitterService(TransmissionConfiguration transmissionSettings, PagerProtocolSettings protocolSettings,
 			EventManager eventManager) {
 		this.protocolSettings = Objects.requireNonNull(protocolSettings);
 		this.eventManager = eventManager;

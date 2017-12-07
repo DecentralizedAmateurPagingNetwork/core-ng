@@ -1,5 +1,6 @@
-package org.dapnet.core;
+package org.dapnet.core.util;
 
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -13,7 +14,7 @@ import java.util.concurrent.ConcurrentMap;
  * @param <B>
  *            Type of objects that are supported by this registry.
  */
-public class ObjectRegistry<B> {
+public class ObjectRegistry<B> implements Iterable<B> {
 
 	private final ConcurrentMap<Class<?>, B> objects = new ConcurrentHashMap<>();
 
@@ -44,7 +45,7 @@ public class ObjectRegistry<B> {
 	 * @return Object or {@code null} if no object of the given type was found.
 	 */
 	public <T extends B> T get(Class<T> objectType) {
-		final Object object = objects.get(objectType);
+		final B object = objects.get(objectType);
 		return objectType.cast(object);
 	}
 
@@ -56,7 +57,7 @@ public class ObjectRegistry<B> {
 	 * @return Object or {@code null} if no object of the given type was found.
 	 */
 	public <T extends B> T remove(Class<T> objectType) {
-		final Object object = objects.remove(objectType);
+		final B object = objects.remove(objectType);
 		return objectType.cast(object);
 	}
 
@@ -65,6 +66,11 @@ public class ObjectRegistry<B> {
 	 */
 	public void clear() {
 		objects.clear();
+	}
+
+	@Override
+	public Iterator<B> iterator() {
+		return objects.values().iterator();
 	}
 
 }

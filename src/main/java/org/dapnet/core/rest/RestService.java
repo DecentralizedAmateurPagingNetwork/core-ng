@@ -9,9 +9,9 @@ import org.dapnet.core.Service;
 public final class RestService implements Service {
 
 	private static final Logger LOGGER = LogManager.getLogger();
-	private final RestSettings settings;
+	private final RestConfiguration settings;
 
-	public RestService(RestSettings settings) {
+	public RestService(RestConfiguration settings) {
 		this.settings = Objects.requireNonNull(settings);
 	}
 

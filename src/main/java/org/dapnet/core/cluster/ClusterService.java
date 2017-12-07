@@ -9,9 +9,9 @@ import org.dapnet.core.Service;
 public final class ClusterService implements Service {
 
 	private static final Logger LOGGER = LogManager.getLogger();
-	private final ClusterSettings settings;
+	private final ClusterConfiguration settings;
 
-	public ClusterService(ClusterSettings settings) {
+	public ClusterService(ClusterConfiguration settings) {
 		this.settings = Objects.requireNonNull(settings);
 	}
 
