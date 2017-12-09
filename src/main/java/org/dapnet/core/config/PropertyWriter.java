@@ -1,4 +1,4 @@
-package org.dapnet.core.util;
+package org.dapnet.core.config;
 
 /**
  * This interface defines methods to modify properties.

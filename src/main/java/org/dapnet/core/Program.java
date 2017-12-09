@@ -1,5 +1,7 @@
 package org.dapnet.core;
 
+import java.io.IOException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -8,11 +10,40 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dapnet.core.util.ConfigurationManager;
+import org.dapnet.core.cluster.ClusterConfiguration;
+import org.dapnet.core.config.ConfigurationManager;
+import org.dapnet.core.plugins.PluginConfiguration;
+import org.dapnet.core.rest.RestConfiguration;
+import org.dapnet.core.scheduler.SchedulerConfiguration;
 
+/**
+ * This class contains the application entry point.
+ * 
+ * @author Philipp Thiel
+ */
 public final class Program {
 
 	private static final Logger LOGGER = LogManager.getLogger();
+
+	/**
+	 * Creates a {@link ConfigurationManager} instance.
+	 * 
+	 * @param configFile
+	 *            Configuration file to load.
+	 * @return Configuration manager instance.
+	 * @throws IOException
+	 *             if the configuration file could not be loaded.
+	 */
+	private static ConfigurationManager createConfigManager(String configFile) throws IOException {
+		LOGGER.debug("Loading configuration from {}", configFile);
+		ConfigurationManager config = new ConfigurationManager(configFile);
+		config.put(new ClusterConfiguration());
+		config.put(new SchedulerConfiguration());
+		config.put(new RestConfiguration());
+		config.put(new PluginConfiguration());
+
+		return config;
+	}
 
 	public static void main(String[] args) {
 		Options opts = new Options();
@@ -39,10 +70,8 @@ public final class Program {
 		}
 
 		try {
-			// Load configuration file
-			String configFile = cli.getOptionValue("c", "dapnet-core.properties");
-			LOGGER.debug("Loading configuration from {}", configFile);
-			ConfigurationManager configManager = new ConfigurationManager(configFile);
+			String value = cli.getOptionValue("c", "dapnet-core.properties");
+			ConfigurationManager configManager = createConfigManager(value);
 		} catch (Exception ex) {
 			LOGGER.fatal("Core startup failed.", ex);
 		}

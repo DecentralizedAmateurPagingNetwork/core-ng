@@ -1,8 +1,8 @@
 package org.dapnet.core.cluster;
 
-import org.dapnet.core.util.AbstractConfiguration;
-import org.dapnet.core.util.PropertyReader;
-import org.dapnet.core.util.PropertyWriter;
+import org.dapnet.core.config.AbstractConfiguration;
+import org.dapnet.core.config.PropertyReader;
+import org.dapnet.core.config.PropertyWriter;
 
 /**
  * This class contains the cluster configuration.
@@ -17,7 +17,7 @@ public final class ClusterConfiguration extends AbstractConfiguration {
 	/**
 	 * Whether the cluster service is enabled or not.
 	 * 
-	 * @return {@code true} if the cluster is enabled.
+	 * @return {@code true} if the cluster service is enabled.
 	 */
 	public boolean isEnabled() {
 		return enabled;

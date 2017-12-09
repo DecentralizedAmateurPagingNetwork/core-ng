@@ -1,8 +1,8 @@
 package org.dapnet.core.rest;
 
-import org.dapnet.core.util.AbstractConfiguration;
-import org.dapnet.core.util.PropertyReader;
-import org.dapnet.core.util.PropertyWriter;
+import org.dapnet.core.config.AbstractConfiguration;
+import org.dapnet.core.config.PropertyReader;
+import org.dapnet.core.config.PropertyWriter;
 
 /**
  * This class contains the configuration related to the REST service.

@@ -1,76 +1,76 @@
-package org.dapnet.core.util;
+package org.dapnet.core.config;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Properties;
 
 /**
- * This class manages access to the configuration file.
+ * This class provides simplified methods to access properties.
  * 
  * @author Philipp Thiel
  */
-final class ConfigurationFile implements PropertyReader, PropertyWriter {
+final class PropertiesAdapter implements PropertyReader, PropertyWriter {
 
-	private final Properties props = new Properties();
-	private final String filename;
+	private final Properties properties;
 
 	/**
-	 * Creates a new instance using the given file name. The configuration will not
-	 * be loaded unless the {@link #loadFromFile()} method is called.
+	 * Creates a new instance of the adapter using the given {@link Properties}
+	 * object.
 	 * 
-	 * @param filename
-	 *            Configuration file to use.
+	 * @param properties
+	 *            Properties to use.
 	 */
-	public ConfigurationFile(String filename) {
-		this.filename = filename;
+	public PropertiesAdapter(Properties properties) {
+		this.properties = Objects.requireNonNull(properties);
 	}
 
 	/**
-	 * Gets the configuration file name.
-	 * 
-	 * @return File name
-	 */
-	public String getFilename() {
-		return filename;
-	}
-
-	/**
-	 * Loads the configuration file.
+	 * Creates a {@link PropertiesAdapter} from a configuration file.
 	 * 
 	 * @throws IOException
+	 *             if the configuration could not be loaded.
 	 */
-	public void loadFromFile() throws IOException {
+	public static PropertiesAdapter fromFile(String filename) throws IOException {
+		Objects.requireNonNull(filename, "filename");
+
+		Properties props = new Properties();
 		try (FileInputStream in = new FileInputStream(filename)) {
 			props.load(in);
 		}
+
+		return new PropertiesAdapter(props);
 	}
 
 	/**
-	 * Saves the configuration file.
+	 * Writes the configuration from a {@link PropertiesAdapter} to a configuration
+	 * file.
 	 * 
 	 * @throws IOException
+	 *             if the configuration could not be saved.
 	 */
-	public void saveToFile() throws IOException {
+	public void toFile(String filename) throws IOException {
+		Objects.requireNonNull(filename, "filename");
 		try (FileOutputStream out = new FileOutputStream(filename)) {
-			props.store(out, null);
+			properties.store(out, null);
 		}
 	}
 
 	@Override
 	public void setProperty(String key, boolean value) {
-		props.setProperty(key, Boolean.toString(value));
+		properties.setProperty(key, Boolean.toString(value));
 	}
 
 	@Override
 	public void setProperty(String key, int value) {
-		props.setProperty(key, Integer.toString(value));
+		properties.setProperty(key, Integer.toString(value));
 	}
 
 	@Override
 	public void setProperty(String key, double value) {
-		props.setProperty(key, Double.toString(value));
+		properties.setProperty(key, Double.toString(value));
 	}
 
 	@Override
@@ -80,17 +80,17 @@ final class ConfigurationFile implements PropertyReader, PropertyWriter {
 			value = "";
 		}
 
-		props.setProperty(key, value);
+		properties.setProperty(key, value);
 	}
 
 	@Override
 	public void removeProperty(String key) {
-		props.remove(key);
+		properties.remove(key);
 	}
 
 	@Override
 	public boolean getBoolean(String key, boolean defaultValue) {
-		String value = props.getProperty(key);
+		String value = properties.getProperty(key);
 		if (value != null && !value.isEmpty()) {
 			return Boolean.parseBoolean(value);
 		} else {
@@ -100,7 +100,7 @@ final class ConfigurationFile implements PropertyReader, PropertyWriter {
 
 	@Override
 	public boolean getBoolean(String key) {
-		String value = props.getProperty(key);
+		String value = properties.getProperty(key);
 		if (value != null && !value.isEmpty()) {
 			return Boolean.parseBoolean(value);
 		} else {
@@ -110,7 +110,7 @@ final class ConfigurationFile implements PropertyReader, PropertyWriter {
 
 	@Override
 	public double getDouble(String key, double defaultValue) {
-		String value = props.getProperty(key);
+		String value = properties.getProperty(key);
 		if (value != null && !value.isEmpty()) {
 			return Double.parseDouble(value);
 		} else {
@@ -120,7 +120,7 @@ final class ConfigurationFile implements PropertyReader, PropertyWriter {
 
 	@Override
 	public double getDouble(String key) {
-		String value = props.getProperty(key);
+		String value = properties.getProperty(key);
 		if (value != null && !value.isEmpty()) {
 			return Double.parseDouble(value);
 		} else {
@@ -130,7 +130,7 @@ final class ConfigurationFile implements PropertyReader, PropertyWriter {
 
 	@Override
 	public int getInteger(String key, int defaultValue) {
-		String value = props.getProperty(key);
+		String value = properties.getProperty(key);
 		if (value != null && !value.isEmpty()) {
 			return Integer.parseInt(value);
 		} else {
@@ -140,7 +140,7 @@ final class ConfigurationFile implements PropertyReader, PropertyWriter {
 
 	@Override
 	public int getInteger(String key) {
-		String value = props.getProperty(key);
+		String value = properties.getProperty(key);
 		if (value != null && !value.isEmpty()) {
 			return Integer.parseInt(value);
 		} else {
@@ -150,7 +150,7 @@ final class ConfigurationFile implements PropertyReader, PropertyWriter {
 
 	@Override
 	public String getString(String key, String defaultValue) {
-		String value = props.getProperty(key);
+		String value = properties.getProperty(key);
 		if (value != null && !value.isEmpty()) {
 			return value;
 		} else {
@@ -160,7 +160,7 @@ final class ConfigurationFile implements PropertyReader, PropertyWriter {
 
 	@Override
 	public String getString(String key) {
-		String value = props.getProperty(key);
+		String value = properties.getProperty(key);
 		if (value != null && !value.isEmpty()) {
 			return value;
 		} else {

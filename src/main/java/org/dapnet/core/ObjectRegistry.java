@@ -1,4 +1,4 @@
-package org.dapnet.core.util;
+package org.dapnet.core;
 
 import java.util.Iterator;
 import java.util.Objects;

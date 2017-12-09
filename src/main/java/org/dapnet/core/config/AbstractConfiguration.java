@@ -1,4 +1,4 @@
-package org.dapnet.core.util;
+package org.dapnet.core.config;
 
 /**
  * Abstract base class for configuration objects.
