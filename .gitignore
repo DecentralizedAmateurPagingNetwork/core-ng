@@ -13,3 +13,5 @@
 /config_samples/
 /config/
 /data/
+
+*.properties

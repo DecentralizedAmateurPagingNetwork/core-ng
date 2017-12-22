@@ -13,7 +13,8 @@ import org.apache.logging.log4j.Logger;
 import org.dapnet.core.cluster.ClusterConfiguration;
 import org.dapnet.core.config.ConfigurationManager;
 import org.dapnet.core.plugins.PluginConfiguration;
-import org.dapnet.core.rest.RestConfiguration;
+import org.dapnet.core.rest.RestApiConfiguration;
+import org.dapnet.core.rest.RestApiService;
 import org.dapnet.core.scheduler.SchedulerConfiguration;
 
 /**
@@ -37,12 +38,21 @@ public final class Program {
 	private static ConfigurationManager createConfigManager(String configFile) throws IOException {
 		LOGGER.debug("Loading configuration from {}", configFile);
 		ConfigurationManager config = new ConfigurationManager(configFile);
-		config.put(new ClusterConfiguration());
+		//config.put(new ClusterConfiguration());
 		config.put(new SchedulerConfiguration());
-		config.put(new RestConfiguration());
+		config.put(new RestApiConfiguration());
 		config.put(new PluginConfiguration());
 
 		return config;
+	}
+
+	private static void startRestApi(ConfigurationManager manager) {
+		Service restApi = new RestApiService(manager.get(RestApiConfiguration.class));
+		try {
+			restApi.start();
+		} catch (Exception ex) {
+			LOGGER.catching(ex);
+		}
 	}
 
 	public static void main(String[] args) {
@@ -72,6 +82,8 @@ public final class Program {
 		try {
 			String value = cli.getOptionValue("c", "dapnet-core.properties");
 			ConfigurationManager configManager = createConfigManager(value);
+
+			startRestApi(configManager);
 		} catch (Exception ex) {
 			LOGGER.fatal("Core startup failed.", ex);
 		}

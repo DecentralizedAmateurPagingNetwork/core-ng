@@ -9,7 +9,7 @@ import org.dapnet.core.config.PropertyWriter;
  * 
  * @author Philipp Thiel
  */
-public final class RestConfiguration extends AbstractConfiguration {
+public final class RestApiConfiguration extends AbstractConfiguration {
 
 	private boolean enabled;
 	private int port;
