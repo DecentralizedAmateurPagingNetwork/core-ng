@@ -1,10 +1,10 @@
 package org.dapnet.core.plugins;
 
-import org.dapnet.core.config.AbstractConfiguration;
+import org.dapnet.core.config.Configuration;
 import org.dapnet.core.config.PropertyReader;
 import org.dapnet.core.config.PropertyWriter;
 
-public final class PluginConfiguration extends AbstractConfiguration {
+public final class PluginConfiguration extends Configuration {
 
 	private boolean enabled;
 

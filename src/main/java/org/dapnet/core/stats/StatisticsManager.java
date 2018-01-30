@@ -8,14 +8,14 @@ public final class StatisticsManager {
 
 	private final ConcurrentMap<String, Counter> counters = new ConcurrentHashMap<>();
 
-	public void register(Counter counter) {
-		Objects.requireNonNull(counter);
-		counters.put(counter.getName(), counter);
+	public Counter create(String name) {
+		Objects.requireNonNull(name);
+		Counter counter = new Counter(name);
+		return counters.putIfAbsent(name, counter);
 	}
 
 	public Counter get(String name) {
 		Objects.requireNonNull(name);
-
 		return counters.get(name);
 	}
 

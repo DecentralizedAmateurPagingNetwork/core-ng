@@ -6,11 +6,11 @@ import java.util.Objects;
 import org.dapnet.core.ObjectRegistry;
 
 /**
- * This class manages the configurtion system.
+ * This class manages the configuration system.
  * 
  * @author Philipp Thiel
  */
-public final class ConfigurationManager extends ObjectRegistry<AbstractConfiguration> {
+public final class ConfigurationManager extends ObjectRegistry<Configuration> {
 
 	private final PropertiesAdapter properties;
 
@@ -27,7 +27,7 @@ public final class ConfigurationManager extends ObjectRegistry<AbstractConfigura
 	}
 
 	@Override
-	public <T extends AbstractConfiguration> T put(T object) {
+	public <T extends Configuration> T put(T object) {
 		object = super.put(object);
 		object.loadConfiguration(properties);
 		return object;

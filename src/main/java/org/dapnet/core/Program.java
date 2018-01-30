@@ -38,7 +38,7 @@ public final class Program {
 	private static ConfigurationManager createConfigManager(String configFile) throws IOException {
 		LOGGER.debug("Loading configuration from {}", configFile);
 		ConfigurationManager config = new ConfigurationManager(configFile);
-		//config.put(new ClusterConfiguration());
+		config.put(new ClusterConfiguration());
 		config.put(new SchedulerConfiguration());
 		config.put(new RestApiConfiguration());
 		config.put(new PluginConfiguration());
@@ -47,7 +47,13 @@ public final class Program {
 	}
 
 	private static void startRestApi(ConfigurationManager manager) {
-		Service restApi = new RestApiService(manager.get(RestApiConfiguration.class));
+		RestApiConfiguration config = manager.get(RestApiConfiguration.class);
+		if (!config.isEnabled()) {
+			LOGGER.debug("REST API service is disabled.");
+			return;
+		}
+
+		Service restApi = new RestApiService(config);
 		try {
 			restApi.start();
 		} catch (Exception ex) {

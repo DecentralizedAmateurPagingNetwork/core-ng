@@ -5,7 +5,7 @@ package org.dapnet.core.config;
  * 
  * @author Philipp Thiel
  */
-public abstract class AbstractConfiguration {
+public abstract class Configuration {
 
 	/**
 	 * Loads the configuration.

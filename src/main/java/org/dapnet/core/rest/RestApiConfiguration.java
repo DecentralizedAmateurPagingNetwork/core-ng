@@ -1,6 +1,6 @@
 package org.dapnet.core.rest;
 
-import org.dapnet.core.config.AbstractConfiguration;
+import org.dapnet.core.config.Configuration;
 import org.dapnet.core.config.PropertyReader;
 import org.dapnet.core.config.PropertyWriter;
 
@@ -9,7 +9,7 @@ import org.dapnet.core.config.PropertyWriter;
  * 
  * @author Philipp Thiel
  */
-public final class RestApiConfiguration extends AbstractConfiguration {
+public final class RestApiConfiguration extends Configuration {
 
 	private boolean enabled;
 	private int port;

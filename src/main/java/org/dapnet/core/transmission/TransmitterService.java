@@ -128,7 +128,6 @@ public final class TransmitterService implements Service {
 
 	public static final class ConnectEvent extends Event {
 		private static final long serialVersionUID = -2358646055141632404L;
-
 	}
 
 	public static final class DisconnectEvent extends Event {

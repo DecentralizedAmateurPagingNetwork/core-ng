@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * A simple event listener list implementation based on a synchronized set.
+ * A simple event listener set implementation based on a synchronized set.
  * 
  * @author Philipp Thiel
  *
@@ -52,14 +52,14 @@ final class EventListenerSet<T extends Event> {
 	}
 
 	/**
-	 * Dispatches an event to all registered event listeners.
+	 * Forwards an event to all event listeners.
 	 * 
 	 * @param sender
-	 *            Object that caused the event.
+	 *            Object that raised the event.
 	 * @param event
 	 *            Actual event data.
 	 */
-	public void dispatchEvent(Object sender, T event) {
+	public void fireEvent(Object sender, T event) {
 		lock.readLock().lock();
 		try {
 			listeners.forEach(l -> l.onEvent(sender, event));

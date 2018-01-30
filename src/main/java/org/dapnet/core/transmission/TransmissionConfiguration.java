@@ -1,6 +1,6 @@
 package org.dapnet.core.transmission;
 
-import org.dapnet.core.config.AbstractConfiguration;
+import org.dapnet.core.config.Configuration;
 import org.dapnet.core.config.PropertyReader;
 import org.dapnet.core.config.PropertyWriter;
 
@@ -10,7 +10,7 @@ import org.dapnet.core.config.PropertyWriter;
  * 
  * @author Philipp Thiel
  */
-public final class TransmissionConfiguration extends AbstractConfiguration {
+public final class TransmissionConfiguration extends Configuration {
 
 	private int numSyncLoops;
 	private int serverPort;

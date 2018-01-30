@@ -7,32 +7,30 @@ import java.io.Serializable;
  * 
  * @author Philipp Thiel
  */
-public abstract class Event implements Serializable, Comparable<Event> {
+public class Event implements Serializable, Comparable<Event> {
 
-	private static final long serialVersionUID = 5365623752785671067L;
-	public static final int DEFAULT_PRIORITY = 0;
+	private static final long serialVersionUID = 3171011180914813478L;
 	private final int priority;
 
 	/**
-	 * Creates an event with default priority.
+	 * Creates a new event instance with a default priority of 0.
 	 */
 	protected Event() {
-		this(DEFAULT_PRIORITY);
+		this(0);
 	}
 
 	/**
-	 * Creates an event with the given priority.
+	 * Creates a new event instance with the given priority.
 	 * 
 	 * @param priority
-	 *            Priority to use.
+	 *            Event priority
 	 */
 	protected Event(int priority) {
 		this.priority = priority;
 	}
 
 	/**
-	 * Returns the event priority. The higher the priority the sooner it will get
-	 * processed.
+	 * Gets the event priority.
 	 * 
 	 * @return Event priority
 	 */
@@ -50,4 +48,5 @@ public abstract class Event implements Serializable, Comparable<Event> {
 			return 0;
 		}
 	}
+
 }

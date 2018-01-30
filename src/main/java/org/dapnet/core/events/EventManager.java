@@ -1,52 +1,68 @@
 package org.dapnet.core.events;
 
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.function.BiConsumer;
+
+import org.dapnet.core.Service;
 
 /**
- * A simple event manager implementation.
+ * Abstract base class used for implementing event managers.
  * 
  * @author Philipp Thiel
  */
-public class EventManager {
+public abstract class EventManager implements Service {
 
-	private final ConcurrentMap<Class<?>, EventListenerSet<?>> listeners = new ConcurrentHashMap<>();
 	private final String name;
-	private final EventDispatcher dispatcher;
+	private BiConsumer<Object, Event> unhandledEventHandler;
 
 	/**
-	 * Constructs a new event manager.
+	 * Constructs a new event manager with the given name.
 	 * 
 	 * @param name
-	 *            Event manager name.
-	 * @param dispatcher
-	 *            Dispatcher to use.
+	 *            Name of the new event manager instance.
 	 */
-	protected EventManager(String name, EventDispatcher dispatcher) {
+	protected EventManager(String name) {
 		this.name = Objects.requireNonNull(name);
-		this.dispatcher = Objects.requireNonNull(dispatcher);
 	}
 
 	/**
-	 * Constructs an event manager with the given name.
+	 * Gets the handler to which unhandled events will be forwarded to.
 	 * 
-	 * @param name
-	 *            Name
+	 * @return Unhandled event handler or {@code null} if none is set.
 	 */
-	public EventManager(String name) {
-		this(name, new EventDispatcher());
+	public BiConsumer<Object, Event> getUnhandledEventHandler() {
+		return unhandledEventHandler;
 	}
 
 	/**
-	 * Constructs an event manager with a default name.
+	 * Sets the handler to which unhandled events will be forwarded to. Set to
+	 * {@code null} to discard such events.
+	 * 
+	 * @param handler
+	 *            Unhandled event handler to use.
 	 */
-	public EventManager() {
-		this("default");
+	public void setUnhandledEventHandler(BiConsumer<Object, Event> handler) {
+		this.unhandledEventHandler = handler;
 	}
 
 	/**
-	 * Gets the name.
+	 * This method forwards an unhandled event to the handler if a handler has been
+	 * registered.
+	 * 
+	 * @param sender
+	 *            Event sender
+	 * @param event
+	 *            Event arguments
+	 */
+	protected void forwardUnhandledEvent(Object sender, Event event) {
+		BiConsumer<Object, Event> handler = unhandledEventHandler;
+		if (handler != null) {
+			handler.accept(sender, event);
+		}
+	}
+
+	/**
+	 * Returns the name of this event manager instance.
 	 * 
 	 * @return Name
 	 */
@@ -55,7 +71,7 @@ public class EventManager {
 	}
 
 	/**
-	 * Adds an event listener for the given event type.
+	 * Adds an event listener.
 	 * 
 	 * @param event
 	 *            Event type
@@ -63,19 +79,10 @@ public class EventManager {
 	 *            Event listener to add.
 	 * @return {@code true} if the event listener has been added.
 	 */
-	public <T extends Event> boolean addListener(Class<T> event, EventListener<T> listener) {
-		@SuppressWarnings("unchecked")
-		EventListenerSet<T> ell = (EventListenerSet<T>) listeners.get(event);
-		if (ell == null) {
-			ell = new EventListenerSet<>();
-			listeners.put(event, ell);
-		}
-
-		return ell.add(listener);
-	}
+	public abstract <T extends Event> boolean addListener(Class<T> event, EventListener<T> listener);
 
 	/**
-	 * Removes an event listener for the given event type.
+	 * Removes an event listener.
 	 * 
 	 * @param event
 	 *            Event type
@@ -83,30 +90,17 @@ public class EventManager {
 	 *            Event listener to remove.
 	 * @return {@code true} if the event listener has been removed.
 	 */
-	public <T extends Event> boolean removeListener(Class<T> event, EventListener<T> listener) {
-		@SuppressWarnings("unchecked")
-		EventListenerSet<T> ell = (EventListenerSet<T>) listeners.get(event);
-		if (ell != null) {
-			return ell.remove(listener);
-		} else {
-			return false;
-		}
-	}
+	public abstract <T extends Event> boolean removeListener(Class<T> event, EventListener<T> listener);
 
 	/**
-	 * Fires an event.
+	 * Fires an event by notifying all affected event listeners. If no listener is
+	 * registered, the event will be forwarded to the unhandled event handler.
 	 * 
 	 * @param sender
-	 *            Object that caused the event.
+	 *            Sender of the event
 	 * @param event
-	 *            Event object
+	 *            Event data
 	 */
-	public <T extends Event> void fireEvent(Object sender, T event) {
-		@SuppressWarnings("unchecked")
-		EventListenerSet<T> ell = (EventListenerSet<T>) listeners.get(event.getClass());
-		if (ell != null) {
-			dispatcher.dispatchEvent(ell, sender, event);
-		}
-	}
+	public abstract <T extends Event> void fireEvent(Object sender, T event);
 
 }

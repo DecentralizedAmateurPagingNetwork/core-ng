@@ -1,10 +1,10 @@
 package org.dapnet.core.scheduler;
 
-import org.dapnet.core.config.AbstractConfiguration;
+import org.dapnet.core.config.Configuration;
 import org.dapnet.core.config.PropertyReader;
 import org.dapnet.core.config.PropertyWriter;
 
-public final class SchedulerConfiguration extends AbstractConfiguration {
+public final class SchedulerConfiguration extends Configuration {
 
 	@Override
 	public void loadConfiguration(PropertyReader reader) {
