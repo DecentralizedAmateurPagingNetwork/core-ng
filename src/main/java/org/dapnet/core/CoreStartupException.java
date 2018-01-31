@@ -1,5 +1,10 @@
 package org.dapnet.core;
 
+/**
+ * This exception is thrown when the startup of DAPNET core failed.
+ * 
+ * @author Philipp Thiel
+ */
 public class CoreStartupException extends Exception {
 
 	private static final long serialVersionUID = 4305316356193281119L;
