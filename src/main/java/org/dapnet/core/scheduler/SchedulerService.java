@@ -12,11 +12,11 @@ import org.quartz.impl.StdSchedulerFactory;
 public final class SchedulerService implements Service {
 
 	private static final Logger LOGGER = LogManager.getLogger();
-	private final SchedulerConfiguration settings;
+	private final SchedulerConfiguration config;
 	private final Scheduler scheduler;
 
-	public SchedulerService(SchedulerConfiguration settings) throws SchedulerException {
-		this.settings = Objects.requireNonNull(settings);
+	public SchedulerService(SchedulerConfiguration config) throws SchedulerException {
+		this.config = Objects.requireNonNull(config);
 		scheduler = StdSchedulerFactory.getDefaultScheduler();
 	}
 
