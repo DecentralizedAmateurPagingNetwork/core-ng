@@ -4,22 +4,16 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity(name = "Node")
-@Table(name = "nodes")
-public class Node implements Serializable {
+@Entity(name = "TransmitterGroup")
+@Table(name = "transmitterGroups")
+public class TransmitterGroup implements Serializable {
 
-	public enum Status {
-		UNKNOWN, OFFLINE, ONLINE
-	}
-
-	private static final long serialVersionUID = -7074417111402696260L;
+	private static final long serialVersionUID = 7571253139201917903L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,20 +21,26 @@ public class Node implements Serializable {
 	private int id;
 	@Column(unique = true, nullable = false)
 	private String name;
-	@Enumerated(EnumType.ORDINAL)
-	@Column(nullable = false)
-	private Status status = Status.UNKNOWN;
+	private String description;
 
 	public int getId() {
 		return id;
 	}
 
-	public Status getStatus() {
-		return status;
+	public String getName() {
+		return name;
 	}
 
-	public void setStatus(Status status) {
-		this.status = status;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

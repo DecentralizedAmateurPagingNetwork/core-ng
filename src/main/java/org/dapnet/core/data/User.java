@@ -1,5 +1,6 @@
 package org.dapnet.core.data;
 
+import java.io.Serializable;
 import java.time.Instant;
 
 import javax.persistence.Column;
@@ -8,8 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * This class represents a user account.
@@ -18,10 +17,13 @@ import javax.persistence.TemporalType;
  */
 @Entity(name = "User")
 @Table(name = "users")
-public class User implements NamedObject {
+public class User implements Serializable {
+
+	private static final long serialVersionUID = 7574094449661279629L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(updatable = false, nullable = false)
 	private int id;
 	@Column(unique = true, nullable = false)
 	private String name;
@@ -30,17 +32,12 @@ public class User implements NamedObject {
 	@Column(nullable = false)
 	private String email;
 	@Column(nullable = false)
-	@Temporal(TemporalType.TIMESTAMP)
 	private Instant createdOn;
 	@Column(nullable = false)
 	private boolean admin;
 
 	public int getId() {
 		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getName() {
@@ -81,15 +78,6 @@ public class User implements NamedObject {
 
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
-	}
-
-	@Override
-	public String getNormalizedName() {
-		if (name != null) {
-			return name.toLowerCase();
-		} else {
-			return null;
-		}
 	}
 
 }
