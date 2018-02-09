@@ -2,7 +2,6 @@ package org.dapnet.core.transmission;
 
 import org.dapnet.core.config.Configuration;
 import org.dapnet.core.config.PropertyReader;
-import org.dapnet.core.config.PropertyWriter;
 
 /**
  * This class contains the settings related to connected transmitters and the
@@ -38,12 +37,6 @@ public final class TransmissionConfiguration extends Configuration {
 	public void loadConfiguration(PropertyReader reader) {
 		numSyncLoops = reader.getInteger("transmission.num_sync_loops", 5);
 		serverPort = reader.getInteger("transmission.server_port", 43434);
-	}
-
-	@Override
-	public void saveConfiguration(PropertyWriter writer) {
-		writer.setProperty("transmission.num_sync_loops", numSyncLoops);
-		writer.setProperty("transmission.server_port", serverPort);
 	}
 
 }

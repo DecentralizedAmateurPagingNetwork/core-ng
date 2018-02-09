@@ -2,7 +2,6 @@ package org.dapnet.core.cluster;
 
 import org.dapnet.core.config.Configuration;
 import org.dapnet.core.config.PropertyReader;
-import org.dapnet.core.config.PropertyWriter;
 
 /**
  * This class contains the cluster configuration.
@@ -25,11 +24,6 @@ public final class ClusterConfiguration extends Configuration {
 	@Override
 	public void loadConfiguration(PropertyReader reader) {
 		enabled = reader.getBoolean("cluster.enabled", false);
-	}
-
-	@Override
-	public void saveConfiguration(PropertyWriter writer) {
-		writer.setProperty("cluster.enabled", enabled);
 	}
 
 }

@@ -12,7 +12,7 @@ import org.dapnet.core.ObjectRegistry;
  */
 public final class ConfigurationManager extends ObjectRegistry<Configuration> {
 
-	private final PropertiesAdapter properties;
+	private final PropertyReaderImpl properties;
 
 	/**
 	 * Creates a new {@code ConfigurationManager} instance.
@@ -23,7 +23,7 @@ public final class ConfigurationManager extends ObjectRegistry<Configuration> {
 	 *             if the configuration file could not be loaded.
 	 */
 	public ConfigurationManager(String filename) throws IOException {
-		properties = PropertiesAdapter.fromFile(Objects.requireNonNull(filename));
+		properties = PropertyReaderImpl.fromFile(Objects.requireNonNull(filename));
 	}
 
 	@Override

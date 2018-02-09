@@ -1,7 +1,6 @@
 package org.dapnet.core.config;
 
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -12,7 +11,7 @@ import java.util.Properties;
  * 
  * @author Philipp Thiel
  */
-final class PropertiesAdapter implements PropertyReader, PropertyWriter {
+final class PropertyReaderImpl implements PropertyReader {
 
 	private final Properties properties;
 
@@ -23,17 +22,17 @@ final class PropertiesAdapter implements PropertyReader, PropertyWriter {
 	 * @param properties
 	 *            Properties to use.
 	 */
-	public PropertiesAdapter(Properties properties) {
+	public PropertyReaderImpl(Properties properties) {
 		this.properties = Objects.requireNonNull(properties);
 	}
 
 	/**
-	 * Creates a {@link PropertiesAdapter} from a configuration file.
+	 * Creates a {@link PropertyReaderImpl} from a configuration file.
 	 * 
 	 * @throws IOException
 	 *             if the configuration could not be loaded.
 	 */
-	public static PropertiesAdapter fromFile(String filename) throws IOException {
+	public static PropertyReaderImpl fromFile(String filename) throws IOException {
 		Objects.requireNonNull(filename, "filename");
 
 		Properties props = new Properties();
@@ -41,51 +40,7 @@ final class PropertiesAdapter implements PropertyReader, PropertyWriter {
 			props.load(in);
 		}
 
-		return new PropertiesAdapter(props);
-	}
-
-	/**
-	 * Writes the configuration from a {@link PropertiesAdapter} to a configuration
-	 * file.
-	 * 
-	 * @throws IOException
-	 *             if the configuration could not be saved.
-	 */
-	public void toFile(String filename) throws IOException {
-		Objects.requireNonNull(filename, "filename");
-		try (FileOutputStream out = new FileOutputStream(filename)) {
-			properties.store(out, null);
-		}
-	}
-
-	@Override
-	public void setProperty(String key, boolean value) {
-		properties.setProperty(key, Boolean.toString(value));
-	}
-
-	@Override
-	public void setProperty(String key, int value) {
-		properties.setProperty(key, Integer.toString(value));
-	}
-
-	@Override
-	public void setProperty(String key, double value) {
-		properties.setProperty(key, Double.toString(value));
-	}
-
-	@Override
-	public void setProperty(String key, String value) {
-		// Passing null as value to the map will result in an exception
-		if (value == null) {
-			value = "";
-		}
-
-		properties.setProperty(key, value);
-	}
-
-	@Override
-	public void removeProperty(String key) {
-		properties.remove(key);
+		return new PropertyReaderImpl(props);
 	}
 
 	@Override

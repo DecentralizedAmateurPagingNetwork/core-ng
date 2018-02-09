@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dapnet.core.cluster.ClusterConfiguration;
 import org.dapnet.core.config.ConfigurationManager;
+import org.dapnet.core.data.PersistenceConfiguration;
 import org.dapnet.core.plugins.PluginConfiguration;
 import org.dapnet.core.rest.RestApiConfiguration;
 import org.dapnet.core.rest.RestApiService;
@@ -38,6 +39,7 @@ public final class Program {
 	private static ConfigurationManager createConfigManager(String configFile) throws IOException {
 		LOGGER.debug("Loading configuration from {}", configFile);
 		ConfigurationManager config = new ConfigurationManager(configFile);
+		config.put(new PersistenceConfiguration());
 		config.put(new ClusterConfiguration());
 		config.put(new SchedulerConfiguration());
 		config.put(new RestApiConfiguration());

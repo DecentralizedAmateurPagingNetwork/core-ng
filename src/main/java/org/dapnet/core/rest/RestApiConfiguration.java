@@ -2,7 +2,6 @@ package org.dapnet.core.rest;
 
 import org.dapnet.core.config.Configuration;
 import org.dapnet.core.config.PropertyReader;
-import org.dapnet.core.config.PropertyWriter;
 
 /**
  * This class contains the configuration related to the REST service.
@@ -58,14 +57,6 @@ public final class RestApiConfiguration extends Configuration {
 		port = reader.getInteger("rest.port", 8080);
 		path = reader.getString("rest.path", "/");
 		hostname = reader.getString("rest.hostname", "localhost");
-	}
-
-	@Override
-	public void saveConfiguration(PropertyWriter writer) {
-		writer.setProperty("rest.enabled", enabled);
-		writer.setProperty("rest.port", port);
-		writer.setProperty("rest.path", path);
-		writer.setProperty("rest.hostname", hostname);
 	}
 
 }

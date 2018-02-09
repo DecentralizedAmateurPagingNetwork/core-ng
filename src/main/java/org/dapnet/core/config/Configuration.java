@@ -15,12 +15,4 @@ public abstract class Configuration {
 	 */
 	public abstract void loadConfiguration(PropertyReader reader);
 
-	/**
-	 * Saves the configuration.
-	 * 
-	 * @param writer
-	 *            Property writer instance
-	 */
-	public abstract void saveConfiguration(PropertyWriter writer);
-
 }
