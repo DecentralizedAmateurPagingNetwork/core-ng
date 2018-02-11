@@ -25,14 +25,16 @@ public class User implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "uid", updatable = false, nullable = false)
 	private int id;
-	@Column(name = "username", unique = true, nullable = false)
+	@Column(name = "username", length = 50, unique = true, nullable = false)
 	private String name;
-	@Column(nullable = false)
+	@Column(length = 50, nullable = false)
 	private String password;
 	@Column(nullable = false)
 	private String email;
-	@Column(name = "is_admin", nullable = false)
+	@Column(name = "is_admin", length = 255, nullable = false)
 	private boolean admin;
+	@Column(name = "is_enabled", nullable = false)
+	private boolean enabled;
 	@Column(name = "created_on", nullable = false)
 	private Instant createdOn;
 	@Column(name = "last_login")
@@ -80,6 +82,14 @@ public class User implements Serializable {
 
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public Instant getLastLogin() {
