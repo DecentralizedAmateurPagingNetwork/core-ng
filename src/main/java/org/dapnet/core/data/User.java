@@ -23,18 +23,20 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(updatable = false, nullable = false)
+	@Column(name = "uid", updatable = false, nullable = false)
 	private int id;
-	@Column(unique = true, nullable = false)
+	@Column(name = "username", unique = true, nullable = false)
 	private String name;
 	@Column(nullable = false)
 	private String password;
 	@Column(nullable = false)
 	private String email;
-	@Column(nullable = false)
-	private Instant createdOn;
-	@Column(nullable = false)
+	@Column(name = "is_admin", nullable = false)
 	private boolean admin;
+	@Column(name = "created_on", nullable = false)
+	private Instant createdOn;
+	@Column(name = "last_login")
+	private Instant lastLogin;
 
 	public int getId() {
 		return id;
@@ -78,6 +80,14 @@ public class User implements Serializable {
 
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
+	}
+
+	public Instant getLastLogin() {
+		return lastLogin;
+	}
+
+	public void setLastLogin(Instant lastLogin) {
+		this.lastLogin = lastLogin;
 	}
 
 }

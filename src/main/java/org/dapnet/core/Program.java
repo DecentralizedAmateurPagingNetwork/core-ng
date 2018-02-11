@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.dapnet.core.cluster.ClusterConfiguration;
 import org.dapnet.core.config.ConfigurationManager;
 import org.dapnet.core.data.PersistenceConfiguration;
+import org.dapnet.core.data.PersistenceService;
 import org.dapnet.core.plugins.PluginConfiguration;
 import org.dapnet.core.rest.RestApiConfiguration;
 import org.dapnet.core.rest.RestApiService;
@@ -48,16 +49,26 @@ public final class Program {
 		return config;
 	}
 
-	private static void startRestApi(ConfigurationManager manager) {
+	private static void startPersistenceService(ConfigurationManager manager) {
+		PersistenceConfiguration config = manager.get(PersistenceConfiguration.class);
+		PersistenceService service = new PersistenceService(config);
+		try {
+			service.start();
+		} catch (Exception ex) {
+			LOGGER.catching(ex);
+		}
+	}
+
+	private static void startRestApiService(ConfigurationManager manager) {
 		RestApiConfiguration config = manager.get(RestApiConfiguration.class);
 		if (!config.isEnabled()) {
 			LOGGER.debug("REST API service is disabled.");
 			return;
 		}
 
-		Service restApi = new RestApiService(config);
+		Service service = new RestApiService(config);
 		try {
-			restApi.start();
+			service.start();
 		} catch (Exception ex) {
 			LOGGER.catching(ex);
 		}
@@ -91,7 +102,8 @@ public final class Program {
 			String value = cli.getOptionValue("c", "dapnet-core.properties");
 			ConfigurationManager configManager = createConfigManager(value);
 
-			startRestApi(configManager);
+			// startPersistenceService(configManager);
+			startRestApiService(configManager);
 		} catch (Exception ex) {
 			LOGGER.fatal("Core startup failed.", ex);
 		}

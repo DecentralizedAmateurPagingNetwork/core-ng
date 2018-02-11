@@ -19,6 +19,7 @@ public final class PersistenceService implements Service {
 
 	private final PersistenceConfiguration config;
 	private EntityManagerFactory emf;
+	private UserManager userManager;
 
 	/**
 	 * Creates a new persistence service instance.
@@ -37,6 +38,10 @@ public final class PersistenceService implements Service {
 	 */
 	EntityManagerFactory getEntityManagerFactory() {
 		return emf;
+	}
+
+	public UserManager getUserManager() {
+		return userManager;
 	}
 
 	private Properties loadAdditionalConfig() throws IOException {
@@ -61,10 +66,15 @@ public final class PersistenceService implements Service {
 		} else {
 			emf = Persistence.createEntityManagerFactory("dapnet-core", props);
 		}
+
+		userManager = new UserManager(this);
 	}
 
 	@Override
 	public void shutdown() {
+		if (emf != null) {
+			emf.close();
+		}
 	}
 
 }
