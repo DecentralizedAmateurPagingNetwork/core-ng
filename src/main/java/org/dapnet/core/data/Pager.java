@@ -19,6 +19,8 @@ public class Pager {
 	private int number;
 	@Column(nullable = false)
 	private String name;
+	@Column(nullable = false)
+	private PagerType type;
 
 	public int getId() {
 		return id;
@@ -38,6 +40,14 @@ public class Pager {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public PagerType getType() {
+		return type;
+	}
+
+	public void setType(PagerType type) {
+		this.type = type;
 	}
 
 }
