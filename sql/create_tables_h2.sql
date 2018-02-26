@@ -26,7 +26,8 @@ CREATE TABLE pagers(
 	id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	number INT NOT NULL UNIQUE,
 	name VARCHAR(20) NOT NULL,
-	type VARCHAR(20) NOT NULL
+	type VARCHAR(20) NOT NULL,
+	is_alphanum BOOLEAN NOT NULL
 );
 
 DROP TABLE IF EXISTS callsigns;
@@ -36,12 +37,30 @@ CREATE TABLE callsigns(
 	description VARCHAR(100)
 );
 
+DROP TABLE IF EXISTS callsign_owners;
+CREATE TABLE callsign_owners(
+	callsign_id INT NOT NULL,
+	user_id INT NOT NULL,
+	FOREIGN KEY(callsign_id) REFERENCES callsigns(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY(user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS callsign_pagers;
+CREATE TABLE callsign_pagers(
+	callsign_id INT NOT NULL,
+	pager_id INT NOT NULL,
+	FOREIGN KEY(callsign_id) REFERENCES callsigns(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY(pager_id) REFERENCES pagers(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
 DROP TABLE IF EXISTS calls;
 CREATE TABLE calls(
 	id LONG AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	text VARCHAR(100) NOT NULL,
+	is_emergency BOOLEAN NOT NULL,
+	posted_by INT NOT NULL,
 	posted_on DATETIME NOT NULL,
-	is_emergency BOOLEAN NOT NULL
+	FOREIGN KEY(posted_by) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS rubrics;
@@ -52,19 +71,39 @@ CREATE TABLE rubrics(
 	label VARCHAR(11) NOT NULL
 );
 
+DROP TABLE IF EXISTS rubric_owners;
+CREATE TABLE rubric_owners(
+	rubic_id INT NOT NULL,
+	user_id INT NOT NULL,
+	FOREIGN KEY (rubic_id) REFERENCES rubrics(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+);
+
 DROP TABLE IF EXISTS news;
 CREATE TABLE news(
 	id LONG AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	text VARCHAR(100) NOT NULL,
+	rubric INT NOT NULL,
+	posted_by INT NOT NULL,
 	posted_on DATETIME NOT NULL,
-	number INT NOT NULL
+	number INT NOT NULL,
+	FOREIGN KEY(rubric) REFERENCES rubrics(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY(posted_by) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS transmitters;
 CREATE TABLE transmitters(
 	id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	name VARCHAR(20) NOT NULL UNIQUE,
-	auth_key VARCHAR(64) NOT NULL
+	auth_key VARCHAR(64) NOT NULL,
+	status VARCHAR(30) NOT NULL,
+	last_update DATETIME,
+	last_connect DATETIME,
+	connected_since DATETIME,
+	device_type VARCHAR(30),
+	device_version VARCHAR(30),
+	node_id INT,
+	FOREIGN KEY(node_id) REFERENCES nodes(id) ON UPDATE CASCADE ON DELETE SET NULL
 );
 
 DROP TABLE IF EXISTS transmitter_groups;
@@ -72,4 +111,20 @@ CREATE TABLE transmitter_groups(
 	id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	name VARCHAR(20) NOT NULL UNIQUE,
 	description VARCHAR(100)
+);
+
+DROP TABLE IF EXISTS transmitter_group_owners;
+CREATE TABLE transmitter_group_owners(
+	group_id INT NOT NULL,
+	user_id INT NOT NULL,
+	FOREIGN KEY (group_id) REFERENCES transmitter_groups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
+);
+
+DROP TABLE IF EXISTS transmitter_group_membership;
+CREATE TABLE transmitter_group_membership(
+	group_id INT NOT NULL,
+	transmitter_id INT NOT NULL,
+	FOREIGN KEY (group_id) REFERENCES transmitter_groups(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (transmitter_id) REFERENCES transmitters(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
