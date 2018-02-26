@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity(name = "TransmitterGroup")
-@Table(name = "transmitterGroups")
+@Table(name = "transmitter_groups")
 public class TransmitterGroup implements Serializable {
 
 	private static final long serialVersionUID = 7571253139201917903L;
@@ -19,8 +19,9 @@ public class TransmitterGroup implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false, updatable = false)
 	private int id;
-	@Column(unique = true, nullable = false)
+	@Column(unique = true, nullable = false, length = 20)
 	private String name;
+	@Column(length = 100)
 	private String description;
 
 	public int getId() {

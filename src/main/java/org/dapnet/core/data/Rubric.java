@@ -17,17 +17,41 @@ public class Rubric implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "rid", updatable = false, nullable = false)
+	@Column(updatable = false, nullable = false)
 	private int id;
 	@Column(unique = true, nullable = false)
 	private int number;
-	@Column(unique = true, nullable = false)
+	@Column(unique = true, nullable = false, length = 20)
 	private int name;
-	@Column(nullable = false)
+	@Column(nullable = false, length = 11)
 	private String label;
 
 	public int getId() {
 		return id;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public int getName() {
+		return name;
+	}
+
+	public void setName(int name) {
+		this.name = name;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 }

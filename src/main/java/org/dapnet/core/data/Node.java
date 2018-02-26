@@ -1,6 +1,7 @@
 package org.dapnet.core.data;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,11 +26,13 @@ public class Node implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false, updatable = false)
 	private int id;
-	@Column(unique = true, nullable = false)
+	@Column(unique = true, nullable = false, length = 50)
 	private String name;
-	@Enumerated(EnumType.ORDINAL)
 	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
 	private Status status = Status.UNKNOWN;
+	@Column(name = "last_update")
+	private Instant lastUpdate;
 
 	public int getId() {
 		return id;
@@ -41,6 +44,22 @@ public class Node implements Serializable {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Instant getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public void setLastUpdate(Instant lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 
 }

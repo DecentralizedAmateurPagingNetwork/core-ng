@@ -19,8 +19,9 @@ public class Callsign implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(nullable = false, updatable = false)
 	private int id;
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false, unique = true, length = 20)
 	private String name;
+	@Column(length = 100)
 	private String description;
 
 	public int getId() {

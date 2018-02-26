@@ -13,14 +13,20 @@ import javax.persistence.Table;
 @Table(name = "transmitters")
 public class Transmitter implements Serializable {
 
+	public enum Status {
+		OFFLINE, ONLINE, ERROR, DISABLED
+	}
+
 	private static final long serialVersionUID = 3286378919799304494L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(updatable = false, nullable = false)
 	private int id;
-	@Column(unique = true, nullable = false)
+	@Column(unique = true, nullable = false, length = 20)
 	private String name;
+	@Column(name = "auth_key", length = 64, nullable = false)
+	private String authKey;
 
 	public int getId() {
 		return id;
@@ -28,6 +34,18 @@ public class Transmitter implements Serializable {
 
 	public String getName() {
 		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getAuthKey() {
+		return authKey;
+	}
+
+	public void setAuthKey(String authKey) {
+		this.authKey = authKey;
 	}
 
 }

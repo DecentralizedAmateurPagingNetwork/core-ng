@@ -23,15 +23,15 @@ public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "uid", updatable = false, nullable = false)
+	@Column(updatable = false, nullable = false)
 	private int id;
-	@Column(name = "username", length = 50, unique = true, nullable = false)
+	@Column(length = 50, unique = true, nullable = false)
 	private String name;
 	@Column(length = 50, nullable = false)
 	private String password;
-	@Column(nullable = false)
+	@Column(nullable = false, length = 255)
 	private String email;
-	@Column(name = "is_admin", length = 255, nullable = false)
+	@Column(name = "is_admin", nullable = false)
 	private boolean admin;
 	@Column(name = "is_enabled", nullable = false)
 	private boolean enabled;
