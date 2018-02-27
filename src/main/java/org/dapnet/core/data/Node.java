@@ -16,10 +16,6 @@ import javax.persistence.Table;
 @Table(name = "nodes")
 public class Node implements Serializable {
 
-	public enum Status {
-		UNKNOWN, OFFLINE, ONLINE
-	}
-
 	private static final long serialVersionUID = -7074417111402696260L;
 
 	@Id
@@ -30,19 +26,25 @@ public class Node implements Serializable {
 	private String name;
 	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
-	private Status status = Status.UNKNOWN;
+	private DeviceStatus status = DeviceStatus.UNKNOWN;
 	@Column(name = "last_update")
 	private Instant lastUpdate;
+	@Column(length = 20)
+	private String version;
+	@Column(length = 20)
+	private String latitude;
+	@Column(length = 20)
+	private String longitude;
 
 	public int getId() {
 		return id;
 	}
 
-	public Status getStatus() {
+	public DeviceStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(Status status) {
+	public void setStatus(DeviceStatus status) {
 		this.status = status;
 	}
 
@@ -60,6 +62,30 @@ public class Node implements Serializable {
 
 	public void setLastUpdate(Instant lastUpdate) {
 		this.lastUpdate = lastUpdate;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
 	}
 
 }

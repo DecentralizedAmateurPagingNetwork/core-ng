@@ -2,8 +2,6 @@ package org.dapnet.core.data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,7 +12,7 @@ import javax.persistence.Table;
 public class Pager {
 
 	public enum Type {
-		SKYPER, ALPHAPOC
+		UNKNOWN, SKYPER, ALPHAPOC, QUIX, SWISSPHONE, SCALL_XT
 	}
 
 	@Id
@@ -22,23 +20,24 @@ public class Pager {
 	@Column(nullable = false, updatable = false)
 	private int id;
 	@Column(unique = true, nullable = false)
-	private int number;
+	private int ric;
 	@Column(nullable = false, length = 20)
 	private String name;
 	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
 	private Type type;
+	@Column(name = "is_enabled", nullable = false)
+	private boolean enabled;
 
 	public int getId() {
 		return id;
 	}
 
-	public int getNumber() {
-		return number;
+	public int getRIC() {
+		return ric;
 	}
 
-	public void setNumber(int number) {
-		this.number = number;
+	public void setRIC(int number) {
+		this.ric = number;
 	}
 
 	public String getName() {
@@ -55,6 +54,14 @@ public class Pager {
 
 	public void setType(Type type) {
 		this.type = type;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 }
