@@ -10,20 +10,20 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity(name = "Rubric")
-@Table(name = "rubrics")
+@Table(name = "RUBRICS")
 public class Rubric implements Serializable {
 
 	private static final long serialVersionUID = -3014611684027989942L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(updatable = false, nullable = false)
+	@Column(name = "ID", updatable = false, nullable = false)
 	private int id;
-	@Column(unique = true, nullable = false)
+	@Column(name = "NUMBER", unique = true, nullable = false)
 	private int number;
-	@Column(unique = true, nullable = false, length = 20)
+	@Column(name = "NAME", unique = true, nullable = false, length = 20)
 	private int name;
-	@Column(nullable = false, length = 11)
+	@Column(name = "LABEL", nullable = false, length = 11)
 	private String label;
 
 	public int getId() {

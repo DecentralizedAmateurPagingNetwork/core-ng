@@ -12,21 +12,21 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity(name = "Transmitter")
-@Table(name = "transmitters")
+@Table(name = "TRANSMITTERS")
 public class Transmitter implements Serializable {
 
 	private static final long serialVersionUID = 3286378919799304494L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(updatable = false, nullable = false)
+	@Column(name = "ID", updatable = false, nullable = false)
 	private int id;
-	@Column(unique = true, nullable = false, length = 20)
+	@Column(name = "NAME", unique = true, nullable = false, length = 20)
 	private String name;
-	@Column(name = "auth_key", length = 64, nullable = false)
+	@Column(name = "AUTH_KEY", length = 64, nullable = false)
 	private String authKey;
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@Column(name = "STATUS", nullable = false)
 	private DeviceStatus status = DeviceStatus.UNKNOWN;
 
 	public int getId() {

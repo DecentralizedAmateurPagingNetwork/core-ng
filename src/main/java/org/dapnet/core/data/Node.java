@@ -13,27 +13,27 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity(name = "Node")
-@Table(name = "nodes")
+@Table(name = "NODES")
 public class Node implements Serializable {
 
 	private static final long serialVersionUID = -7074417111402696260L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false, updatable = false)
+	@Column(name = "ID", nullable = false, updatable = false)
 	private int id;
-	@Column(unique = true, nullable = false, length = 50)
+	@Column(name = "NAME", unique = true, nullable = false, length = 50)
 	private String name;
-	@Column(nullable = false)
+	@Column(name = "STATUS", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private DeviceStatus status = DeviceStatus.UNKNOWN;
-	@Column(name = "last_update")
+	@Column(name = "LAST_UPDATE")
 	private Instant lastUpdate;
-	@Column(length = 20)
+	@Column(name = "VERSION", length = 20)
 	private String version;
-	@Column(length = 20)
+	@Column(name = "LATITUDE", length = 20)
 	private String latitude;
-	@Column(length = 20)
+	@Column(name = "LONGITUDE", length = 20)
 	private String longitude;
 
 	public int getId() {

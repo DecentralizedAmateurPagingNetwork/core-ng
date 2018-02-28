@@ -8,24 +8,29 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity(name = "Pager")
-@Table(name = "pagers")
+@Table(name = "PAGERS")
 public class Pager {
 
+	/**
+	 * This enumeration contains the supported pager types.
+	 * 
+	 * @author Philipp Thiel
+	 */
 	public enum Type {
 		UNKNOWN, SKYPER, ALPHAPOC, QUIX, SWISSPHONE, SCALL_XT
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false, updatable = false)
+	@Column(name = "ID", nullable = false, updatable = false)
 	private int id;
-	@Column(unique = true, nullable = false)
+	@Column(name = "RIC", unique = true, nullable = false)
 	private int ric;
-	@Column(nullable = false, length = 20)
+	@Column(name = "NAME", nullable = false, length = 20)
 	private String name;
-	@Column(nullable = false)
+	@Column(name = "TYPE", nullable = false)
 	private Type type;
-	@Column(name = "is_enabled", nullable = false)
+	@Column(name = "IS_ENABLED", nullable = false)
 	private boolean enabled;
 
 	public int getId() {

@@ -10,18 +10,18 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity(name = "Callsign")
-@Table(name = "callsigns")
+@Table(name = "CALLSIGNS")
 public class Callsign implements Serializable {
 
 	private static final long serialVersionUID = 6487591500834299950L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false, updatable = false)
+	@Column(name = "ID", nullable = false, updatable = false)
 	private int id;
-	@Column(nullable = false, unique = true, length = 20)
+	@Column(name = "NAME", nullable = false, unique = true, length = 20)
 	private String name;
-	@Column(length = 100)
+	@Column(name = "DESCRIPTION", length = 100)
 	private String description;
 
 	public int getId() {

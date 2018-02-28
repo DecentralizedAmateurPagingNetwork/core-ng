@@ -14,24 +14,24 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity(name = "News")
-@Table(name = "news")
+@Table(name = "NEWS")
 public class News implements Serializable {
 
 	private static final long serialVersionUID = -3899020943398914569L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false, updatable = false)
+	@Column(name = "ID", nullable = false, updatable = false)
 	private long id;
-	@Column(nullable = false, length = 100)
+	@Column(name = "TEXT", nullable = false, length = 100)
 	private String text;
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "posted_by", nullable = false)
+	@JoinColumn(name = "POSTED_BY", nullable = false)
 	private User owner;
-	@Column(name = "posted_on", nullable = false, updatable = false)
+	@Column(name = "POSTED_ON", nullable = false)
 	private Instant timestamp;
-	@Column(nullable = false)
-	private int number;
+	@Column(name = "SLOT", nullable = false)
+	private int slot;
 
 	public long getId() {
 		return id;
@@ -53,12 +53,12 @@ public class News implements Serializable {
 		this.timestamp = timestamp;
 	}
 
-	public int getNumber() {
-		return number;
+	public int getSlot() {
+		return slot;
 	}
 
-	public void setNumber(int number) {
-		this.number = number;
+	public void setSlot(int slot) {
+		this.slot = slot;
 	}
 
 	public User getOwner() {

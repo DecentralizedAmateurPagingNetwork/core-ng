@@ -16,7 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity(name = "Call")
-@Table(name = "calls")
+@Table(name = "CALLS")
 public class Call implements Serializable {
 
 	public enum Priority {
@@ -27,19 +27,19 @@ public class Call implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false, updatable = false)
+	@Column(name = "ID", nullable = false, updatable = false)
 	private long id;
-	@Column(nullable = false, length = 100)
+	@Column(name = "TEXT", nullable = false, length = 100)
 	private String text;
-	@Column(nullable = false)
+	@Column(name = "PRIORITY", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private Priority priority = Priority.NORMAL;
-	@Column(name = "is_emergency", nullable = false)
+	@Column(name = "IS_EMERGENCY", nullable = false)
 	private boolean emergency;
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "posted_by")
+	@JoinColumn(name = "POSTED_BY", nullable = false)
 	private User owner;
-	@Column(name = "posted_on", nullable = false)
+	@Column(name = "POSTED_ON", nullable = false)
 	private Instant timestamp;
 
 	public long getId() {
