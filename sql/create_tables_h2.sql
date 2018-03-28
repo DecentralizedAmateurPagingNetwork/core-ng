@@ -36,10 +36,12 @@ CREATE TABLE node_owners(
 
 CREATE TABLE pagers(
 	id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-	ric INT NOT NULL UNIQUE,
+	ric INT NOT NULL,
+	subaddress ENUM('A', 'B', 'C', 'D') NOT NULL,
 	name VARCHAR_IGNORECASE(20) NOT NULL,
 	type ENUM('UNKNOWN', 'SKYPER', 'ALPHAPOC', 'QUIX', 'SWISSPHONE', 'SCALL_XT') NOT NULL,
-	is_enabled BOOLEAN NOT NULL
+	is_enabled BOOLEAN NOT NULL,
+	CONSTRAINT pager_address UNIQUE(ric, subaddress)
 );
 
 CREATE TABLE callsigns(
