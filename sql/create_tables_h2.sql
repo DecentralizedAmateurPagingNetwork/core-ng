@@ -22,9 +22,9 @@ CREATE TABLE nodes(
 	status ENUM('UNKNOWN', 'OFFLINE', 'ONLINE', 'ERROR') NOT NULL,
 	last_update DATETIME,
 	version VARCHAR(20),
-	address VARCHAR(50),
-	latitude VARCHAR(20),
-	longitude VARCHAR(20)
+	ip_address VARCHAR(45),
+	latitude DECIMAL(9, 6),
+	longitude DECIMAL(9, 6)
 );
 
 CREATE TABLE node_owners(
@@ -82,7 +82,7 @@ CREATE TABLE callsign_group_membership(
 CREATE TABLE calls(
 	id LONG AUTO_INCREMENT PRIMARY KEY NOT NULL,
 	text VARCHAR(100) NOT NULL,
-	priority ENUM('LOW', 'NORMAL', 'HIGH') NOT NULL,
+	priority ENUM('LOWEST', 'LOWER', 'NORMAL', 'HIGHER', 'HIGHEST') NOT NULL,
 	is_emergency BOOLEAN NOT NULL,
 	posted_by INT NOT NULL,
 	posted_on DATETIME NOT NULL,
@@ -117,6 +117,7 @@ CREATE TABLE news(
 	posted_by INT NOT NULL,
 	posted_on DATETIME NOT NULL,
 	slot INT NOT NULL,
+	scheduled_for DATETIME,
 	FOREIGN KEY (rubric) REFERENCES rubrics(id) ON UPDATE CASCADE ON DELETE CASCADE,
 	FOREIGN KEY (posted_by) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -127,13 +128,30 @@ CREATE TABLE transmitters(
 	auth_key VARCHAR(64) NOT NULL,
 	is_enabled BOOLEAN NOT NULL,
 	status ENUM('UNKNOWN', 'OFFLINE', 'ONLINE', 'ERROR') NOT NULL,
+	usage_type ENUM('PERSONAL', 'WIDERANGE') NOT NULL,
+	aprs_enabled BOOLEAN NOT NULL,
 	last_update DATETIME,
 	last_connect DATETIME,
 	connected_since DATETIME,
+	ip_address VARCHAR(45),
 	device_type VARCHAR(30),
 	device_version VARCHAR(30),
 	node_id INT,
+	latitude DECIMAL(9, 6),
+	longitude DECIMAL(9, 6),
+	rf_power FLOAT,
+	antenna_agl SMALLINT,
+	antenna_gain_dbi FLOAT,
+	antenna_type ENUM('OMNI', 'DIRECTIONAL'),
+	antenna_direction SMALLINT,
 	FOREIGN KEY (node_id) REFERENCES nodes(id) ON UPDATE CASCADE ON DELETE SET NULL
+);
+
+CREATE TABLE transmitter_owners(
+	transmitter_id INT NOT NULL,
+	user_id INT NOT NULL,
+	FOREIGN KEY (transmitter_id) REFERENCES transmitters(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
 );
 
 CREATE TABLE transmitter_groups(
@@ -164,8 +182,16 @@ CREATE TABLE rubric_transmitter_groups(
 	FOREIGN KEY (group_id) REFERENCES transmitter_groups(id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE TABLE call_destinations(
+CREATE TABLE call_transmitters(
 	call_id LONG NOT NULL,
 	transmitter_id INT,
-	group_id INT
+	FOREIGN KEY (call_id) REFERENCES calls(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (transmitter_id) REFERENCES transmitters(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE call_transmitter_groups(
+	call_id LONG NOT NULL,
+	group_id INT,
+	FOREIGN KEY (call_id) REFERENCES calls(id) ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (group_id) REFERENCES transmitter_groups(id) ON UPDATE CASCADE ON DELETE CASCADE
 );

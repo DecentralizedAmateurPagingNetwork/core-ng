@@ -20,7 +20,7 @@ import javax.persistence.Table;
 public class Call implements Serializable {
 
 	public enum Priority {
-		LOW, NORMAL, HIGH
+		LOWEST, LOWER, NORMAL, HIGHER, HIGHEST
 	}
 
 	private static final long serialVersionUID = -7925017927529220L;

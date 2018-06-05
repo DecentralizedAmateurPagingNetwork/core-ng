@@ -32,6 +32,8 @@ public class News implements Serializable {
 	private Instant timestamp;
 	@Column(name = "SLOT", nullable = false)
 	private int slot;
+	@Column(name = "SCHEDULED_FOR")
+	private Instant scheduledFor;
 
 	public long getId() {
 		return id;
@@ -67,6 +69,14 @@ public class News implements Serializable {
 
 	public void setOwner(User owner) {
 		this.owner = owner;
+	}
+
+	public Instant getScheduledFor() {
+		return scheduledFor;
+	}
+
+	public void setScheduledFor(Instant scheduledFor) {
+		this.scheduledFor = scheduledFor;
 	}
 
 }
