@@ -1,0 +1,26 @@
+apt install mosquitto mosquitto-clients mosquitto-auth-plugin
+
+Test:
+
+mosquitto_sub -d -t hello/world
+
+In Terminal window 2 type:
+
+mosquitto_pub -d -t hello/world -m "Hello from Terminal window 2!"
+
+
+Setup bridges between from DC3 and DC2 to DC3
+
+No DC2 and DC3 create
+nano /etc/mosquitto/conf.d/hamcloud_bridge.conf
+
+
+connection bridge2dc1
+address 44.225.164.56:1883
+
+topic # both 2
+
+ATTENTION: Full mesh or circular birdging results in loops with High CPU Load
+
+Until now DC1 has connections to DC2 and DC3.
+TODO: Fallback solution, as DC1 is now single-point-of-failure
