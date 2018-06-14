@@ -1,0 +1,5 @@
+Known Issues from testing
+# Galera Cluster need full mesh connectivity
+
+# Recovery is only done, if full mesh connectivity is reestablished. Tested with iptables.
+-> Not useful for HAMNET deployment.
