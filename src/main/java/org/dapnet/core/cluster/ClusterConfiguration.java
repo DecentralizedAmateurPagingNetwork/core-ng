@@ -11,6 +11,7 @@ import org.dapnet.core.config.PropertyReader;
 public final class ClusterConfiguration extends Configuration {
 
 	private boolean enabled;
+	private String hostname;
 
 	/**
 	 * Whether the cluster service is enabled or not.
@@ -21,9 +22,19 @@ public final class ClusterConfiguration extends Configuration {
 		return enabled;
 	}
 
+	/**
+	 * Returns the name of the RabbitMQ host.
+	 * 
+	 * @return RabbitMQ server address
+	 */
+	public String getHost() {
+		return hostname;
+	}
+
 	@Override
 	public void loadConfiguration(PropertyReader reader) {
 		enabled = reader.getBoolean("cluster.enabled", false);
+		hostname = reader.getString("cluster.host");
 	}
 
 }
