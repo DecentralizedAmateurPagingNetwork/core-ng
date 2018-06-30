@@ -1,5 +1,126 @@
 {
-  "txstatustransmitting" : true /false
-  "queuelength1": 12
-  "....
-{
+"transmitterupdate" : {
+	"name" : "db0abc",
+	"status" : {
+		"OnAir" : true,
+		"ConfiguredIP": "123.4.3.2",
+		"SoftwareType" : "Unipager",
+		"SoftwareVersion" : "v1.2.3",
+		"SoftwareType" : "MMDVM",
+		"SoftwareVersion" : "20180504",
+		"SoftwareType" : "DAPNET-Proxy",
+		"SoftwareVersion" : "v2.3.4",
+		"CPUHardwareType" : "Raspberry Pi 3B+"
+		"RFHardware" : {
+			"C9000" : {
+				"Name" : "C9000",
+				"UnipagerPowered" : true,
+				"RPC-CardPowered" : false,
+				"RPC-Version" : "XOS/2.23pre",
+				"ArduinoPADummy" : true,
+				"ArduinoPADummySettinginWatts : 123,
+				"ArduinoPADummyPort" : "/devttyUSB0"
+			},
+			"Raspager" : {
+				"Name" : "Raspager",
+				"RaspagerMod" : 13,	
+				"RaspagerPower" : 63,
+				"ExternalPowerAmplifier: false,
+				"RaspagerRFVersion" : "V2",
+			"Audio" : {
+				"Name" : "Audio",
+				"TXModel" : [
+					"GM1200", "T7F", "GM340", "FREITEXT"
+			],
+				"AudioLevelUnipager" : 83,
+				"TxDelayinMilliseconds" : 3,
+			"RFM69" : {
+				"Name" : "RFM69"
+			},
+			"MMDVM" : {
+				"Name" : "MMDVM DUALHS...",
+				"Mode" : "DAPNETExclusive",
+				"Mode" : "DAPNETandDigitalVoice",
+			}
+		}
+				
+		"AX25" : {
+			"ConnectionStatus" : "connected",
+			"ConnectionStatus" : "connecting",
+			"ConnectionStatus" : "disconnected"
+		},
+		"EnabledTimeslots" : [
+			true,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false
+		]
+		
+	},
+
+	"RabbitMQ" : {
+		"Connected" : true,
+		"ConnectedtoNodeName" : "db0xyz"
+		"ConnectedtoNodeIP" : "1.2.3.4"
+		"ConnectedtoNodePort" : "1234"
+		"ConnectedSince" : "<timestamp-format>"
+		
+		"NTPSynced" : true
+		"NTPOffestMilliseconds" : 124
+		"NTPServerUsedIP" : [
+			"134.130.4.1", "12.2.3.2"
+		]
+	},
+	"Telemetry" : {
+		"QueuedMessages" : {
+			"Total" : 1234,
+			"Prio1": 1234,
+			"Prio2": 1234,
+			"Prio3": 1234,
+			"Prio4": 1234,
+			"Prio5": 1234,
+			"Prio10": 1234
+		},
+		"PrefinedTemperaturesInCelsius" : {
+			"AirInlet" : "12.2",
+			"AirOutlet" : "14.2",
+			"Transmitter" : "42.2",
+			"PowerAmplifier" : "45.2",
+			"CPU" : "93.2"
+		},
+
+		"CustomTemperaturesInCelsius" : [
+			"12.2",
+			"12.3",
+			"-9.29"
+		],
+		"CustomTemperatureValueMeanings" : [
+			"Aircon Inlet",
+			"Aircon Outletlet",
+			"Fridge Next to Programmer"
+		],
+		"PowerSupply" : {
+			"OnBattery": false,
+			"OnEmergencyPower: false
+			"DCInputVoltageInVolt" : "12.4",
+			"DCInputCurrentInAmpere" : "3.23"
+		},
+		"RFoutput" : {
+			"OutputPowerForwardinWatts : "12.2",
+			"OutputPowerReturninWatts : "12.2",	
+			"OutputVSWR : "1.2",
+		},
+
+}
