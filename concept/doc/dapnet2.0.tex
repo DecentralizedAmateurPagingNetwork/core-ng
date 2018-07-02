@@ -13,6 +13,7 @@
 \usepackage{graphicx}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{listings,xcolor}
 
 \title{DAPNET 2.0 Concept and Interface Definition}
 \author{
@@ -23,6 +24,12 @@ Phillip Thiel, DL6PT
 
 \begin{document}
 \maketitle
+\lstset{
+    string=[s]{"}{"},
+    stringstyle=\color{blue},
+    comment=[l]{:},
+    commentstyle=\color{black},
+}
 
 \begin{abstract}
 This is the concept and interface description of the version 2 of the DAPNET. It's purpose in comparison to the first version released is a more robust clustering and network interaction solution to cope with the special requirements of IP connections over HAMNET which means that all network connections have to be considered with a WAN character resulting in unreliable network connectivity. In terms of consistence of the database, "eventually consistence" is considered to be the most reachable. There are "always right" database nodes inside the so called HAMCLOUD. In case of database conflicts, the version inside the HAMCLOUD cluster is always to be considered right.
@@ -30,9 +37,106 @@ This is the concept and interface description of the version 2 of the DAPNET. It
 
 \section{Introduction}
 \todo{write some history}
-\section{Some examples to get started}
+\section{Concept presentation}
 
-\subsection{How to add Comments}
+\subsection{Core functionality}
+
+\subsection{HAMCLOUD presentation}
+The HAMCLOUD is a virtual server combination to server central services on the HAMNET and provide short hop connectivity to deployed service on HAMNET towards the Internet. There are three data centers at Essen, Nürnberg and Aachen, which have high bandwidth interlinks over the DFN. There are address spaces for uni- and anycast services. How this concept is deployed is still tbd.
+\todo{Define if uni- or anycast entry points will exist}
+More information is here \url{https://www.swiss-artg.ch/fileadmin/Dokumente/HAMNET/HamCloud_-_Angebotene_Dienste_in_der_HamCloud.pdf} and here \url{http://hamnetdb.net/?m=as&q=hamcloud}.
+
+\section{Interface definition}
+
+\subsection{Transmitter sign-in, configuration and keep-alive}
+If a transmitter wants to connect to DAPNET, the first step is to sign-in and show it's presence via a REST interface. Tis interface is also used for transmitter configuration like enabled timeslots and keep-alive polling.
+
+\textbf{Authentication of all HTTP-Requests in this context}
+All HTTP-requests issued from a transmitter have to send a valid HTTP authentication, which is checked against the CouchDB. It consists of the transmitter name and its AuthKey.
+
+
+\textbf{Initial contact}\\
+\textit{URL: /newtransmitter}\\
+\textit{PUT}\\
+
+\begin{newtransmitter_put}
+{
+  "type": {
+    "number": 600,
+    "text":"Hello DAPNET, I want to join the network"
+    },
+  "transmitterInfo": {
+    "callsign": "db0avr",
+    <software version and type and number like on websocket definition> tbn.
+  }
+}
+\end{newtransmitter_put}
+
+
+Answers to welcome restcall 
+{
+"type": {
+"number":200,
+"text":"accessgrated",
+"enabledtimeslots": [
+true, false....[
+}
+
+Or
+
+{
+"type": {
+"number"404,
+"text":"transmitter temporary disabled by config",
+}
+
+{
+"type": {
+"number":405
+"text":"transmitter software type not allowed due to serious bug",
+}
+
+'are you still there?' polling
+to URL /transmitterkeepalive
+Content of rest call
+
+{
+"type": {
+"number":700,
+"text":"I'm still there and running fine",
+"callsign":"db0avr",
+"ntpsyncok":true
+}
+
+Answer to this call
+
+
+{
+"type": {
+"number":701,
+"text":"Thanks for signal, kept as online, all ok on network side",
+}
+
+If network wants to assign new timeslots without disconnecting (for dynamic timeslots)
+
+{
+"type": {
+"number": 703,
+"text":"use mandatory new timeslots from timestamp on",
+"newtimeslots":[
+true,false...],
+"validfrom":<timestamp>
+}
+
+If network wants to initiate handover to other node 
+{
+"type": {
+"number":702,
+"text":"Service temporary not available, switch over to other node.",
+}
+\end{lstlisting}
+
+
 
 Comments can be added to your project by clicking on the comment icon in the toolbar above. % * <john.hammersley@gmail.com> 2014-09-03T09:54:16.211Z:
 %
