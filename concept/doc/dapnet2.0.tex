@@ -151,120 +151,211 @@ There will a responsive website will be the main user interface. Dynamic data to
 When the website is called, the DAPNET REST API is use to gather the required data according to content just displayed. The API is defined in section \todo{write API docu}.
 
 \subsection{Websocket based updates}
-Once the actual status is known via the REST call, dynamic updates and telemetry data is send to the user's browser via websocket. Authentication is done by a authentication message by the browser right after connection. This procedure is the same as used in unipager. \todo{DL2IC: Könntest du das ergänzen?}
+Once the actual status is known via the REST call, dynamic updates and telemetry data is send to the user's browser via websocket. Authentication is done by a authentication message by the browser right after connection. This procedure is the same as used in unipager.
 
 \subsubsection{Check authentication status}
-
+\todo{DL2IC: Könntest du das ergänzen?}
+ 
 \subsubsection{List of update messages}
 The updates can be send combined in one message of each message separately. In any case, the \textit{transmittername} has to be sent to identify about what transmitter the data is.
 
-\texttt{}
+\texttt{Complete Telemetry, sent every xxx Seconds}
+
+\texttt{Status Update}
 \begin{lstlisting}
 {
-"transmitterupdate" : {
-	"name" : "db0abc",
-	"status" : {
-		"OnAir" : true,
-		"ConfiguredIP": "123.4.3.2",
-		"SoftwareType" : "Unipager",
-		"SoftwareVersion" : "v1.2.3",
-		"SoftwareType" : "MMDVM",
-		"SoftwareVersion" : "20180504",
-		"SoftwareType" : "DAPNET-Proxy",
-		"SoftwareVersion" : "v2.3.4",
-		"CPUHardwareType" : "Raspberry Pi 3B+"
-		"RFHardware" : {
-			"C9000" : {
-				"Name" : "C9000",
-				"UnipagerPowered" : true,
-				"RPC-CardPowered" : false,
-				"RPC-Version" : "XOS/2.23pre",
-				"ArduinoPADummy" : true,
-				"ArduinoPADummySettinginWatts : 123,
-                "ArduinoPADummyPort" : "/devttyUSB0"
-            },
-			"Raspager" : {
-				"Name" : "Raspager",
-				"RaspagerMod" : 13,	
-				"RaspagerPower" : 63,
-				"ExternalPowerAmplifier": false,
-				"RaspagerRFVersion" : "V2"
-            }
-			"Audio" : {
-				"Name" : "Audio",
-				"TXModel" : ["GM1200", "T7F", "GM340", "FREITEXT"],
-				"AudioLevelUnipager" : 83,
-				"TxDelayinMilliseconds" : 3,
-			"RFM69" : {
-				"Name" : "RFM69"
-			},
-			"MMDVM" : {
-				"Name" : "MMDVM DUALHS...",
-				"Mode" : "DAPNETExclusive",
-				"Mode" : "DAPNETandDigitalVoice",
-			}
-		}
-				
-		"AX25" : {
-			"ConnectionStatus" : "connected",
-			"ConnectionStatus" : "connecting",
-			"ConnectionStatus" : "disconnected"
-		},
-		"timeslots" : [true, false,...,	false]		
-	},
-
-	"RabbitMQ" : {
-		"Connected" : true,
-		"ConnectedtoNodeName" : "db0xyz"
-		"ConnectedtoNodeIP" : "1.2.3.4"
-		"ConnectedtoNodePort" : "1234"
-		"ConnectedSince" : "<timestamp-format>"
-		
-		"NTPSynced" : true
-		"NTPOffestMilliseconds" : 124
-		"NTPServerUsedIP" : ["134.130.4.1", "12.2.3.2"]
-	},
-	"Telemetry" : {
-		"QueuedMessages" : {
-			"Total" : 1234,
-			"Prio1": 1234,
-			"Prio2": 1234,
-			"Prio3": 1234,
-			"Prio4": 1234,
-			"Prio5": 1234,
-			"Prio10": 1234
-		},
-		"PrefinedTemperaturesInCelsius" : {
-			"AirInlet" : 12.2,
-			"AirOutlet" : 14.2,
-			"Transmitter" : 42.2,
-			"PowerAmplifier" : 45.2,
-			"CPU" : 93.2
-		},
-
-		"CustomTemperaturesInCelsius" : [
-			{"Value" : 12.2, "Description" : "Aircon Inlet"},
-			{"Value" : 16.2, "Description" : "Aircon Outlet"},
-            {"Value" : 12.3, "Description" : "Fridge Next to Programmer"}
-		],
-		"PowerSupply" : {
-			"OnBattery": false,
-			"OnEmergencyPower: false
-			"DCInputVoltageInVolt" : 12.4,
-			"DCInputCurrentInAmpere" : 3.23
-		},
-		"RFoutput" : {
-			"OutputPowerForwardinWatts : 12.2,
-			"OutputPowerReturninWatts : 12.2,	
-			"OutputVSWR : 1.2,
-		},
+    "name": "db0acb",
+    "transmitterupdate" : {
+        "status" : {
+            "OnAir" : true
+        }
+    }
 }
 \end{lstlisting}
 
+\texttt{Transmitter configuration Update}
+\begin{lstlisting}
+{
+    "name": "db0acb",
+	"transmitterupdate" : {
+		"status" : {
+			"ConfiguredIP": "123.4.3.2",
+            "timeslots" : [true, false,...,	false],
+            
+			"SoftwareType" : "Unipager",
+            "SoftwareVersion" : "v1.2.3",
+or
+			"SoftwareType" : "MMDVM",
+			"SoftwareVersion" : "20180504",
+or
+			"SoftwareType" : "DAPNET-Proxy",
+			"SoftwareVersion" : "v2.3.4",
+            
+			"CPUHardwareType" : "Raspberry Pi 3B+"
+			"RFHardware" : {
+				"C9000" : {
+					"UnipagerPowered" : true,
+					"ArduinoPADummy" : true,
+                    "ArduinoPADummySettinginWatts : 123,
+                    "ArduinoPADummyPort" : "/devttyUSB0"
+or
+                    "RPC-CardPowered" : false,
+                    "RPC-Version" : "XOS/2.23pre",
+                },
+                "Raspager" : {
+                    "RaspagerMod" : 13,
+                    "RaspagerPower" : 63,
+                    "ExternalPowerAmplifier": false,
+                    "RaspagerRFVersion" : "V2"
+                },
+                "Audio" : {
+                    "TXModel" : ["GM1200", "T7F", "GM340", "FREITEXT"],
+                    "AudioLevelUnipager" : 83,
+                    "TxDelayinMilliseconds" : 3
+                }
+                "RFM69" : {
+                	"Port" : "/dev/ttyUSB0"
+                },
+                "MMDVM DualHS..." : {
+                    "DAPNETExclusive" : true
+                }
+        }
+    }
+}
+\end{lstlisting}
 
+\texttt{DAPNET-Proxy Update}
+\begin{lstlisting}
+{
+    "name": "db0acb",
+    "transmitterupdate" : {
+        "status" : {
+            "AX25" : {
+                "ConnectionStatus" : "connected",
+                "ConnectionStatus" : "connecting",
+                "ConnectionStatus" : "disconnected"
+            }
+        }
+    }
+}
+\end{lstlisting}
 
+\texttt{Telemetry Update}
+Sent every minute complete, if there are changes, just a subset is sent.
+\begin{lstlisting}
+{
+    "name": "db0acb",
+    "Telemetry" : {
+        "ConnectionStatus": {
+            "Connected" : true,
+            "ConnectedtoNodeName" : "db0xyz"
+            "ConnectedtoNodeIP" : "1.2.3.4"
+            "ConnectedtoNodePort" : 1234
+            "ConnectedSince" : "<timestamp-format>",
+	    	"NTPSynced" : true,
+            "NTPOffestMilliseconds" : 124
+            "NTPServerUsedIP" : ["134.130.4.1", "12.2.3.2"]
+            }
+        },
+    "QueueStatus" : {
+        "Telemetry" : {
+            "QueuedMessages" : {
+                "Total" : 1234,
+                "Prio1": 1234,
+                "Prio2": 1234,
+                "Prio3": 1234,
+                "Prio4": 1234,
+                "Prio5": 1234,
+                "Prio10": 1234
+            },
+        "PrefinedTemperatures" : {
+            "Unit" : "C",
+or
+            "Unit" : "F",
+or
+            "Unit" : "K",
+         
+            "AirInlet" : 12.2,
+            "AirOutlet" : 14.2,
+            "Transmitter" : 42.2,
+            "PowerAmplifier" : 45.2,
+            "CPU" : 93.2,
+            "PowerSupply" : 32.4
+        },
+        "CustomTemperatures" : {
+            "Unit" : "C",
+or
+            "Unit" : "F",
+or
+            "Unit" : "K",
+            [
+                {"Value" : 12.2, "Description" : "Aircon Inlet"},
+                {"Value" : 16.2, "Description" : "Aircon Outlet"},
+                {"Value" : 12.3, "Description" : "Fridge Next to Programmer"}
+            ],
+        },
+        "PowerSupply" : {
+            "OnBattery": false,
+            "OnEmergencyPower: false,
+            "DCInputVoltage" : 12.4,
+            "DCInputCurrent" : 3.23
+        },
+        "RFoutput" : {
+            "OutputPowerForwardinWatts : 12.2,
+            "OutputPowerReturninWatts : 12.2,
+            "OutputVSWR : 1.2,
+        }
+    }
+}
+\end{lstlisting}
+\section{CouchDB Document Structure}
 
+\subsection{Users}
 
+\begin{lstlisting}
+{
+    "users": {
+        "name": "dl1abc",
+        "password": "some hash",
+        "email": "user@example.com",
+        "admin": true,
+        "enabled":true,
+        "created_on":<DATETIME>,
+        "last_change_by":"dh3wr",
+        "email_valid":true
+        "avatar_picture": <couchdb attachment??>
+}
+\end{lstlisting}
+
+\subsection{Nodes}
+\begin{lstlisting}
+{
+    "nodes" : {
+        "name" : "db0abc",
+        "status" : "OFFLINE",
+or
+        "status" : "ONLINE",
+or
+        "status" : "ERROR",
+        "last_update" : DATETIME,
+        "version" : "1.2.3",
+        "ip_address" : "1.2.3.4",
+        "latitude" : 34.123456,
+        "longitude" : -23.123456,
+        "hamcloudnode" : true,
+        "owners" : ["dl1abc","dh3wr","dl2ic"],
+        "avatar_picture": <couchdb attachment??>
+}
+\end{lstlisting}
+
+\subsection{Transmitters}
+\todo{weitermachen}
+\begin{lstlisting}
+{
+    "transmitters" : {
+        "name" : "db0abc",
+}
+\end{lstlisting}
 %\subsection{How to include Figures}
 %
 %First you have to upload the image file from your computer using the upload link in the project menu. Then use the includegraphics command to include it in your document. Use the figure environment and the caption command to add a number and a caption to your figure. See the code for Figure \ref{fig:frog} in this section for an example.
