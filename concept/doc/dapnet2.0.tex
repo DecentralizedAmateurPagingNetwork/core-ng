@@ -196,11 +196,11 @@ or
 				"C9000" : {
 					"UnipagerPowered" : true,
 					"ArduinoPADummy" : true,
-                    "ArduinoPADummySettinginWatts : 123,
-                    "ArduinoPADummyPort" : "/devttyUSB0"
+					"ArduinoPADummySettinginWatts" : 123,
+					"ArduinoPADummyPort" : "/devttyUSB0"
 or
-                    "RPC-CardPowered" : false,
-                    "RPC-Version" : "XOS/2.23pre",
+					"RPC-CardPowered" : false,
+					"RPC-Version" : "XOS/2.23pre",
                 },
                 "Raspager" : {
                     "RaspagerMod" : 13,
@@ -349,13 +349,106 @@ or
 \end{lstlisting}
 
 \subsection{Transmitters}
-\todo{weitermachen}
+
 \begin{lstlisting}
 {
     "transmitters" : {
         "name" : "db0abc",
+        "auth_keys" : "hdjaskhdlj",
+        "enabled" : true,
+
+		"status" : "UNKNOWN",
+or
+		"status" : "OFFLINE",
+or
+		"status" : "ONLINE",
+
+		"usage_type" : "PERSONAL",
+or
+		"usage_type" : "WIDERANGE",
+        
+        "aprs_enabled" : true,
+        "last_update" : "<DATETIME>",
+		"last_connect" : "<DATETIME>",
+		"connected_since" : "<DATETIME>",
+        "ip_address" : "1.2.3.4",
+        "device_type" : "Unipager",
+        "device_version" : "1.3.2",
+        "latitude" : 23.123456,
+        "longitude" : -31.123456
+        "rf_power_watt": 12.3,
+        "cable_loss_db" : 4.2,
+        "antenna_gain_dbi" : 2.34,
+        "antenna_agl : 23.4,
+
+        "antenna_type" : "OMNI",
+or
+		"antenna_type" : "DIRECTIONAL",
+    
+		"antenna_direction" : 123.2,
+        "owners" : ["dl1abc","dh3wr","dl2ic"],
+        "member_in_transmittergroups" : ["dl-hh", "dl-all"],
+        "antenna_pattern" : <couchDB attachment>,
+        "avatar_picture" : <couchDB attachment>
+    }
 }
 \end{lstlisting}
+
+
+\subsection{Transmitter Groups}
+Transmitter Groups are logical associations of one or more transmitters. This structure just defines the meta data of a transmitter group, the membership is part of the transmitter storage itself.
+
+\begin{lstlisting}
+{
+    "transmitter_groups" : {
+        "name" : "dl-hh",
+        "description" : "Deutschland-Hamburg",
+        "owners" : ["dl1abc","dh3wr","dl2ic"],
+    }
+}
+\end{lstlisting}
+
+\subsection{Individual Pagers}
+\begin{lstlisting}
+{
+	"ric" : {123456, "A"}
+till
+	"ric" : {123456, "D"},
+
+	"name" : "Peters Alphapoc",
+
+	"type" : "UNKNOWN"
+or
+	"type" : "SKYPER",
+or
+	"type" : "ALPHAPOC"
+or
+	"type" : "QUIX",
+or
+	"type" : "SWISSPHONE",
+or
+	"type" : "SCALL_XT"
+
+	"is_enabled" : true,
+}
+
+    
+\subsection{Subscribers}
+
+\todo{die Zuordnung ist noch doof über die RIC}
+
+\begin{lstlisting}
+{
+    "subscribers" : {
+        "name" : "dl1abc",
+        "description" : "Peter",
+        "pagers" : [{123456, "D"},{123456, "A"}],
+    }
+}
+\end{lstlisting}
+
+
+
 %\subsection{How to include Figures}
 %
 %First you have to upload the image file from your computer using the upload link in the project menu. Then use the includegraphics command to include it in your document. Use the figure environment and the caption command to add a number and a caption to your figure. See the code for Figure \ref{fig:frog} in this section for an example.
