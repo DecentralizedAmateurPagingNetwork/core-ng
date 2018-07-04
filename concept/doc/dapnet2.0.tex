@@ -301,9 +301,9 @@ or
             "DCInputCurrent" : 3.23
         },
         "RFoutput" : {
-            "OutputPowerForwardinWatts : 12.2,
-            "OutputPowerReturninWatts : 12.2,
-            "OutputVSWR : 1.2,
+            "OutputPowerForwardinWatts": 12.2,
+            "OutputPowerReturninWatts" : 12.2,
+            "OutputVSWR" : 1.2
         }
     }
 }
@@ -379,9 +379,9 @@ or
         "rf_power_watt": 12.3,
         "cable_loss_db" : 4.2,
         "antenna_gain_dbi" : 2.34,
-        "antenna_agl : 23.4,
+		"antenna_agl" : 23.4,
 
-        "antenna_type" : "OMNI",
+		"antenna_type" : "OMNI",
 or
 		"antenna_type" : "DIRECTIONAL",
     
@@ -389,12 +389,9 @@ or
         "owners" : ["dl1abc","dh3wr","dl2ic"],
         "member_in_transmittergroups" : ["dl-hh", "dl-all"],
         "frequency" : 439.9875,
-        "emergency_power, vailable" : false,
-
-		"emergency_power_duration_hours" : 23.0
-or for unlimited duration (solar panel, power plant,)
-        "emergency_power_duration_hours" : -1
-        
+        "emergency_power_available" : false,
+        "infinite_emergency_power" : false,
+		"emergency_power_duration_hours" : 23.0        
         "antenna_pattern" : <couchDB attachment>,
         "avatar_picture" : <couchDB attachment>
     }
