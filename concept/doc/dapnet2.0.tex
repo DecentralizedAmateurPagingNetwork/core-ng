@@ -196,11 +196,11 @@ or
 				"C9000" : {
 					"UnipagerPowered" : true,
 					"ArduinoPADummy" : true,
-                    "ArduinoPADummySettinginWatts : 123,
-                    "ArduinoPADummyPort" : "/devttyUSB0"
+					"ArduinoPADummySettinginWatts" : 123,
+					"ArduinoPADummyPort" : "/devttyUSB0"
 or
-                    "RPC-CardPowered" : false,
-                    "RPC-Version" : "XOS/2.23pre",
+					"RPC-CardPowered" : false,
+					"RPC-Version" : "XOS/2.23pre",
                 },
                 "Raspager" : {
                     "RaspagerMod" : 13,
@@ -296,14 +296,14 @@ or
         },
         "PowerSupply" : {
             "OnBattery": false,
-            "OnEmergencyPower: false,
+            "OnEmergencyPower": false,
             "DCInputVoltage" : 12.4,
             "DCInputCurrent" : 3.23
         },
         "RFoutput" : {
-            "OutputPowerForwardinWatts : 12.2,
-            "OutputPowerReturninWatts : 12.2,
-            "OutputVSWR : 1.2,
+            "OutputPowerForwardinWatts": 12.2,
+            "OutputPowerReturninWatts" : 12.2,
+            "OutputVSWR" : 1.2
         }
     }
 }
@@ -349,13 +349,155 @@ or
 \end{lstlisting}
 
 \subsection{Transmitters}
-\todo{weitermachen}
+
 \begin{lstlisting}
 {
     "transmitters" : {
         "name" : "db0abc",
+        "auth_keys" : "hdjaskhdlj",
+        "enabled" : true,
+
+		"status" : "UNKNOWN",
+or
+		"status" : "OFFLINE",
+or
+		"status" : "ONLINE",
+
+		"usage_type" : "PERSONAL",
+or
+		"usage_type" : "WIDERANGE",
+        
+        "aprs_enabled" : true,
+        "last_update" : "<DATETIME>",
+		"last_connect" : "<DATETIME>",
+		"connected_since" : "<DATETIME>",
+        "ip_address" : "1.2.3.4",
+        "device_type" : "Unipager",
+        "device_version" : "1.3.2",
+        "latitude" : 23.123456,
+        "longitude" : -31.123456
+        "rf_power_watt": 12.3,
+        "cable_loss_db" : 4.2,
+        "antenna_gain_dbi" : 2.34,
+		"antenna_agl" : 23.4,
+
+		"antenna_type" : "OMNI",
+or
+		"antenna_type" : "DIRECTIONAL",
+    
+		"antenna_direction" : 123.2,
+        "owners" : ["dl1abc","dh3wr","dl2ic"],
+        "member_in_transmittergroups" : ["dl-hh", "dl-all"],
+        "frequency" : 439.9875,
+        "emergency_power_available" : false,
+        "infinite_emergency_power" : false,
+		"emergency_power_duration_hours" : 23.0        
+        "antenna_pattern" : <couchDB attachment>,
+        "avatar_picture" : <couchDB attachment>
+    }
 }
 \end{lstlisting}
+
+
+\subsection{Transmitter Groups}
+Transmitter Groups are logical associations of one or more transmitters. This structure just defines the meta data of a transmitter group, the membership is part of the transmitter storage itself.
+
+\begin{lstlisting}
+{
+    "transmitter_groups" : {
+        "name" : "dl-hh",
+        "description" : "Deutschland-Hamburg",
+        "owners" : ["dl1abc","dh3wr","dl2ic"],
+    }
+}
+\end{lstlisting}
+
+    
+\subsection{Subscribers}
+\todo{check if [] is valid JSON}
+\begin{lstlisting}
+{
+    "subscriber" : {
+        "name" : "dl1abc",
+        "description" : "Peter",
+        "pagers" : [
+		{
+        	"ric" : {123456, "A"}
+till
+			"ric" : {123456, "D"},
+
+			"uuid" : "0023-1233-aefe-1234-3423-9812",
+    		"name" : "Peters Alphapoc",
+
+			"type" : "UNKNOWN"
+or
+			"type" : "Skyper",
+or
+			"type" : "AlphaPoc"
+or
+			"type" : "QUIX",
+or
+			"type" : "Swissphone",
+or
+			"type" : "SCALL_XT"
+or
+			"type" : "Birdy"
+
+			"is_enabled" : true
+        }, ...
+        ],
+	    "owner" : ["dh3wr", "dl1abc"]
+    }
+}
+\end{lstlisting}
+
+\subsection{Subscriber Groups}
+
+\begin{lstlisting}
+{
+    "subscriber_group" : {
+        "name" : "ov-G01",
+        "description" : "Ortverband Aachen",
+        "member_subscribers" : ["dl1abc", "dh3wr"],
+    	"owner" : ["dh3wr", "dl1abc"],
+    }
+}
+\end{lstlisting}
+
+\subsection{Rubrics List}
+\label{rubric_list}
+
+\begin{lstlisting}
+{
+    "rubrics" : {
+    	"uuid" : "<UUID>"
+        "number" : 14,
+        "description" : "Wetter DL-HH",
+        "label" : "WX DL-HH",
+        "transmitter_groups" : ["dl-hh","dl-ns"]
+    	"cyclic_transmit_enabled" : true
+        "cyclic_transmit_interval_minutes": 123,
+    	"owner" : ["dh3wr", "dl1abc"]
+    }
+}
+\end{lstlisting}
+
+\subsection{Rubric's content}
+<UUID> of rubric (as defined in \ref{rubric_list})
+
+\begin{lstlisting}
+{
+    "rubric_content" : {
+		"uuid" : "<UUID>",
+		["content_message1",..,"content_message10"],
+    }
+}
+\end{lstlisting}
+
+
+
+
+
 %\subsection{How to include Figures}
 %
 %First you have to upload the image file from your computer using the upload link in the project menu. Then use the includegraphics command to include it in your document. Use the figure environment and the caption command to add a number and a caption to your figure. See the code for Figure \ref{fig:frog} in this section for an example.
