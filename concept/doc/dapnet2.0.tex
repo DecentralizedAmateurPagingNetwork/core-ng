@@ -296,7 +296,7 @@ or
         },
         "PowerSupply" : {
             "OnBattery": false,
-            "OnEmergencyPower: false,
+            "OnEmergencyPower": false,
             "DCInputVoltage" : 12.4,
             "DCInputCurrent" : 3.23
         },
@@ -448,14 +448,9 @@ or
 
 			"is_enabled" : true
         }, ...
-        ]
-        
-        
-        
-        "0023-1233-aefe-1234-3423-9812","0023-1233-aefe-1234-3423-9813"],
+        ],
+	    "owner" : ["dh3wr", "dl1abc"]
     }
-    ],
-    "owner" : ["dh3wr", "dl1abc"]
 }
 \end{lstlisting}
 
@@ -491,26 +486,13 @@ or
 \end{lstlisting}
 
 \subsection{Rubric's content}
+<UUID> of rubric (as defined in \ref{rubric_list})
 
 \begin{lstlisting}
 {
     "rubric_content" : {
 		"uuid" : "<UUID>",
-		["content_of_message1",...,"content
-        	{
-            	}]
-    	{
-uuid of rubric (as defined in \ref{rubric_list})
-            
-            },
-    ]
-         : 14,
-        "description" : "Wetter DL-HH",
-        "label" : "WX DL-HH",
-        "transmitter_groups" : ["dl-hh","dl-ns"]
-    	"cyclic_transmit_enabled" : true
-        "cyclic_transmit_interval_minutes": 123,
-    	"owner" : ["dh3wr", "dl1abc"]
+		["content_message1",..,"content_message10"],
     }
 }
 \end{lstlisting}
