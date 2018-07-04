@@ -388,6 +388,13 @@ or
 		"antenna_direction" : 123.2,
         "owners" : ["dl1abc","dh3wr","dl2ic"],
         "member_in_transmittergroups" : ["dl-hh", "dl-all"],
+        "frequency" : 439.9875,
+        "emergency_power, vailable" : false,
+
+		"emergency_power_duration_hours" : 23.0
+or for unlimited duration (solar panel, power plant,)
+        "emergency_power_duration_hours" : -1
+        
         "antenna_pattern" : <couchDB attachment>,
         "avatar_picture" : <couchDB attachment>
     }
@@ -408,44 +415,107 @@ Transmitter Groups are logical associations of one or more transmitters. This st
 }
 \end{lstlisting}
 
-\subsection{Individual Pagers}
-\begin{lstlisting}
-{
-	"ric" : {123456, "A"}
-till
-	"ric" : {123456, "D"},
-
-	"name" : "Peters Alphapoc",
-
-	"type" : "UNKNOWN"
-or
-	"type" : "SKYPER",
-or
-	"type" : "ALPHAPOC"
-or
-	"type" : "QUIX",
-or
-	"type" : "SWISSPHONE",
-or
-	"type" : "SCALL_XT"
-
-	"is_enabled" : true,
-}
-
     
 \subsection{Subscribers}
+\todo{check if [] is valid JSON}
+\begin{lstlisting}
+{
+    "subscriber" : {
+        "name" : "dl1abc",
+        "description" : "Peter",
+        "pagers" : [
+		{
+        	"ric" : {123456, "A"}
+till
+			"ric" : {123456, "D"},
 
-\todo{die Zuordnung ist noch doof über die RIC}
+			"uuid" : "0023-1233-aefe-1234-3423-9812",
+    		"name" : "Peters Alphapoc",
+
+			"type" : "UNKNOWN"
+or
+			"type" : "Skyper",
+or
+			"type" : "AlphaPoc"
+or
+			"type" : "QUIX",
+or
+			"type" : "Swissphone",
+or
+			"type" : "SCALL_XT"
+or
+			"type" : "Birdy"
+
+			"is_enabled" : true
+        }, ...
+        ]
+        
+        
+        
+        "0023-1233-aefe-1234-3423-9812","0023-1233-aefe-1234-3423-9813"],
+    }
+    ],
+    "owner" : ["dh3wr", "dl1abc"]
+}
+\end{lstlisting}
+
+\subsection{Subscriber Groups}
 
 \begin{lstlisting}
 {
-    "subscribers" : {
-        "name" : "dl1abc",
-        "description" : "Peter",
-        "pagers" : [{123456, "D"},{123456, "A"}],
+    "subscriber_group" : {
+        "name" : "ov-G01",
+        "description" : "Ortverband Aachen",
+        "member_subscribers" : ["dl1abc", "dh3wr"],
+    	"owner" : ["dh3wr", "dl1abc"],
     }
 }
 \end{lstlisting}
+
+\subsection{Rubrics List}
+\label{rubric_list}
+
+\begin{lstlisting}
+{
+    "rubrics" : {
+    	"uuid" : "<UUID>"
+        "number" : 14,
+        "description" : "Wetter DL-HH",
+        "label" : "WX DL-HH",
+        "transmitter_groups" : ["dl-hh","dl-ns"]
+    	"cyclic_transmit_enabled" : true
+        "cyclic_transmit_interval_minutes": 123,
+    	"owner" : ["dh3wr", "dl1abc"]
+    }
+}
+\end{lstlisting}
+
+\subsection{Rubric's content}
+
+\begin{lstlisting}
+{
+    "rubric_content" : {
+		"uuid" : "<UUID>",
+		["content_of_message1",...,"content
+        	{
+            	}]
+    	{
+uuid of rubric (as defined in \ref{rubric_list})
+            
+            },
+    ]
+         : 14,
+        "description" : "Wetter DL-HH",
+        "label" : "WX DL-HH",
+        "transmitter_groups" : ["dl-hh","dl-ns"]
+    	"cyclic_transmit_enabled" : true
+        "cyclic_transmit_interval_minutes": 123,
+    	"owner" : ["dh3wr", "dl1abc"]
+    }
+}
+\end{lstlisting}
+
+
 
 
 
