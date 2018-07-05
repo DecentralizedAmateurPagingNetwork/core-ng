@@ -22,8 +22,7 @@ public class Event implements Serializable, Comparable<Event> {
 	/**
 	 * Creates a new event instance with the given priority.
 	 * 
-	 * @param priority
-	 *            Event priority
+	 * @param priority Event priority
 	 */
 	protected Event(int priority) {
 		this.priority = priority;

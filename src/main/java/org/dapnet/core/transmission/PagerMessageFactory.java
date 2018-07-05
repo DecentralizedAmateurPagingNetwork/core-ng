@@ -12,8 +12,7 @@ interface PagerMessageFactory {
 	/**
 	 * Creates a message containing the given time.
 	 * 
-	 * @param time
-	 *            Time to use.
+	 * @param time Time to use.
 	 * @return Pager message containing the given time.
 	 */
 	PagerMessage fromTime(ZonedDateTime time);

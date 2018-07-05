@@ -17,10 +17,8 @@ public final class ConfigurationManager extends ObjectRegistry<Configuration> {
 	/**
 	 * Creates a new {@code ConfigurationManager} instance.
 	 * 
-	 * @param filename
-	 *            Configuration file to load
-	 * @throws IOException
-	 *             if the configuration file could not be loaded.
+	 * @param filename Configuration file to load
+	 * @throws IOException if the configuration file could not be loaded.
 	 */
 	public ConfigurationManager(String filename) throws IOException {
 		properties = PropertyReaderImpl.fromFile(Objects.requireNonNull(filename));

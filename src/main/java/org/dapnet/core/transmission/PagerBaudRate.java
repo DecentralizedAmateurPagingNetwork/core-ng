@@ -27,11 +27,9 @@ public enum PagerBaudRate {
 	/**
 	 * Converts a pager baud rate code into a pger baud rate enum value.
 	 * 
-	 * @param code
-	 *            Baud rate code
+	 * @param code Baud rate code
 	 * @return Pager baud rate enumeration if code is valid.
-	 * @throws IllegalArgumentException
-	 *             if code is not a valid baud rate.
+	 * @throws IllegalArgumentException if code is not a valid baud rate.
 	 */
 	public static PagerBaudRate fromCode(int code) {
 		switch (code) {

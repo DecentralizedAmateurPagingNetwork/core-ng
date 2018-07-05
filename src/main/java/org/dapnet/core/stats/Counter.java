@@ -18,10 +18,8 @@ public class Counter implements Serializable {
 	/**
 	 * Creates a new counter object with the given name.
 	 * 
-	 * @param name
-	 *            Name of the counter
-	 * @throws NullPointerException
-	 *             if {@code name} is null
+	 * @param name Name of the counter
+	 * @throws NullPointerException if {@code name} is null
 	 */
 	Counter(String name) {
 		this.name = Objects.requireNonNull(name);
@@ -48,8 +46,7 @@ public class Counter implements Serializable {
 	/**
 	 * Sets the current value.
 	 * 
-	 * @param value
-	 *            Value to set
+	 * @param value Value to set
 	 */
 	protected void setValue(int value) {
 		this.value.set(value);

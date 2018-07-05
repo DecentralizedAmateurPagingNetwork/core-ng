@@ -6,8 +6,7 @@ package org.dapnet.core.events;
  * 
  * @author Philipp Thiel
  *
- * @param <T>
- *            Event type
+ * @param <T> Event type
  */
 @FunctionalInterface
 public interface EventListener<T extends Event> {
@@ -18,10 +17,8 @@ public interface EventListener<T extends Event> {
 	 * implementation. Also avoid performing long running tasks which may block the
 	 * worker thread.
 	 * 
-	 * @param sender
-	 *            Object that caused the event
-	 * @param event
-	 *            Event data
+	 * @param sender Object that caused the event
+	 * @param event  Event data
 	 */
 	void onEvent(Object sender, T event);
 

@@ -10,8 +10,7 @@ public abstract class Configuration {
 	/**
 	 * Loads the configuration.
 	 * 
-	 * @param reader
-	 *            Property reader instance
+	 * @param reader Property reader instance
 	 */
 	public abstract void loadConfiguration(PropertyReader reader);
 

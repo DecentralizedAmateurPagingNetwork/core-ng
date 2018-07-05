@@ -11,8 +11,7 @@ import java.util.concurrent.ConcurrentMap;
  * 
  * @author Philipp Thiel
  *
- * @param <B>
- *            Type of objects that are supported by this registry.
+ * @param <B> Type of objects that are supported by this registry.
  */
 public class ObjectRegistry<B> implements Iterable<B> {
 
@@ -21,11 +20,9 @@ public class ObjectRegistry<B> implements Iterable<B> {
 	/**
 	 * Registers an object.
 	 * 
-	 * @param object
-	 *            Object to register
+	 * @param object Object to register
 	 * @return Registered object
-	 * @throws IllegalArgumentException
-	 *             if the type is already registered.
+	 * @throws IllegalArgumentException if the type is already registered.
 	 */
 	public <T extends B> T put(T object) {
 		Objects.requireNonNull(object);
@@ -40,8 +37,7 @@ public class ObjectRegistry<B> implements Iterable<B> {
 	/**
 	 * Gets an object from the registry.
 	 * 
-	 * @param objectType
-	 *            Object type to get.
+	 * @param objectType Object type to get.
 	 * @return Object or {@code null} if no object of the given type was found.
 	 */
 	public <T extends B> T get(Class<T> objectType) {
@@ -52,8 +48,7 @@ public class ObjectRegistry<B> implements Iterable<B> {
 	/**
 	 * Removes an object from the registry.
 	 * 
-	 * @param objectType
-	 *            Object type to remove.
+	 * @param objectType Object type to remove.
 	 * @return Object or {@code null} if no object of the given type was found.
 	 */
 	public <T extends B> T remove(Class<T> objectType) {

@@ -14,6 +14,7 @@ public final class SchedulerService implements Service {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final SchedulerConfiguration config;
 	private final Scheduler scheduler;
+	private boolean running = false;
 
 	public SchedulerService(SchedulerConfiguration config) throws SchedulerException {
 		this.config = Objects.requireNonNull(config);
@@ -21,17 +22,25 @@ public final class SchedulerService implements Service {
 	}
 
 	@Override
+	public boolean isRunning() {
+		return running;
+	}
+
+	@Override
 	public void start() throws Exception {
 		scheduler.start();
+		running = true;
 		LOGGER.info("Scheduler service has been started.");
 	}
 
 	@Override
-	public void shutdown() {
+	public void shutdown() throws Exception {
 		try {
 			scheduler.shutdown();
 		} catch (SchedulerException ex) {
 			LOGGER.error("Failed to stop scheduler service.", ex);
+		} finally {
+			running = false;
 		}
 	}
 

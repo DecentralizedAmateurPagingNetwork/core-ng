@@ -20,16 +20,21 @@ public final class RestApiService implements Service {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final Object lockObject = new Object();
 	private final RestApiConfiguration config;
+	private volatile boolean running = false;
 	private HttpServer server;
 
 	/**
 	 * Creates a new REST API service instance.
 	 * 
-	 * @param config
-	 *            Configuration to use.
+	 * @param config Configuration to use.
 	 */
 	public RestApiService(RestApiConfiguration config) {
 		this.config = Objects.requireNonNull(config);
+	}
+
+	@Override
+	public boolean isRunning() {
+		return running;
 	}
 
 	@Override
@@ -42,10 +47,12 @@ public final class RestApiService implements Service {
 		synchronized (lockObject) {
 			server = GrizzlyHttpServerFactory.createHttpServer(endpoint, config);
 		}
+
+		running = true;
 	}
 
 	@Override
-	public void shutdown() {
+	public void shutdown() throws Exception {
 		LOGGER.info("Stopping REST API service");
 
 		synchronized (lockObject) {
@@ -53,6 +60,8 @@ public final class RestApiService implements Service {
 				server.shutdownNow();
 			}
 		}
+
+		running = false;
 	}
 
 }

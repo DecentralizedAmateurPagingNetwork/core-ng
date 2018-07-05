@@ -8,16 +8,24 @@ package org.dapnet.core;
 public interface Service {
 
 	/**
+	 * Checks if the service is running.
+	 * 
+	 * @return {@code true} if the service is running.
+	 */
+	boolean isRunning();
+
+	/**
 	 * Starts the service.
 	 * 
-	 * @throws Exception
-	 *             On error during startup.
+	 * @throws Exception On error during startup.
 	 */
 	void start() throws Exception;
 
 	/**
-	 * Shuts down the service. This method must not throw exceptions.
+	 * Shuts down the service.
+	 * 
+	 * @throws Exception If the service failed to shut down.
 	 */
-	void shutdown();
+	void shutdown() throws Exception;
 
 }

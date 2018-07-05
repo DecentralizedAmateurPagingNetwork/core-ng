@@ -14,6 +14,7 @@ public final class ClusterService implements Service {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final ClusterConfiguration config;
+	private boolean running = false;
 	private Channel channel;
 
 	public ClusterService(ClusterConfiguration config) {
@@ -21,16 +22,25 @@ public final class ClusterService implements Service {
 	}
 
 	@Override
+	public boolean isRunning() {
+		return running;
+	}
+
+	@Override
 	public void start() throws Exception {
+		// Setup factory
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost(config.getHost());
+		factory.setHost(config.getServername());
+		factory.setUsername(config.getUsername());
+		factory.setPassword(config.getPassword());
+		// Create connection
 		Connection conn = factory.newConnection();
 		channel = conn.createChannel();
 		channel.exchangeDeclare("calls", "fanout");
 	}
 
 	@Override
-	public void shutdown() {
+	public void shutdown() throws Exception {
 	}
 
 }

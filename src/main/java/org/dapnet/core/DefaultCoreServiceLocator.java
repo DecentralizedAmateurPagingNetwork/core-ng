@@ -16,8 +16,7 @@ final class DefaultCoreServiceLocator implements CoreServiceLocator {
 	/**
 	 * Sets the configuration manager to use.
 	 * 
-	 * @param manager
-	 *            Configuration manager instance
+	 * @param manager Configuration manager instance
 	 */
 	public void setConfigurationManager(ConfigurationManager manager) {
 		configManager = manager;
@@ -26,8 +25,7 @@ final class DefaultCoreServiceLocator implements CoreServiceLocator {
 	/**
 	 * Sets the event manager to use.
 	 * 
-	 * @param manager
-	 *            Event manager instance
+	 * @param manager Event manager instance
 	 */
 	public void setEventManager(EventManager manager) {
 		eventManager = manager;

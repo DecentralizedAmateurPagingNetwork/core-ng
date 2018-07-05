@@ -30,12 +30,18 @@ public final class TransmitterService implements Service {
 	private final PagerProtocolSettings protocolSettings;
 	private final EventManager eventManager;
 	private final int port;
+	private boolean running = false;
 
 	public TransmitterService(TransmissionConfiguration transmissionSettings, PagerProtocolSettings protocolSettings,
 			EventManager eventManager) {
 		this.protocolSettings = Objects.requireNonNull(protocolSettings);
 		this.eventManager = eventManager;
 		this.port = Objects.requireNonNull(transmissionSettings).getServerPort();
+	}
+
+	@Override
+	public boolean isRunning() {
+		return running;
 	}
 
 	@Override
@@ -48,6 +54,8 @@ public final class TransmitterService implements Service {
 			b.childOption(ChannelOption.SO_KEEPALIVE, true);
 			b.bind(port).sync();
 
+			running = true;
+
 			LOGGER.info("Server started on port: {}", port);
 		} catch (InterruptedException ex) {
 			Thread.currentThread().interrupt();
@@ -59,7 +67,7 @@ public final class TransmitterService implements Service {
 	}
 
 	@Override
-	public void shutdown() {
+	public void shutdown() throws Exception {
 		try {
 			workerGroup.shutdownGracefully().sync();
 		} catch (InterruptedException ex) {
@@ -68,9 +76,10 @@ public final class TransmitterService implements Service {
 			// Thread.currentThread().interrupt();
 		} catch (Exception e) {
 			LOGGER.warn("Failed to shut down worker group.", e);
+		} finally {
+			running = false;
+			LOGGER.info("Server stopped.");
 		}
-
-		LOGGER.info("Server stopped.");
 	}
 
 	private final class ListenerImpl implements TransmitterEventListener {

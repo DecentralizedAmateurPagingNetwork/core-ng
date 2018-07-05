@@ -12,10 +12,8 @@ public interface PropertyReader {
 	/**
 	 * Gets an optional boolean from the configuration.
 	 * 
-	 * @param key
-	 *            Key to look for.
-	 * @param defaultValue
-	 *            Defult value if key does not exist or has no value.
+	 * @param key          Key to look for.
+	 * @param defaultValue Defult value if key does not exist or has no value.
 	 * @return Assigned value or given default value if key not found or property
 	 *         not set.
 	 */
@@ -24,21 +22,17 @@ public interface PropertyReader {
 	/**
 	 * Gets a mandatory boolean from the configuration.
 	 * 
-	 * @param key
-	 *            Key to look for.
+	 * @param key Key to look for.
 	 * @return Assigned value
-	 * @throws NoSuchElementException
-	 *             If key not found or value is null.
+	 * @throws NoSuchElementException If key not found or value is null.
 	 */
 	boolean getBoolean(String key);
 
 	/**
 	 * Gets an optional double from the configuration.
 	 * 
-	 * @param key
-	 *            Key to look for.
-	 * @param defaultValue
-	 *            Defult value if key does not exist or has no value.
+	 * @param key          Key to look for.
+	 * @param defaultValue Defult value if key does not exist or has no value.
 	 * @return Assigned value or given default value if key not found or property
 	 *         not set.
 	 */
@@ -47,21 +41,17 @@ public interface PropertyReader {
 	/**
 	 * Gets a mandatory double from the configuration.
 	 * 
-	 * @param key
-	 *            Key to look for.
+	 * @param key Key to look for.
 	 * @return Assigned value
-	 * @throws NoSuchElementException
-	 *             If key not found or value is null.
+	 * @throws NoSuchElementException If key not found or value is null.
 	 */
 	double getDouble(String key);
 
 	/**
 	 * Gets an optional int from the configuration.
 	 * 
-	 * @param key
-	 *            Key to look for.
-	 * @param defaultValue
-	 *            Defult value if key does not exist or has no value.
+	 * @param key          Key to look for.
+	 * @param defaultValue Defult value if key does not exist or has no value.
 	 * @return Assigned value or given default value if key not found or property
 	 *         not set.
 	 */
@@ -70,21 +60,17 @@ public interface PropertyReader {
 	/**
 	 * Gets a mandatory int from the configuration.
 	 * 
-	 * @param key
-	 *            Key to look for.
+	 * @param key Key to look for.
 	 * @return Assigned value
-	 * @throws NoSuchElementException
-	 *             If key not found or value is null.
+	 * @throws NoSuchElementException If key not found or value is null.
 	 */
 	int getInteger(String key);
 
 	/**
 	 * Gets an optional string from the configuration.
 	 * 
-	 * @param key
-	 *            Key to look for.
-	 * @param defaultValue
-	 *            Defult value if key does not exist or has no value.
+	 * @param key          Key to look for.
+	 * @param defaultValue Defult value if key does not exist or has no value.
 	 * @return Assigned value or given default value if key not found or property
 	 *         not set.
 	 */
@@ -93,11 +79,9 @@ public interface PropertyReader {
 	/**
 	 * Gets a mandatory string from the configuration.
 	 * 
-	 * @param key
-	 *            Key to look for.
+	 * @param key Key to look for.
 	 * @return Assigned value
-	 * @throws NoSuchElementException
-	 *             If key not found or value is null.
+	 * @throws NoSuchElementException If key not found or value is null.
 	 */
 	String getString(String key);
 

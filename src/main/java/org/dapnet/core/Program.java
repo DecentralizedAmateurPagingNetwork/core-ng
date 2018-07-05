@@ -1,6 +1,8 @@
 package org.dapnet.core;
 
 import java.io.IOException;
+import java.util.Deque;
+import java.util.LinkedList;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -11,6 +13,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dapnet.core.cluster.ClusterConfiguration;
+import org.dapnet.core.cluster.ClusterService;
 import org.dapnet.core.config.ConfigurationManager;
 import org.dapnet.core.data.PersistenceConfiguration;
 import org.dapnet.core.data.PersistenceService;
@@ -27,18 +30,18 @@ import org.dapnet.core.scheduler.SchedulerConfiguration;
 public final class Program {
 
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Deque<Service> startedServices = new LinkedList<>();
 
 	/**
 	 * Creates a {@link ConfigurationManager} instance.
 	 * 
-	 * @param configFile
-	 *            Configuration file to load.
+	 * @param configFile Configuration file to load.
 	 * @return Configuration manager instance.
-	 * @throws IOException
-	 *             if the configuration file could not be loaded.
+	 * @throws IOException if the configuration file could not be loaded.
 	 */
 	private static ConfigurationManager createConfigManager(String configFile) throws IOException {
 		LOGGER.debug("Loading configuration from {}", configFile);
+
 		ConfigurationManager config = new ConfigurationManager(configFile);
 		config.put(new PersistenceConfiguration());
 		config.put(new ClusterConfiguration());
@@ -49,16 +52,76 @@ public final class Program {
 		return config;
 	}
 
+	/**
+	 * Safely shuts down a single service.
+	 * 
+	 * @param service Service to shut down.
+	 */
+	private static void shutdownService(Service service) {
+		try {
+			if (service != null) {
+				service.shutdown();
+			}
+		} catch (Exception ex) {
+			LOGGER.error("Service shutdown failed.", ex);
+		}
+	}
+
+	/**
+	 * Shuts down all started services in reverse order of starting.
+	 */
+	private static void shutdownServices() {
+		while (!startedServices.isEmpty()) {
+			shutdownService(startedServices.removeLast());
+		}
+	}
+
+	/**
+	 * Starts the persistence service.
+	 * 
+	 * @param manager Configuration manager
+	 */
 	private static void startPersistenceService(ConfigurationManager manager) {
 		PersistenceConfiguration config = manager.get(PersistenceConfiguration.class);
 		PersistenceService service = new PersistenceService(config);
 		try {
 			service.start();
+			startedServices.addLast(service);
 		} catch (Exception ex) {
 			LOGGER.catching(ex);
+
+			shutdownService(service);
 		}
 	}
 
+	/**
+	 * Starts the cluster service.
+	 * 
+	 * @param manager Configuration manager
+	 */
+	private static void startClusterService(ConfigurationManager manager) {
+		ClusterConfiguration config = manager.get(ClusterConfiguration.class);
+		if (!config.isEnabled()) {
+			LOGGER.debug("Cluster service is disabled.");
+			return;
+		}
+
+		Service service = new ClusterService(config);
+		try {
+			service.start();
+			startedServices.addLast(service);
+		} catch (Exception ex) {
+			LOGGER.catching(ex);
+
+			shutdownService(service);
+		}
+	}
+
+	/**
+	 * Starts the REST API service.
+	 * 
+	 * @param manager Configuration manager
+	 */
 	private static void startRestApiService(ConfigurationManager manager) {
 		RestApiConfiguration config = manager.get(RestApiConfiguration.class);
 		if (!config.isEnabled()) {
@@ -69,6 +132,7 @@ public final class Program {
 		Service service = new RestApiService(config);
 		try {
 			service.start();
+			startedServices.addLast(service);
 		} catch (Exception ex) {
 			LOGGER.catching(ex);
 		}
@@ -102,10 +166,13 @@ public final class Program {
 			String value = cli.getOptionValue("c", "dapnet-core.properties");
 			ConfigurationManager configManager = createConfigManager(value);
 
-			// startPersistenceService(configManager);
+			startPersistenceService(configManager);
+			startClusterService(configManager);
 			startRestApiService(configManager);
 		} catch (Exception ex) {
 			LOGGER.fatal("Core startup failed.", ex);
+
+			shutdownServices();
 		}
 	}
 

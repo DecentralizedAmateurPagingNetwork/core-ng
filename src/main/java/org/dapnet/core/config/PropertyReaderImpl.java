@@ -19,8 +19,7 @@ final class PropertyReaderImpl implements PropertyReader {
 	 * Creates a new instance of the adapter using the given {@link Properties}
 	 * object.
 	 * 
-	 * @param properties
-	 *            Properties to use.
+	 * @param properties Properties to use.
 	 */
 	public PropertyReaderImpl(Properties properties) {
 		this.properties = Objects.requireNonNull(properties);
@@ -29,8 +28,7 @@ final class PropertyReaderImpl implements PropertyReader {
 	/**
 	 * Creates a {@link PropertyReaderImpl} from a configuration file.
 	 * 
-	 * @throws IOException
-	 *             if the configuration could not be loaded.
+	 * @throws IOException if the configuration could not be loaded.
 	 */
 	public static PropertyReaderImpl fromFile(String filename) throws IOException {
 		Objects.requireNonNull(filename, "filename");

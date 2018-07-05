@@ -27,16 +27,11 @@ final class PagerMessage implements Comparable<PagerMessage> {
 	/**
 	 * Creates a new message with the current timestamp.
 	 * 
-	 * @param text
-	 *            Message text
-	 * @param priority
-	 *            Message priority
-	 * @param type
-	 *            Message type
-	 * @param address
-	 *            Pager address
-	 * @param baudRate
-	 *            Pager baud rate to use.
+	 * @param text     Message text
+	 * @param priority Message priority
+	 * @param type     Message type
+	 * @param address  Pager address
+	 * @param baudRate Pager baud rate to use.
 	 */
 	public PagerMessage(String text, MessagePriority priority, MessageType type, int address, PagerBaudRate baudRate) {
 		this(Instant.now(), text, priority, type, address, baudRate);
@@ -45,18 +40,12 @@ final class PagerMessage implements Comparable<PagerMessage> {
 	/**
 	 * Creates a new message with the given timestamp.
 	 * 
-	 * @param timestamp
-	 *            Timestamp to use.
-	 * @param text
-	 *            Message text
-	 * @param priority
-	 *            Message priority
-	 * @param type
-	 *            Message type
-	 * @param address
-	 *            Pager address
-	 * @param baudRate
-	 *            Pager baud rate to use.
+	 * @param timestamp Timestamp to use.
+	 * @param text      Message text
+	 * @param priority  Message priority
+	 * @param type      Message type
+	 * @param address   Pager address
+	 * @param baudRate  Pager baud rate to use.
 	 */
 	public PagerMessage(Instant timestamp, String text, MessagePriority priority, MessageType type, int address,
 			PagerBaudRate baudRate) {

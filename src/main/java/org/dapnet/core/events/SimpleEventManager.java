@@ -12,12 +12,12 @@ import java.util.concurrent.ConcurrentMap;
 public class SimpleEventManager extends EventManager {
 
 	private final ConcurrentMap<Class<?>, EventListenerSet<?>> listeners = new ConcurrentHashMap<>();
+	private boolean running = false;
 
 	/**
 	 * Constructs a new event manager instance with the given name.
 	 * 
-	 * @param name
-	 *            Event manager name
+	 * @param name Event manager name
 	 */
 	public SimpleEventManager(String name) {
 		super(name);
@@ -58,11 +58,18 @@ public class SimpleEventManager extends EventManager {
 	}
 
 	@Override
-	public void start() throws Exception {
+	public boolean isRunning() {
+		return running;
 	}
 
 	@Override
-	public void shutdown() {
+	public void start() throws Exception {
+		running = true;
+	}
+
+	@Override
+	public void shutdown() throws Exception {
+		running = false;
 	}
 
 }

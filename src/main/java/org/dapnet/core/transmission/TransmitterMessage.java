@@ -14,10 +14,8 @@ final class TransmitterMessage {
 	/**
 	 * Creates a new message.
 	 * 
-	 * @param sequenceNumber
-	 *            Sequence number for this message.
-	 * @param message
-	 *            The actual pager message.
+	 * @param sequenceNumber Sequence number for this message.
+	 * @param message        The actual pager message.
 	 */
 	public TransmitterMessage(int sequenceNumber, PagerMessage message) {
 		this.sequenceNumber = sequenceNumber;

@@ -12,6 +12,7 @@ import org.dapnet.core.Service;
 public final class PersistenceService implements Service {
 
 	private final PersistenceConfiguration config;
+	private boolean running = false;
 
 	/**
 	 * Creates a new persistence service instance.
@@ -23,12 +24,18 @@ public final class PersistenceService implements Service {
 	}
 
 	@Override
-	public void start() throws Exception {
-
+	public boolean isRunning() {
+		return running;
 	}
 
 	@Override
-	public void shutdown() {
+	public void start() throws Exception {
+		running = true;
+	}
+
+	@Override
+	public void shutdown() throws Exception {
+		running = false;
 	}
 
 }

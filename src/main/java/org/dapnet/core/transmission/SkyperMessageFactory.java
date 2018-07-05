@@ -23,8 +23,7 @@ final class SkyperMessageFactory implements PagerMessageFactory {
 	/**
 	 * Creates a new Skyper message factory.
 	 * 
-	 * @param settings
-	 *            Pager protocol settings to use.
+	 * @param settings Pager protocol settings to use.
 	 */
 	public SkyperMessageFactory(PagerProtocolSettings settings) {
 		this.settings = Objects.requireNonNull(settings);

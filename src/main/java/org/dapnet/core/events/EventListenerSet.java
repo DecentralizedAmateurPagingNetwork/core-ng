@@ -11,8 +11,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * 
  * @author Philipp Thiel
  *
- * @param <T>
- *            Event type
+ * @param <T> Event type
  */
 final class EventListenerSet<T extends Event> {
 
@@ -22,8 +21,7 @@ final class EventListenerSet<T extends Event> {
 	/**
 	 * Adds an event listener.
 	 * 
-	 * @param listener
-	 *            Event listener to add.
+	 * @param listener Event listener to add.
 	 * @return {@code true} if the event listener has been added to the set.
 	 */
 	public boolean add(EventListener<T> listener) {
@@ -38,8 +36,7 @@ final class EventListenerSet<T extends Event> {
 	/**
 	 * Removes an event listener.
 	 * 
-	 * @param listener
-	 *            Event listener to remove.
+	 * @param listener Event listener to remove.
 	 * @return {@code true} if the event listener has been removed from the set.
 	 */
 	public boolean remove(EventListener<T> listener) {
@@ -54,10 +51,8 @@ final class EventListenerSet<T extends Event> {
 	/**
 	 * Forwards an event to all event listeners.
 	 * 
-	 * @param sender
-	 *            Object that raised the event.
-	 * @param event
-	 *            Actual event data.
+	 * @param sender Object that raised the event.
+	 * @param event  Actual event data.
 	 */
 	public void fireEvent(Object sender, T event) {
 		lock.readLock().lock();

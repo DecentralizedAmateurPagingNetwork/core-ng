@@ -18,8 +18,7 @@ public abstract class EventManager implements Service {
 	/**
 	 * Constructs a new event manager with the given name.
 	 * 
-	 * @param name
-	 *            Name of the new event manager instance.
+	 * @param name Name of the new event manager instance.
 	 */
 	protected EventManager(String name) {
 		this.name = Objects.requireNonNull(name);
@@ -38,8 +37,7 @@ public abstract class EventManager implements Service {
 	 * Sets the handler to which unhandled events will be forwarded to. Set to
 	 * {@code null} to discard such events.
 	 * 
-	 * @param handler
-	 *            Unhandled event handler to use.
+	 * @param handler Unhandled event handler to use.
 	 */
 	public void setUnhandledEventHandler(BiConsumer<Object, Event> handler) {
 		this.unhandledEventHandler = handler;
@@ -49,10 +47,8 @@ public abstract class EventManager implements Service {
 	 * This method forwards an unhandled event to the handler if a handler has been
 	 * registered.
 	 * 
-	 * @param sender
-	 *            Event sender
-	 * @param event
-	 *            Event arguments
+	 * @param sender Event sender
+	 * @param event  Event arguments
 	 */
 	protected void forwardUnhandledEvent(Object sender, Event event) {
 		BiConsumer<Object, Event> handler = unhandledEventHandler;
@@ -73,10 +69,8 @@ public abstract class EventManager implements Service {
 	/**
 	 * Adds an event listener.
 	 * 
-	 * @param event
-	 *            Event type
-	 * @param listener
-	 *            Event listener to add.
+	 * @param event    Event type
+	 * @param listener Event listener to add.
 	 * @return {@code true} if the event listener has been added.
 	 */
 	public abstract <T extends Event> boolean addListener(Class<T> event, EventListener<T> listener);
@@ -84,10 +78,8 @@ public abstract class EventManager implements Service {
 	/**
 	 * Removes an event listener.
 	 * 
-	 * @param event
-	 *            Event type
-	 * @param listener
-	 *            Event listener to remove.
+	 * @param event    Event type
+	 * @param listener Event listener to remove.
 	 * @return {@code true} if the event listener has been removed.
 	 */
 	public abstract <T extends Event> boolean removeListener(Class<T> event, EventListener<T> listener);
@@ -96,10 +88,8 @@ public abstract class EventManager implements Service {
 	 * Fires an event by notifying all affected event listeners. If no listener is
 	 * registered, the event will be forwarded to the unhandled event handler.
 	 * 
-	 * @param sender
-	 *            Sender of the event
-	 * @param event
-	 *            Event data
+	 * @param sender Sender of the event
+	 * @param event  Event data
 	 */
 	public abstract <T extends Event> void fireEvent(Object sender, T event);
 

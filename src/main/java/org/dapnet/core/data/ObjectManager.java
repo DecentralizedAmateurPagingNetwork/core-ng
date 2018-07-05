@@ -14,8 +14,7 @@ abstract class ObjectManager {
 	/**
 	 * Constructs a new object manager instance.
 	 * 
-	 * @param service
-	 *            {@link PersistenceService} instance to use.
+	 * @param service {@link PersistenceService} instance to use.
 	 */
 	protected ObjectManager(PersistenceService service) {
 		this.service = Objects.requireNonNull(service);
