@@ -53,26 +53,16 @@ public final class Program {
 	}
 
 	/**
-	 * Safely shuts down a single service.
-	 * 
-	 * @param service Service to shut down.
-	 */
-	private static void shutdownService(Service service) {
-		try {
-			if (service != null) {
-				service.shutdown();
-			}
-		} catch (Exception ex) {
-			LOGGER.error("Service shutdown failed.", ex);
-		}
-	}
-
-	/**
 	 * Shuts down all started services in reverse order of starting.
 	 */
 	private static void shutdownServices() {
 		while (!startedServices.isEmpty()) {
-			shutdownService(startedServices.removeLast());
+			try {
+				Service service = startedServices.removeLast();
+				service.shutdown();
+			} catch (Exception ex) {
+				LOGGER.error("Service shutdown failed.", ex);
+			}
 		}
 	}
 
@@ -89,8 +79,6 @@ public final class Program {
 			startedServices.addLast(service);
 		} catch (Exception ex) {
 			LOGGER.catching(ex);
-
-			shutdownService(service);
 		}
 	}
 
@@ -112,8 +100,6 @@ public final class Program {
 			startedServices.addLast(service);
 		} catch (Exception ex) {
 			LOGGER.catching(ex);
-
-			shutdownService(service);
 		}
 	}
 

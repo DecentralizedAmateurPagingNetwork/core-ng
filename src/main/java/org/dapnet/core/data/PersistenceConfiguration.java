@@ -10,20 +10,8 @@ import org.dapnet.core.config.PropertyReader;
  */
 public final class PersistenceConfiguration extends Configuration {
 
-	private String configFileName;
-
-	/**
-	 * Gets the optional configuration file name.
-	 * 
-	 * @return File name or {@code null}.
-	 */
-	public String getConfigFileName() {
-		return configFileName;
-	}
-
 	@Override
 	public void loadConfiguration(PropertyReader reader) {
-		configFileName = reader.getString("persistence.config", null);
 	}
 
 }

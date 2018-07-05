@@ -12,7 +12,7 @@ import org.dapnet.core.Service;
 public final class PersistenceService implements Service {
 
 	private final PersistenceConfiguration config;
-	private boolean running = false;
+	private volatile boolean running = false;
 
 	/**
 	 * Creates a new persistence service instance.

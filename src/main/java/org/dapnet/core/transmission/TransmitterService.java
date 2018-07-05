@@ -30,7 +30,7 @@ public final class TransmitterService implements Service {
 	private final PagerProtocolSettings protocolSettings;
 	private final EventManager eventManager;
 	private final int port;
-	private boolean running = false;
+	private volatile boolean running = false;
 
 	public TransmitterService(TransmissionConfiguration transmissionSettings, PagerProtocolSettings protocolSettings,
 			EventManager eventManager) {

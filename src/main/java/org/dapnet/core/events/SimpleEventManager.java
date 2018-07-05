@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentMap;
 public class SimpleEventManager extends EventManager {
 
 	private final ConcurrentMap<Class<?>, EventListenerSet<?>> listeners = new ConcurrentHashMap<>();
-	private boolean running = false;
+	private volatile boolean running = false;
 
 	/**
 	 * Constructs a new event manager instance with the given name.

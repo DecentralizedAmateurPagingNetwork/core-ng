@@ -14,7 +14,7 @@ public final class SchedulerService implements Service {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final SchedulerConfiguration config;
 	private final Scheduler scheduler;
-	private boolean running = false;
+	private volatile boolean running = false;
 
 	public SchedulerService(SchedulerConfiguration config) throws SchedulerException {
 		this.config = Objects.requireNonNull(config);
