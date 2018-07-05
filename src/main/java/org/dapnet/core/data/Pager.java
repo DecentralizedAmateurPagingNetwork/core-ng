@@ -2,15 +2,6 @@ package org.dapnet.core.data;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity(name = "Pager")
-@Table(name = "PAGERS")
 public class Pager implements Serializable {
 
 	private static final long serialVersionUID = -8650746160115269108L;
@@ -24,17 +15,10 @@ public class Pager implements Serializable {
 		UNKNOWN, SKYPER, ALPHAPOC, QUIX, SWISSPHONE, SCALL_XT
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID", nullable = false, updatable = false)
 	private int id;
-	@Column(name = "RIC", unique = true, nullable = false)
 	private int ric;
-	@Column(name = "NAME", nullable = false, length = 20)
 	private String name;
-	@Column(name = "TYPE", nullable = false)
 	private Type type;
-	@Column(name = "IS_ENABLED", nullable = false)
 	private boolean enabled;
 
 	public int getId() {

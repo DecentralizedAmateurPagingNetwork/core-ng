@@ -3,41 +3,22 @@ package org.dapnet.core.data;
 import java.io.Serializable;
 import java.time.Instant;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 /**
  * This class represents a user account.
  * 
  * @author Philipp Thiel
  */
-@Entity(name = "User")
-@Table(name = "USERS")
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 7574094449661279629L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID", updatable = false, nullable = false)
 	private int id;
-	@Column(name = "NAME", length = 50, unique = true, nullable = false)
 	private String name;
-	@Column(name = "PASSWORD", length = 50, nullable = false)
 	private String password;
-	@Column(name = "EMAIL", nullable = false, length = 255)
 	private String email;
-	@Column(name = "IS_ADMIN", nullable = false)
 	private boolean admin;
-	@Column(name = "IS_ENABLED", nullable = false)
 	private boolean enabled;
-	@Column(name = "CREATED_ON", nullable = false, updatable = false)
 	private Instant createdOn;
-	@Column(name = "LAST_LOGIN")
 	private Instant lastLogin;
 
 	/**
@@ -61,8 +42,7 @@ public class User implements Serializable {
 	/**
 	 * Sets the username.
 	 * 
-	 * @param name
-	 *            Username
+	 * @param name Username
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -80,8 +60,7 @@ public class User implements Serializable {
 	/**
 	 * Sets the password.
 	 * 
-	 * @param password
-	 *            Password
+	 * @param password Password
 	 */
 	public void setPassword(String password) {
 		this.password = password;
@@ -99,8 +78,7 @@ public class User implements Serializable {
 	/**
 	 * Sets the email address.
 	 * 
-	 * @param email
-	 *            Email address
+	 * @param email Email address
 	 */
 	public void setEmail(String email) {
 		this.email = email;
@@ -118,8 +96,7 @@ public class User implements Serializable {
 	/**
 	 * Sets the creation date.
 	 * 
-	 * @param createdOn
-	 *            Creation date
+	 * @param createdOn Creation date
 	 */
 	public void setCreatedOn(Instant createdOn) {
 		this.createdOn = createdOn;
@@ -137,8 +114,7 @@ public class User implements Serializable {
 	/**
 	 * Enables or disables administrative rights for the user.
 	 * 
-	 * @param admin
-	 *            Administrative rights enabled
+	 * @param admin Administrative rights enabled
 	 */
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
@@ -156,8 +132,7 @@ public class User implements Serializable {
 	/**
 	 * Enables or disables the user.
 	 * 
-	 * @param enabled
-	 *            User enabled
+	 * @param enabled User enabled
 	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;

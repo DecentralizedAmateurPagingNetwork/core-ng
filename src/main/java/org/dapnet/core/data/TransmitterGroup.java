@@ -2,26 +2,12 @@ package org.dapnet.core.data;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity(name = "TransmitterGroup")
-@Table(name = "TRANSMITTER_GROUPS")
 public class TransmitterGroup implements Serializable {
 
 	private static final long serialVersionUID = 7571253139201917903L;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID", nullable = false, updatable = false)
 	private int id;
-	@Column(name = "NAME", unique = true, nullable = false, length = 20)
 	private String name;
-	@Column(name = "DESCRIPTION", length = 100)
 	private String description;
 
 	public int getId() {
