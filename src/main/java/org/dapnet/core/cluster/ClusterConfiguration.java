@@ -79,7 +79,7 @@ public final class ClusterConfiguration extends Configuration {
 		username = reader.getString("cluster.user");
 		password = reader.getString("cluster.password");
 		virtualHost = reader.getString("cluster.virtual_host", "/");
-		
+
 		// TODO Use address list for definig mutliple servers
 	}
 

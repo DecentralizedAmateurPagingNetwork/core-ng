@@ -5,9 +5,15 @@ import org.dapnet.core.config.PropertyReader;
 
 public final class SchedulerConfiguration extends Configuration {
 
+	private boolean enabled;
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
 	@Override
 	public void loadConfiguration(PropertyReader reader) {
-		// TODO Auto-generated method stub
+		enabled = reader.getBoolean("scheduler.enabled", false);
 	}
 
 }

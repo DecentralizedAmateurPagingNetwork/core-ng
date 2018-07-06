@@ -28,13 +28,20 @@ public final class SchedulerService implements Service {
 
 	@Override
 	public void start() throws Exception {
+		if (running) {
+			return;
+		}
+
 		scheduler.start();
 		running = true;
+
 		LOGGER.info("Scheduler service has been started.");
 	}
 
 	@Override
 	public void shutdown() throws Exception {
+		LOGGER.info("Stopping scheduler service");
+
 		try {
 			scheduler.shutdown();
 		} catch (SchedulerException ex) {

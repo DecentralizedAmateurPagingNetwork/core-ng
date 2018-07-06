@@ -21,6 +21,7 @@ import org.dapnet.core.plugins.PluginConfiguration;
 import org.dapnet.core.rest.RestApiConfiguration;
 import org.dapnet.core.rest.RestApiService;
 import org.dapnet.core.scheduler.SchedulerConfiguration;
+import org.dapnet.core.scheduler.SchedulerService;
 
 /**
  * This class contains the application entry point.
@@ -36,7 +37,8 @@ public final class Program {
 	private static String coreName;
 
 	/**
-	 * Returns the configured core name.
+	 * Returns the configured core name. This value is only available after core
+	 * startup has completed.
 	 * 
 	 * @return Core node name
 	 */
@@ -80,64 +82,6 @@ public final class Program {
 	}
 
 	/**
-	 * Starts the persistence service.
-	 * 
-	 * @param manager Configuration manager
-	 */
-	private static void startPersistenceService(ConfigurationManager manager) {
-		PersistenceConfiguration config = manager.get(PersistenceConfiguration.class);
-		PersistenceService service = new PersistenceService(config);
-		try {
-			service.start();
-			startedServices.addLast(service);
-		} catch (Exception ex) {
-			LOGGER.catching(ex);
-		}
-	}
-
-	/**
-	 * Starts the cluster service.
-	 * 
-	 * @param manager Configuration manager
-	 */
-	private static void startClusterService(ConfigurationManager manager) {
-		ClusterConfiguration config = manager.get(ClusterConfiguration.class);
-		if (!config.isEnabled()) {
-			LOGGER.debug("Cluster service is disabled.");
-			return;
-		}
-
-		Service service = new ClusterService(config);
-		try {
-			service.start();
-			startedServices.addLast(service);
-		} catch (Exception ex) {
-			LOGGER.catching(ex);
-		}
-	}
-
-	/**
-	 * Starts the REST API service.
-	 * 
-	 * @param manager Configuration manager
-	 */
-	private static void startRestApiService(ConfigurationManager manager) {
-		RestApiConfiguration config = manager.get(RestApiConfiguration.class);
-		if (!config.isEnabled()) {
-			LOGGER.debug("REST API service is disabled.");
-			return;
-		}
-
-		Service service = new RestApiService(config);
-		try {
-			service.start();
-			startedServices.addLast(service);
-		} catch (Exception ex) {
-			LOGGER.catching(ex);
-		}
-	}
-
-	/**
 	 * Loads the core configuration.
 	 * 
 	 * @param manager Configuration manager
@@ -150,6 +94,70 @@ public final class Program {
 		if (config.isPreferIpv4()) {
 			System.setProperty("java.net.preferIPv4Stack", "true");
 		}
+	}
+
+	/**
+	 * Starts the persistence service.
+	 * 
+	 * @param manager Configuration manager
+	 */
+	private static void startPersistenceService(ConfigurationManager manager) throws Exception {
+		PersistenceConfiguration config = manager.get(PersistenceConfiguration.class);
+		PersistenceService service = new PersistenceService(config);
+		service.start();
+		startedServices.addLast(service);
+	}
+
+	/**
+	 * Starts the cluster service.
+	 * 
+	 * @param manager Configuration manager
+	 */
+	private static void startClusterService(ConfigurationManager manager) throws Exception {
+		ClusterConfiguration config = manager.get(ClusterConfiguration.class);
+		if (!config.isEnabled()) {
+			LOGGER.info("Cluster service is disabled.");
+			return;
+		}
+
+		Service service = new ClusterService(config);
+		service.start();
+		startedServices.addLast(service);
+	}
+
+	/**
+	 * Starts the scheduler service.
+	 * 
+	 * @param manager Configuration manager.
+	 * @throws Exception on error
+	 */
+	private static void startSchedulerService(ConfigurationManager manager) throws Exception {
+		SchedulerConfiguration config = manager.get(SchedulerConfiguration.class);
+		if (!config.isEnabled()) {
+			LOGGER.info("Scheduler service is disabled.");
+			return;
+		}
+
+		Service service = new SchedulerService(config);
+		service.start();
+		startedServices.addLast(service);
+	}
+
+	/**
+	 * Starts the REST API service.
+	 * 
+	 * @param manager Configuration manager
+	 */
+	private static void startRestApiService(ConfigurationManager manager) throws Exception {
+		RestApiConfiguration config = manager.get(RestApiConfiguration.class);
+		if (!config.isEnabled()) {
+			LOGGER.info("REST API service is disabled.");
+			return;
+		}
+
+		Service service = new RestApiService(config);
+		service.start();
+		startedServices.addLast(service);
 	}
 
 	public static void main(String[] args) {
@@ -187,6 +195,7 @@ public final class Program {
 			loadCoreConfiguration(configManager);
 			startPersistenceService(configManager);
 			startClusterService(configManager);
+			startSchedulerService(configManager);
 			startRestApiService(configManager);
 		} catch (Exception ex) {
 			LOGGER.fatal("Core startup failed.", ex);
@@ -206,7 +215,7 @@ public final class Program {
 	private static void registerShutdownHook() {
 		Runnable r = () -> {
 			shutdownServices();
-			// Log4j shutdown hook is disabled, call it manually
+			// Log4j automatic shutdown hook is disabled, call it manually
 			LogManager.shutdown();
 		};
 

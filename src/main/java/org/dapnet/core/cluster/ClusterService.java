@@ -98,6 +98,7 @@ public final class ClusterService implements Service {
 			channel = connection.createChannel();
 
 			for (String exchange : EXCHANGE_NAMES) {
+				LOGGER.trace("Declaring exchange {}", exchange);
 				channel.exchangeDeclare(exchange, "topic", true);
 			}
 		} catch (Exception ex) {
