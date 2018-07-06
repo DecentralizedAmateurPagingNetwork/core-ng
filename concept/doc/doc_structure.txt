@@ -42,6 +42,19 @@ Internal Programming Workflows
 	Plugin Interface
 	DAPNET-Proxy
 
+External Usage Workflows
+	General Concept of REST and Websocket-Updates
+	Website and App
+		Authentication
+		Calls
+		Rubrics
+		Rubrics content
+		Transmitters and Telemetry
+		Nodes
+		Users
+		MQTT consumers
+	Scripts and automated Software for DAPNET-Input
+
 Setup and Installation
 	Unipager
 	DAPNET-Proxy
