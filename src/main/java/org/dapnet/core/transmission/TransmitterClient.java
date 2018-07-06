@@ -3,8 +3,6 @@ package org.dapnet.core.transmission;
 import java.util.Collection;
 import java.util.PriorityQueue;
 
-import io.netty.channel.Channel;
-
 final class TransmitterClient {
 
 	public enum AckResponse {
@@ -13,17 +11,17 @@ final class TransmitterClient {
 
 	private static final int MAX_RETRY_COUNT = 5;
 	private final PriorityQueue<PagerMessage> messageQueue = new PriorityQueue<>();
-	private final Channel channel;
+	// private final Channel channel;
 	private TransmitterMessage currentMessage;
 	private int nextSequenceNumber;
 
-	public TransmitterClient(Channel channel) {
-		this.channel = channel;
-	}
+//	public TransmitterClient(Channel channel) {
+//		this.channel = channel;
+//	}
 
-	public Channel getChannel() {
-		return channel;
-	}
+//	public Channel getChannel() {
+//		return channel;
+//	}
 
 	public void sendMessage(PagerMessage message) {
 		synchronized (messageQueue) {
@@ -49,7 +47,7 @@ final class TransmitterClient {
 			}
 		}
 
-		channel.writeAndFlush(currentMessage);
+		// channel.writeAndFlush(currentMessage);
 	}
 
 	public void ackMessage(int sequenceNumber, AckResponse response) {
