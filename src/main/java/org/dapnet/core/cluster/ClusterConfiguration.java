@@ -74,7 +74,7 @@ public final class ClusterConfiguration extends Configuration {
 	@Override
 	public void loadConfiguration(PropertyReader reader) {
 		enabled = reader.getBoolean("cluster.enabled", false);
-		servername = reader.getString("cluster.host");
+		servername = reader.getString("cluster.server");
 		port = reader.getInteger("cluster.port", 5672);
 		username = reader.getString("cluster.user");
 		password = reader.getString("cluster.password");

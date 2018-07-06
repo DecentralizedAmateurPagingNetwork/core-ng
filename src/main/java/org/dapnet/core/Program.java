@@ -29,8 +29,20 @@ import org.dapnet.core.scheduler.SchedulerConfiguration;
  */
 public final class Program {
 
+	private static final String CORE_VERSION = getVersionFromPackage();
+	// private static final String API_VERSION = getApiVersionFromPackage();
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Deque<Service> startedServices = new LinkedList<>();
+	private static String coreName;
+
+	/**
+	 * Returns the configured core name.
+	 * 
+	 * @return Core node name
+	 */
+	public static String getCoreName() {
+		return coreName;
+	}
 
 	/**
 	 * Creates a {@link ConfigurationManager} instance.
@@ -43,6 +55,7 @@ public final class Program {
 		LOGGER.debug("Loading configuration from {}", configFile);
 
 		ConfigurationManager config = new ConfigurationManager(configFile);
+		config.put(new CoreConfiguration());
 		config.put(new PersistenceConfiguration());
 		config.put(new ClusterConfiguration());
 		config.put(new SchedulerConfiguration());
@@ -124,6 +137,21 @@ public final class Program {
 		}
 	}
 
+	/**
+	 * Loads the core configuration.
+	 * 
+	 * @param manager Configuration manager
+	 */
+	private static void loadCoreConfiguration(ConfigurationManager manager) {
+		CoreConfiguration config = manager.get(CoreConfiguration.class);
+
+		coreName = config.getName();
+
+		if (config.isPreferIpv4()) {
+			System.setProperty("java.net.preferIPv4Stack", "true");
+		}
+	}
+
 	public static void main(String[] args) {
 		Options opts = new Options();
 		opts.addOption("h", "help", false, "print help text");
@@ -144,22 +172,45 @@ public final class Program {
 			formatter.printHelp("dapnet-core [options]", opts);
 			return;
 		} else if (cli.hasOption("version")) {
-			System.out.println("TODO Version");
+			System.out.println("DAPNET Core " + CORE_VERSION);
 			return;
 		}
 
+		LOGGER.info("Starting DAPNET Core version {}", CORE_VERSION);
+
 		try {
+			registerShutdownHook();
+
 			String value = cli.getOptionValue("c", "dapnet-core.properties");
 			ConfigurationManager configManager = createConfigManager(value);
 
+			loadCoreConfiguration(configManager);
 			startPersistenceService(configManager);
 			startClusterService(configManager);
 			startRestApiService(configManager);
 		} catch (Exception ex) {
 			LOGGER.fatal("Core startup failed.", ex);
-
-			shutdownServices();
 		}
+	}
+
+	private static String getVersionFromPackage() {
+		String ver = Program.class.getPackage().getImplementationVersion();
+		return ver != null ? ver : "UNKNOWN";
+	}
+
+//	private static String getApiVersionFromPackage() {
+//		String ver = Program.class.getPackage().getSpecificationVersion();
+//		return ver != null ? ver : "UNKNOWN";
+//	}
+
+	private static void registerShutdownHook() {
+		Runnable r = () -> {
+			shutdownServices();
+			// Log4j shutdown hook is disabled, call it manually
+			LogManager.shutdown();
+		};
+
+		Runtime.getRuntime().addShutdownHook(new Thread(r));
 	}
 
 }

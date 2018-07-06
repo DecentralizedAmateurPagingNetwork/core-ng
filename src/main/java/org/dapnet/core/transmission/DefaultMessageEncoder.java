@@ -5,7 +5,7 @@ package org.dapnet.core.transmission;
  * 
  * @author Philipp Thiel
  */
-final class MessageEncoder {
+final class DefaultMessageEncoder implements TransmitterMessageEncoder {
 
 	public static final int MT_SYNCREQUEST = 2;
 	public static final int MT_SYNCORDER = 3;
@@ -13,6 +13,7 @@ final class MessageEncoder {
 	public static final int MT_NUMERIC = 5;
 	public static final int MT_ALPHANUM = 6;
 
+	@Override
 	public String encode(TransmitterMessage msg) throws Exception {
 		PagerMessage pm = msg.getMessage();
 
