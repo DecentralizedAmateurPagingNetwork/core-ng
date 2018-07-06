@@ -1,0 +1,57 @@
+Abstract
+
+Introduction
+	Key Features
+	Historic Background
+
+	Transmitter Software
+		Unipager
+		DAPNET-Proxy
+
+	DAPNET Network
+		Overview and Concept
+		Used third-party Software
+		HAMCLOUD Description
+		Rubric Handling Concept
+		Queueing Priority Concept
+
+DAPNET Network Definition
+	Cluster Description
+		Real-time Message delivery with RabbitMQ
+		Distributed Database with CouchDB
+		Authentification Concept
+	Interface Definition
+		RabbitMQ Exchange
+		CouchDB Interface
+		Core REST API
+		Statistic and Telemetry REST API
+		Websocket for real-time updates on configuration, Statistics and Telemetry API
+		MQTT Fanout
+
+Internal Programming Workflows
+	Sent calls
+	Add, edit, delete User
+	Add, edit, delete subscriber
+	Add, edit, delete Node (tbd)
+	Add, edit, delete Transmitter
+	Implementation of Transmitter Groups
+	Add, edit, delete, assign to Transmitter/-Groups Rubrics
+	Add, edit, delete Rubrics content
+	Ports and Loadbalacing Concept
+	Periodic Tasks (Scheduler)
+	Plugin Interface
+	DAPNET-Proxy
+
+Setup and Installation
+	Unipager
+	DAPNET-Proxy
+	DAPNET Core
+	Special issues for Core running in HAMCLOUD
+
+Protocol Definitions
+	Core REST API
+	Telemetry
+	Statistic and Telemetry REST API
+	Websocket API
+	MTQTT API
+	CouchDB Documents and Structure
