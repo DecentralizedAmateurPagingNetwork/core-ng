@@ -105,7 +105,7 @@ Valid Messages are:
 
 \subsubsection{dapnet.calls}
 \label{protocoldef:RabbitMQ:dapnet.calls}
-The messages to transfer data to be transmitted by the Transmitter has the following format.
+The messages to transfer data to be transmitted by the transmitter have the following format.
 For each transmission, there is a separate RabbitMQ message, as different receivers might need different text encoding. All encoding is already done, when this message is created. The transmitter does no character encoding at all. Both personal pagings and rubric related messages are transmitted with this protocol.
 
 \begin{lstlisting}
@@ -201,14 +201,14 @@ The format of the data published for \textbf{rubric\_content paging calls} is
 
 \section{Telemetry}
 \label{protocoldef:telemetry}
-Telemetry is sent from transmitters to the RabbitMQ exchange \textbf{dapnet.telemetry} as defined in section \ref{protocoldef:RabbitMQ}. It is also used in the same way on the websocket API to inform the website and the app about the telemetry in real-time in section \ref{protocoldef:websocketapi:telemetry}.
+Telemetry is sent from transmitters to the RabbitMQ exchange \textbf{dapnet.telemetry} as defined in section \ref{protocoldef:RabbitMQ}. It is also used in the same way on the websocket API to inform the website and the app about the telemetry in real-time in section \ref{protcoldef:websocketapi:telemetry}.
 
 This is sent every minute in complete. If there are changes, just a subset is sent. The \"name\" key is always mandatory.
 \begin{lstlisting}
 {
     "name": "db0acb",
-    "OnAir" : true,
-    "Telemetry" : {
+    "onair" : true,
+    "telemetry" : {
         "ConnectionStatus": {
             "Connected" : true,
             "ConnectedtoNodeName" : "db0xyz"
@@ -228,8 +228,18 @@ This is sent every minute in complete. If there are changes, just a subset is se
                 "Prio4": 1234,
                 "Prio5": 1234,
                 "Prio10": 1234
-	        }
+	        },
+	        "SentMessages": {
+                "Total" : 1234,
+                "Prio1": 1234,
+                "Prio2": 1234,
+                "Prio3": 1234,
+                "Prio4": 1234,
+                "Prio5": 1234,
+                "Prio10": 1234
+			},
 		},
+		message_count: 1234,
         "PrefinedTemperatures" : {
             "Unit" : "C" | "F" | "K",
          
@@ -259,7 +269,7 @@ This is sent every minute in complete. If there are changes, just a subset is se
             "OutputPowerReturninWatts" : 12.2,
             "OutputVSWR" : 1.2
         }
-	"transmitterconfiguration" : {
+	"transmitter_configuration" : {
 		"ConfiguredIP": "123.4.3.2",
 		"timeslots" : [true, false,...,	false],
 		"SoftwareType" : "Unipager" | "MMDVM" | "DAPNET-Proxy",
@@ -302,7 +312,88 @@ or
 }
 \end{lstlisting}
 
-\section{Statistic and Telemetry REST API}
+\section{Statistic, Status and Telemetry REST API}
+The statistic and telemetry REST API provides up-to-date information regarding the transmitters and the network via REST. This can be used by e.g. grafana to draw nice graphes or nagios plugins.
+
+
+\subsection{Statistics}
+Statistics are given in JSON with number values only to may parsing easier.
+
+\texttt{GET /stats}
+No authentication required. 
+
+Answer:
+\texttt{200 OK}
+\begin{lstlisting}
+{
+	"users" : 1234,
+	"transmitters_total" : 123,
+	"transmitters_online" : {
+		"widerange" : 13,
+		"personal" : 3
+	},
+	"nodes_total" : 10,
+	"nodes_online" : 19,
+	"processed_calls" : 1234,
+	"processed_rubric_content_changes" : 234	
+}
+\end{lstlisting}
+
+\todo{On the calls and rubric content changes: Always increasing counter link traffic on network device or reset at 00:00 am?}
+
+
+\subsection{Status}
+\texttt{GET /status}
+No authentication required. 
+
+Answer:
+\texttt{200 OK}
+\begin{lstlisting}
+{
+  "nodes": [
+    {
+      "host": "node1.ampr.org",
+      "port": 4000,
+      "reachable": true,
+      "last_seen": "2018-07-03T07:43:52.783611Z",
+      "response_time": 42
+    }
+  ]
+  "rabbitmq_connection_running" : true,
+  "couchdb_connection_running" : true,
+  "is_hamcloud_node" : false,
+  "connection_to_hamcloud_node" : true,
+  "general_health" : true
+}
+\end{lstlisting}
+
+
+\subsection{Telemetry}
+
+\texttt{GET /telemetry}
+No authentication required. Here all stored telemetry from all transmitters is provided.
+
+Answer:
+\texttt{200 OK}
+See \ref{protocoldef:telemetry}
+
+\texttt{GET /telemetry/<transmittername>}
+No authentication required. Here all stored telemetry from the specified transmitter is provided.
+
+Answer:
+\texttt{200 OK}
+See \ref{protocoldef:telemetry}
+
+\texttt{GET /telemetry/<transmittername>/<section\_of\_telemetry}
+No authentication required. Here all stored telemetry within the telemetry section from the specified transmitter is provided.
+Possible sections are 2. Level JSON groups, see \ref{protocoldef:telemetry}.
+Examples: onair, telemetry, transmitter\_configuration
+
+Answer:
+\texttt{200 OK}
+See \ref{protocoldef:telemetry}
+
+
 
 \section{Websocket API}
 \label{protocoldef:websocketapi}
