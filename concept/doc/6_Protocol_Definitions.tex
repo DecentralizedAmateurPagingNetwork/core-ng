@@ -141,7 +141,9 @@ Each subscriber has an array of enabled third-party applications. This allow to 
 The currently existing MQTT topics are defined in the CouchDB (see section \ref{protocoldef:couchdb:mqttservicesandsubscribers}). This makes it possible to add more third-party services and authorized users during runtime without the need to update the software.
 The valid users to subscribe to the topic are also listed in the same CouchDB database.
 
-The only permitted access for third-party consumers is read. So the subscribe request from a third-party MQTT-Client must use authentication which is checks against the CouchDB data. If correct, read access is granted. Core software has always write access to publish the calls 
+The only permitted access for third-party consumers is read. So the subscribe request from a third-party MQTT-Client must use authentication which is checks against the CouchDB data. If correct, read access is granted. Core software has always write access to publish the calls group messages.
+
+The transmitters who are supposed to send out the personal call or the rubric content are published with callsign, geographic location and type of transmitter (widerange or personal). With this generic concept, every third-party application can decide what to do with the content received.
 
 The encoding of the data is UTF-8.
 
@@ -149,10 +151,27 @@ The format of the data published for \textbf{personal paging calls} is
 \begin{lstlisting}
 {
 	"pagingcall" : {
-		"callsign" : "dh3wr",
+		"srccallsign" : "dl2ic",		
+		"dstcallsign" : "dh3wr",
+		"dstric" : 12344,
+		"dstsubric" : 0 ... 3,
 		"priority" : 3,
 		"message" : "DAPNET 2.0 rocks dear YL/OM"
-  }
+		"transmitted_by" : [
+			{
+				"callsign" : "db0abc",
+				"lat" : 12.123456,
+				"long" : 32.123456,
+				"type" : "PERONAL" | "WIDERANGE"
+			},
+			{
+				"callsign" : "db0def",
+				"lat" : 12.123456,
+				"long" : 32.123456,
+				"type" : "PERONAL" | "WIDERANGE"
+			}
+		]
+	}
 }
 \end{lstlisting}
 
@@ -160,14 +179,25 @@ The format of the data published for \textbf{rubric\_content paging calls} is
 \begin{lstlisting}
 {
 	"rubricmessage" : {
-		???
+		
 		"message" : ""
+		"transmitted_by" : [
+			{
+				"callsign" : "db0abc",
+				"lat" : 12.123456,
+				"long" : 32.123456,
+				"type" : "PERONAL" | "WIDERANGE"
+			},
+			{
+				"callsign" : "db0def",
+				"lat" : 12.123456,
+				"long" : 32.123456,
+				"type" : "PERONAL" | "WIDERANGE"
+			}
+		]
 	}
 }
 \end{lstlisting}
-\todo{check with BM-DEV}
-
-
 
 \section{Telemetry}
 \label{protocoldef:telemetry}
