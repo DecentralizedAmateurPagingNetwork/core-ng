@@ -236,7 +236,8 @@ The data is the same as received from the \textbf{dapnet.telemetry} exchange fro
 \subsection{Database Changes}
 \label{protcoldef:websocketapi:database_changes}
 URL: \texttt{ws://FQDN/database_changes}.
-To inform the website or the app about changes in the CouchDB database, the websocket mirocservice keeps a connection to the local CouchDB API and receives a stream of updated to the database. This JSON stream is just passed to the websocket client.
+To inform the website or the app about changes in the CouchDB database, the websocket mirocservice keeps a connection to the local CouchDB API and receives a stream of updated to the database. As there may be data in the changes that are confidential, the stream is parsed and sent out in a reduced form to the websocket client. Further information: \url{http://docs.couchdb.org/en/2.0.0/api/database/changes.html}
+\todo{Genaues Format der Ausgaben definieren}
 
 \section{CouchDB Documents and Structure}
 \todo{als Tabelle darstellen}
