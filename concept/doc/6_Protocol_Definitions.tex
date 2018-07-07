@@ -1,6 +1,27 @@
 \chapter{Protocol Definitions}
 
 \section{Core REST API}
+\todo{define all the website/app REST calls to interact with DAPNET}
+
+\subsection{Management and User interactions}
+
+\subsubsection{Calls}
+
+\subsubsection{Users}
+
+\subsubsection{Subscribers}
+
+\subsubsection{Transmitters}
+
+\subsubsection{Existing Transmitter Groups}
+
+\subsubsection{Rubrics}
+
+\subsubsection{Rubric Content}
+
+\subsubsection{Nodes}
+
+\subsubsection{Third-Party services and subscribers}
 
 \subsection{Transmitter sign-on, configuration and heartbeat}
 \label{protocoldef:TXsignon}
@@ -320,6 +341,7 @@ The statistic and telemetry REST API provides up-to-date information regarding t
 Statistics are given in JSON with number values only to may parsing easier.
 
 \texttt{GET /stats}
+
 No authentication required. 
 
 Answer:
@@ -344,6 +366,7 @@ Answer:
 
 \subsection{Status}
 \texttt{GET /status}
+
 No authentication required. 
 
 Answer:
@@ -371,26 +394,30 @@ Answer:
 \subsection{Telemetry}
 
 \texttt{GET /telemetry}
+
 No authentication required. Here all stored telemetry from all transmitters is provided.
 
 Answer:
 \texttt{200 OK}
-See \ref{protocoldef:telemetry}
+See \ref{protocoldef:telemetry}\\\\
 
 \texttt{GET /telemetry/<transmittername>}
+
 No authentication required. Here all stored telemetry from the specified transmitter is provided.
 
 Answer:
 \texttt{200 OK}
-See \ref{protocoldef:telemetry}
+
+See \ref{protocoldef:telemetry}\\\\
 
 \texttt{GET /telemetry/<transmittername>/<section\_of\_telemetry}
-No authentication required. Here all stored telemetry within the telemetry section from the specified transmitter is provided.
-Possible sections are 2. Level JSON groups, see \ref{protocoldef:telemetry}.
+
+No authentication required. Here all stored telemetry within the telemetry section from the specified transmitter is provided. Possible sections are 2. Level JSON groups, see \ref{protocoldef:telemetry}.\\
 Examples: onair, telemetry, transmitter\_configuration
 
 Answer:
 \texttt{200 OK}
+
 See \ref{protocoldef:telemetry}
 
 
