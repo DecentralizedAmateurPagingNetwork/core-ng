@@ -435,12 +435,197 @@ The data is the same as received from the \textbf{dapnet.telemetry} exchange fro
 \label{protcoldef:websocketapi:databasechanges}
 URL: \texttt{ws://FQDN/database\_changes}.
 To inform the website or the app about changes in the CouchDB database, the websocket mirocservice keeps a connection to the local CouchDB API and receives a stream of updated to the database. As there may be data in the changes that are confidential, the stream is parsed and sent out in a reduced form to the websocket client. Further information: \url{http://docs.couchdb.org/en/2.0.0/api/database/changes.html}
-\todo{Genaues Format der Ausgaben definieren}
+
+The format of the updates is:
+
+
+\subsection{Telemetry}
+
+\subsection{Administration}
+\label{protocoldef:RabbitMQ:dapnet.administration}
+If there is any update on the CouchDB, the other CouchDB instances are notified and updated automatically, but there is no trigger event to notify the websocket service about the change. As changes should be display immediately on the website or app, they have to be announced via websocket. In order to generate a trigger for changes in the CouchDB, the RabbitMQ exchange \textbf{dapnet.administration} is used and filled. All websocket microservices consume this exchange.
+
+
+\subsubsection{Transmitter related}
+\texttt{New transmitter added}
+
+\begin{lstlisting}
+{
+  "type": "transmitter",
+  "action" : "added",
+  "name": "db0abc",
+  "data" : {
+  (Complete Data dump as stored in CouchDB. If websocket client is authenticated as non-admin, remove AuthKey)
+  }
+}
+\end{lstlisting}
+
+\texttt{Existing transmitter changed}
+\begin{lstlisting}
+{
+  "type": "transmitter",
+  "action" : "changed",
+  "name": "db0abc",
+  "data" : {
+  (Complete Data dump as stored in CouchDB. If websocket client is authenticated as non-admin, remove AuthKey))
+  }
+}
+\end{lstlisting}
+
+\texttt{Transmitter deleted}
+\begin{lstlisting}
+{
+  "type": "transmitter",
+  "action" : "deleted",
+  "name": "db0abc"
+\end{lstlisting}
+
+\subsubsection{User related}
+\texttt{New User added}
+\begin{lstlisting}
+{
+  "type": "user",
+  "action" : "added",
+  "name": "db1abc",
+  "data" : {
+  (Complete Data dump as stored in CouchDB. If websocket client is authenticated as non-admin, just provide callsign.)
+  }
+}
+\end{lstlisting}
+
+\texttt{Existing user changed}
+\begin{lstlisting}
+{
+  "type": "user",
+  "action" : "changed",
+  "name": "db1abc",
+  "data" : {
+  (Complete Data dump as stored in CouchDB. If websocket client is authenticated as non-admin, just provide callsign.)
+  }
+}
+\end{lstlisting}
+
+\texttt{User deleted}
+\begin{lstlisting}
+{
+  "type": "user",
+  "action" : "deleted",
+  "name": "db1abc"
+}
+\end{lstlisting}
+
+
+\subsubsection{Rubric related}
+\texttt{New Rubric added}
+\begin{lstlisting}
+{
+  "type": "rubric",
+  "action" : "added",
+  "id": "...",
+  "data" : {
+  (Complete Data dump as stored in CouchDB)
+  }
+}
+\end{lstlisting}
+
+\texttt{Existing rubric changed}
+\begin{lstlisting}
+{
+  "type": "user",
+  "action" : "changed",
+  "id": "...",
+  "data" : {
+  (Complete Data dump as stored in CouchDB)
+  }
+}
+\end{lstlisting}
+
+\texttt{Rubric deleted}
+\begin{lstlisting}
+{
+  "type": "user",
+  "action" : "deleted",
+  "id": "..."
+}
+\end{lstlisting}
+
+\subsubsection{Rubric content related}
+\todo{Check against CouchDB structure}
+
+\texttt{New Rubric content added}
+\begin{lstlisting}
+{
+  "type": "rubric_content",
+  "action" : "added",
+  "id": "...??",
+  "data" : {
+  (Complete Data dump of all ten rubric messages as stored in CouchDB)
+  }
+}
+\end{lstlisting}
+
+\texttt{Existing rubric changed}
+\begin{lstlisting}
+{
+  "type": "rubric_content",
+  "action" : "changed",
+  "id": "...",
+  "data" : {
+  (Complete Data dump of all ten rubric messages as stored in CouchDB)
+  }
+}
+\end{lstlisting}
+
+\texttt{Rubric content deleted}
+\begin{lstlisting}
+{
+  "type": "rubric_content",
+  "action" : "deleted",
+  "id": "..."
+  "data" : {
+  (Complete Data dump of all ten rubric messages as stored in CouchDB, some may be empty)
+  }
+}
+\end{lstlisting}
+
+
+\subsubsection{Node related}
+\texttt{New node added}
+\begin{lstlisting}
+{
+  "type": "node",
+  "action" : "added",
+  "name": "db0abc",
+  "data" : {
+  (Complete Data dump as stored in CouchDB. If websocket client is authenticated as non-admin, just provide node name.)
+  }
+}
+\end{lstlisting}
+
+\texttt{Existing node changed}
+\begin{lstlisting}
+{
+  "type": "node",
+  "action" : "changed",
+  "name": "db0abc",
+  "data" : {
+  (Complete Data dump as stored in CouchDB. If websocket client is authenticated as non-admin, just provide node name.)
+  }
+}
+\end{lstlisting}
+
+\texttt{Node deleted}
+\begin{lstlisting}
+{
+  "type": "node",
+  "action" : "deleted",
+  "name": "db1abc"
+}
+\end{lstlisting}
+
 
 \section{CouchDB Documents and Structure}
 \todo{als Tabelle darstellen}
-
-
 
 \subsection{Users}
 
