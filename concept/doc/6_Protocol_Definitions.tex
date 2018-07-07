@@ -106,7 +106,7 @@ Valid Messages are:
 \subsubsection{dapnet.calls}
 \label{protocoldef:RabbitMQ:dapnet.calls}
 The messages to transfer data to be transmitted by the Transmitter has the following format.
-For each transmission, there is a separate RabbitMQ message, as different receivers might need different text encoding.
+For each transmission, there is a separate RabbitMQ message, as different receivers might need different text encoding. All encoding is already done, when this message is created. The transmitter does no character encoding at all. Both personal pagings and rubric related messages are transmitted with this protocol.
 
 \begin{lstlisting}
 {
@@ -116,6 +116,7 @@ For each transmission, there is a separate RabbitMQ message, as different receiv
 		"speed" : 1200,
 		"type" : "POCSAG",
 		"priority" : 3,
+		"message" : "ahdjkahskl"
   }
 }
 \end{lstlisting}
@@ -129,8 +130,42 @@ Same as for the the network originated calls in section \ref{protocoldef:RabbitM
 
 
 \subsection{Telemetry}
+On the telemetry exchange, all transmitters publish their telemetry messages. The format the same as in section \ref{protocoldef:telemetry}.
 
 \subsection{MQTT API for third-party consumers}
+\label{protocoldef:mqttapi}
+In order to allow third-party instances like \href{http://www.aprs-is.net/|APRS}, \href{http://brandmeister.network|Brandmeister} or others to get the emitted calls and rubric contents in a real time event driven way, there is an MQTT API. It is not implemented via a dedicated MQTT broker, but uses the existing RabbitMQ instance (\url{https://www.rabbitmq.com/mqtt.html}. There is no distribution of the messages via this MQTT broker; it is local only. So ever node publishes the messages locally on its own.
+Each subscriber has an array of enabled third-party applications. This allow to define the user, if call directed to her/his subscriber shall be also sent to third-party services (see \ref{protocoldef:couchdb:subscribers}.
+
+The currently existing MQTT topics are defined in the CouchDB (see section \ref{protocoldef:couchdb:mqttservicesandsubscribers}). This makes it possible to add more third-party services and authorized users during runtime without the need to update the software.
+The valid users to subscribe to the topic are also listed in the same CouchDB database.
+
+The only permitted access for third-party consumers is read. So the subscribe request from a third-party MQTT-Client must use authentication which is checks against the CouchDB data. If correct, read access is granted.
+
+The encoding of the data is UTF-8.
+
+The format of the data published for \textbf{personal paging calls} is
+\begin{lstlisting}
+{
+	"pagingcall" : {
+		"callsign" : "dh3wr",
+		"priority" : 3,
+		"message" : "DAPNET 2.0 rocks dear YL/OM"
+  }
+}
+\end{lstlisting}
+
+The format of the data published for \textbf{rubric\_content paging calls} is
+\begin{lstlisting}
+{
+	"rubricmessage" : {
+		???
+		"message" : ""
+	}
+}
+\end{lstlisting}
+
+
 
 
 \section{Telemetry}
@@ -388,6 +423,7 @@ To inform the website or the app about changes in the CouchDB database, the webs
 
  
 \subsection{Subscribers}
+\label{protocoldef:couchdb:subscribers}
 \todo{check if [] is valid JSON}
 \begin{lstlisting}
 {
@@ -406,6 +442,7 @@ To inform the website or the app about changes in the CouchDB database, the webs
      	},
      	...
      ],
+    "enabled_third_party_services" : ["APRS", "BM"],
     "owner" : ["dh3wr", "dl1abc"]
 }
 \end{lstlisting}
@@ -447,3 +484,21 @@ To inform the website or the app about changes in the CouchDB database, the webs
 	["content_message1",..,"content_message10"],
 }
 \end{lstlisting}
+
+\subsection{MQTT services and subscribers}
+\label{protocoldef:couchdb:mqttservicesandsubscribers}
+\begin{lstlisting}
+{
+	"_id" : "APRS",
+	"mqtt_topic_name" : "aprs"
+	"allowed_subscribers" : [
+		{
+			"name" : "example",
+			"password" : "<bcrypt hash>"
+		},
+		...
+	]
+}
+\end{lstlisting}
+
+
