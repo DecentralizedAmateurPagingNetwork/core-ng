@@ -90,12 +90,11 @@ If network wants to initiate handover to other node
 
 \section{RabbitMQ}
 \label{protocoldef:RabbitMQ}
-There are 4 exchanges on each RabbitMQ instance available:
+There are 3 exchanges on each RabbitMQ instance available:
 \begin{enumerate}
 \item dapnet.calls: Messages coming from other nodes but the node where the instance is running
 \item dapnet.local\_calls: Messages coming from the local node instance
 \item dapnet.telemetry: Messages containing telemetry from transmitters
-\item dapnet.administration: Update on the CouchDB from other Nodes to inform the Websocket microservice about changes
 \end{enumerate}
 
 
@@ -116,154 +115,6 @@ Valid Messages are:
 
 
 \subsection{Telemetry}
-
-\subsection{Administration}
-\label{protocoldef:RabbitMQ:dapnet.administration}
-If there is any update on the CouchDB, the other CouchDB instances are notified and updated automatically, but there is no trigger event to notify the websocket service about the change. As changes should be display immediately on the website or app, they have to be announced via websocket. In order to generate a trigger for changes in the CouchDB, the RabbitMQ exchange \textbf{dapnet.administration} is used and filled. All websocket microservices consume this exchange.
-
-
-\subsubsection{Transmitter related}
-\texttt{New transmitter added}
-\begin{lstlisting}
-{
-  "type": "transmitter",
-  "action" : "added",
-  "name": "db0abc",
-  "data" : {
-  (Complete Data dump as stored in CouchDB)
-  }
-}
-\end{lstlisting}
-
-\texttt{Existing transmitter changed}
-\begin{lstlisting}
-{
-  "type": "transmitter",
-  "action" : "changed",
-  "name": "db0abc",
-  "data" : {
-  (Complete Data dump as stored in CouchDB)
-  }
-}
-\end{lstlisting}
-
-\texttt{Transmitter deleted}
-\begin{lstlisting}
-{
-  "type": "transmitter",
-  "action" : "deleted",
-  "name": "db0abc"
-}
-\end{lstlisting}
-
-\subsubsection{User related}
-\texttt{New User added}
-\begin{lstlisting}
-{
-  "type": "user",
-  "action" : "added",
-  "name": "db1abc",
-  "data" : {
-  (Complete Data dump as stored in CouchDB)
-  }
-}
-\end{lstlisting}
-
-\texttt{Existing user changed}
-\begin{lstlisting}
-{
-  "type": "user",
-  "action" : "changed",
-  "name": "db1abc",
-  "data" : {
-  (Complete Data dump as stored in CouchDB)
-  }
-}
-\end{lstlisting}
-
-\texttt{User deleted}
-\begin{lstlisting}
-{
-  "type": "user",
-  "action" : "deleted",
-  "name": "db1abc"
-}
-\end{lstlisting}
-
-
-\subsubsection{Rubric related}
-\texttt{New Rubric added}
-\begin{lstlisting}
-{
-  "type": "rubric",
-  "action" : "added",
-  "id": "...",
-  "data" : {
-  (Complete Data dump as stored in CouchDB)
-  }
-}
-\end{lstlisting}
-
-\texttt{Existing rubric changed}
-\begin{lstlisting}
-{
-  "type": "user",
-  "action" : "changed",
-  "id": "...",
-  "data" : {
-  (Complete Data dump as stored in CouchDB)
-  }
-}
-\end{lstlisting}
-
-\texttt{Rubric deleted}
-\begin{lstlisting}
-{
-  "type": "user",
-  "action" : "deleted",
-  "id": "..."
-}
-\end{lstlisting}
-
-\subsubsection{Rubric content related}
-\todo{Check against CouchDB structure}
-
-\texttt{New Rubric content added}
-\begin{lstlisting}
-{
-  "type": "rubric_content",
-  "action" : "added",
-  "id": "...??",
-  "data" : {
-  (Complete Data dump of all ten rubric messages as stored in CouchDB)
-  }
-}
-\end{lstlisting}
-
-\texttt{Existing rubric changed}
-\begin{lstlisting}
-{
-  "type": "rubric_content",
-  "action" : "changed",
-  "id": "...",
-  "data" : {
-  (Complete Data dump of all ten rubric messages as stored in CouchDB)
-  }
-}
-\end{lstlisting}
-
-\texttt{Rubric content deleted}
-\begin{lstlisting}
-{
-  "type": "rubric_content",
-  "action" : "deleted",
-  "id": "..."
-  "data" : {
-  (Complete Data dump of all ten rubric messages as stored in CouchDB, some may be empty)
-  }
-}
-\end{lstlisting}
-
 
 \subsection{MQTT API for third-party consumers}
 
@@ -371,7 +222,6 @@ or
 }
 \end{lstlisting}
 
-
 \section{Statistic and Telemetry REST API}
 
 \section{Websocket API}
@@ -380,11 +230,13 @@ The idea is to provide an API for the website and the app to display real-time i
 
 \subsection{Telemetry}
 \label{protcoldef:websocketapi:telemetry}
+URL: \texttt{ws://FQDN/telemetry}.
 The data is the same as received from the \textbf{dapnet.telemetry} exchange from the RabbitMQ instance. It is defined in section \ref{protocoldef:telemetry}.
 
-\subsection{Administration}
-\label{protcoldef:websocketapi:administration}
-The data is the same as received from the \textbf{dapnet.administation} exchange from the RabbitMQ instance. It i defined in section \ref{protocoldef:RabbitMQ:dapnet.administration}.
+\subsection{Database Changes}
+\label{protcoldef:websocketapi:database_changes}
+URL: \texttt{ws://FQDN/database_changes}.
+To inform the website or the app about changes in the CouchDB database, the websocket mirocservice keeps a connection to the local CouchDB API and receives a stream of updated to the database. This JSON stream is just passed to the websocket client.
 
 \section{CouchDB Documents and Structure}
 \todo{als Tabelle darstellen}
