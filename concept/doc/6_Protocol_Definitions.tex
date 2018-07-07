@@ -234,8 +234,8 @@ URL: \texttt{ws://FQDN/telemetry}.
 The data is the same as received from the \textbf{dapnet.telemetry} exchange from the RabbitMQ instance. It is defined in section \ref{protocoldef:telemetry}.
 
 \subsection{Database Changes}
-\label{protcoldef:websocketapi:database_changes}
-URL: \texttt{ws://FQDN/database_changes}.
+\label{protcoldef:websocketapi:databasechanges}
+URL: \texttt{ws://FQDN/database\_changes}.
 To inform the website or the app about changes in the CouchDB database, the websocket mirocservice keeps a connection to the local CouchDB API and receives a stream of updated to the database. As there may be data in the changes that are confidential, the stream is parsed and sent out in a reduced form to the websocket client. Further information: \url{http://docs.couchdb.org/en/2.0.0/api/database/changes.html}
 \todo{Genaues Format der Ausgaben definieren}
 
@@ -250,14 +250,17 @@ To inform the website or the app about changes in the CouchDB database, the webs
  \caption{CouchDB: Users}
  \begin{tabular}{r|r|r|r}
   Key & Value-Type & Valid Value Range & Example \\
-  _id & STRING & N/A & dl1abc
+  \hline
+  \_id & STRING & N/A & dl1abc \\
   password & Bcrypt with rand. salt & N/A & ?? \\
   admin & boolean & true/false & true \\
   enabled & boolean & true/false & true \\
-  created_on & DATTEIME & & ??\\
-  last_change_by & STING & valid user name & dh3wr \\
-  email_valid & boolean & true/false & true \\
-  avatar_picture & couchdb_attachment & & \\
+  created\_on & DATETIME & & ??\\
+  last\_change\_by & STING & valid user name & dh3wr \\
+  email\_valid & boolean & true/false & true \\
+  avatar\_picture & couchdb\_attachment & & \\
+  \end{tabular}
+  \label{tab:couchdb:users}
 \end{table}
 
 \begin{lstlisting}
@@ -275,6 +278,24 @@ To inform the website or the app about changes in the CouchDB database, the webs
 \end{lstlisting}
 
 \subsection{Nodes}
+\begin{table}[h]
+ \caption{CouchDB: Nodes}
+ \begin{tabular}{r|r|r|r}
+  Key & Value-Type & Valid Value Range & Example \\
+  \hline
+  \_id & STRING & N/A & db0abc \\
+  status & ENUM/STRING & OFFLINE | ONLINE | ERROR & ONLINE \\
+  version & STRING & ?.?.? & 1.2.3 \\
+  ip\_address & IPv4/STRING & & 1.2.3.4 \\
+  latitude & decimal number, 6 dec. digits & -90 ... 90 & 34.123456 \\
+  longitude & decimal number, 6 dec. digits & -180 ... 180 & 34.123456 \\
+  hamcloudnode & boolean & true/false & true \\
+  owners & ARRAY of STRING & N/A & ["dl1abc","dh3wr","dl2ic"] \\
+  avatar\_picture & couchdb\_attachment & & \\
+  \end{tabular}
+  \label{tab:couchdb:nodes}
+\end{table}
+
 \begin{lstlisting}
 {
 	"_id" : "db0abc",
@@ -291,18 +312,44 @@ To inform the website or the app about changes in the CouchDB database, the webs
 \end{lstlisting}
 
 \subsection{Transmitters}
+\todo{Tabelle weiter machen}
+\begin{table}[h]
+ \caption{CouchDB: Transmitters}
+ \begin{tabular}{r|r|r|r}
+  Key & Value-Type & Valid Value Range & Example \\
+  \hline
+  \_id & STRING & N/A & db0abc \\
+  auth\_key & STRING & N/A & asd2FD3q3rF \\
+  enabled & boolean & true/false & true \\
+  status & ENUM/STRING & OFFLINE | ONLINE | UNKNOWN & ONLINE \\
+  site\_type & ENUM/STRING & PERSONAL | WIDERANGE & WIDERANGE \\
+  aprs\_reporting\_enabled & boolean & true/false & true \\
+  last\_update & DATETIME & & ??\\
+  last\_connect & DATETIME & & ??\\
+  ip\_address & IPv4/STRING & & 1.2.3.4 \\
+  device\_type & STRING & Unipager | DAPNET-Proxy & Unipager \\
+  device\_version & STRING & ?.?.? & 1.2.3 \\
+  latitude & decimal number, 6 dec. digits & -90 ... 90 & 34.123456 \\
+  longitude & decimal number, 6 dec. digits & -180 ... 180 & 34.123456 \\
+  rf\_power\_watt & decimal number, 3 dec. digits & 0.001 ...  & 12.3 \\ 
+    
+  
+  owners & ARRAY of STRING & N/A & ["dl1abc","dh3wr","dl2ic"] \\
+  avatar\_picture & couchdb\_attachment & & \\
+  \end{tabular}
+  \label{tab:couchdb:transmitters}
+\end{table}
 
 \begin{lstlisting}
 {
 	"_id" : "db0abc",
-    "auth_keys" : "hdjaskhdlj",
+    "auth_key" : "hdjaskhdlj",
     "enabled" : true,
 	"status" : "UNKNOWN" | "OFFLINE" | "ONLINE",
 	"site_type" : "PERSONAL" | "WIDERANGE",
 	"aprs_reporting_enabled" : true,
     "last_update" : "<DATETIME>",
-	"ast_connect" : "<DATETIME>",
-	"connected_since" : "<DATETIME>",
+	"last_connect" : "<DATETIME>",
     "ip_address" : "1.2.3.4",
     "device_type" : "Unipager",
     "device_version" : "1.3.2",
