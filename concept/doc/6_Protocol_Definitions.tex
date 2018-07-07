@@ -105,12 +105,26 @@ Valid Messages are:
 
 \subsubsection{dapnet.calls}
 \label{protocoldef:RabbitMQ:dapnet.calls}
+The messages to transfer data to be transmitted by the Transmitter has the following format.
+For each transmission, there is a separate RabbitMQ message, as different receivers might need different text encoding.
+
+\begin{lstlisting}
+{
+	"pagingcall" : {
+		"ric" : 12342,
+		"subric" : 0 to 3,
+		"speed" : 1200,
+		"type" : "POCSAG",
+		"priority" : 3,
+  }
+}
+\end{lstlisting}
+The selection of the transmitter is done by means of the routing key. Besides, the priority is also used in the RabbitMQ queuing to deliver higher priority messages first.
 
 
-
-\subsubsection{dapnet.calls}
+\subsubsection{dapnet.local\_calls}
 \label{protocoldef:RabbitMQ:dapnet.local_calls}
-
+Same as for the the network originated calls in section \ref{protocoldef:RabbitMQ:dapnet.calls}.
 
 
 
