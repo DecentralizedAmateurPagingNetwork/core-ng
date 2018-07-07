@@ -12,7 +12,7 @@
 \subsection{Integration of new Nodes}
 
 
-\section{Interface Definition}
+\section{Interface Overview and Purpose}
 
 \subsection{RabbitMQ Exchange}
 
@@ -25,3 +25,7 @@
 \subsection{Websocket for real-time updates on configuration, Statistics and Telemetry API}
 
 \subsection{MQTT Fanout for third-party consumers}
+
+\section{User Roles and Permissions}
+There are two types of users: Admins and Non-Admins. Admins are allowed to do everything. Non-Admins are just allowed to edit the entities that they own and send calls.
+\todo{Make overview of data displayed to Non-Admin users from CouchDB in REST-Calls (see \ref{protocoldef:corerestapi} and Websocket \ref{protocoldef:websocketapi}.}
