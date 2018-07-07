@@ -13,20 +13,21 @@ Introduction
 		Used third-party Software
 		HAMCLOUD Description
 		Rubric Handling Concept
-		Queueing Priority Concept
+		Queuing Priority Concept
 
 DAPNET Network Definition
 	Cluster Description
 		Real-time Message delivery with RabbitMQ
 		Distributed Database with CouchDB
 		Authentification Concept
+		Integration of new Nodes
 	Interface Definition
 		RabbitMQ Exchange
 		CouchDB Interface
 		Core REST API
 		Statistic and Telemetry REST API
 		Websocket for real-time updates on configuration, Statistics and Telemetry API
-		MQTT Fanout
+		MQTT Fanout for third-party consumers
 
 Internal Programming Workflows
 	Sent calls
@@ -68,5 +69,5 @@ Protocol Definitions
 	Telemetry
 	Statistic and Telemetry REST API
 	Websocket API
-	MTQTT API
+	MQTT API
 	CouchDB Documents and Structure

@@ -1,0 +1,91 @@
+\chapter{Internal Programming Workflows}
+
+\section{Sent calls}
+
+\section{Add, edit, delete User}
+\textbf{Show current users}
+\begin{enumerate}
+	\item Get current status via REST GET to /users on Core URL
+	\item Handle updates via Websocket
+\end{enumerate}
+
+\textbf{Add and Edit User}
+\begin{enumerate}
+	\item If edit: Get current status via REST GET to /users/<username> on Core URL
+	\item Show edit form and place data
+	\item On save button event, send REST POST to /users/<username> on Core URL
+\end{enumerate}
+The core will update the CouchDB and generate a RabbitMQ administration message to inform all other nodes. This information is transmitted by the Stats and Websocket Micro-Service to all connected websocket clients to get them updated. This will also happen for the website instance emitting the edit request, so its content is also updated.
+
+
+\textbf{Delete User}
+\begin{enumerate}
+	\item Ask "Are you sure?"
+	\item If yes, sent REST DELETE to /users/<username> on Core URL
+\end{enumerate}
+The core will update the CouchDB and generate a RabbitMQ administration message to inform all other nodes. This information is transmitted by the Stats and Websocket Micro-Service to all connected websocket clients to get them updated. This will also happen for the website instance emitting the edit request, so its content is also updated.
+
+\section{Add, edit, delete Subscriber}
+
+\section{Add, edit, delete Node (tbd)}
+
+\section{Add, edit, delete Transmitter}
+
+\section{Implementation of Transmitter Groups}
+
+\section{Add, edit, delete Rubrics}
+
+\textbf{Show current configuration}
+\begin{enumerate}
+	\item Get current status via REST GET to /rubrics on Core URL
+	\item Handle updates via websocket
+\end{enumerate}
+
+\textbf{Add and Edit rubrics}
+\begin{enumerate}
+	\item If edit: Get current status via REST GET to /rubrics/<rubricname> on Core URL
+	\item Show edit form and place data
+	\item On save button event, send REST POST to /users/<rubricname> on Core URL
+\end{enumerate}
+The core will update the CouchDB and generate a RabbitMQ administration message to inform all other nodes. This information is transmitted by the Stats and Websocket Micro-Service to all connected websocket clients to get them updated. This will also happen for the website instance emitting the edit request, so its content is also updated.
+
+
+\textbf{Delete rubric}
+\begin{enumerate}
+	\item Ask "Are you sure?"
+	\item If yes, sent REST DELETE to /users/<rubricname> on Core URL
+\end{enumerate}
+The core will update the CouchDB and generate a RabbitMQ administration message to inform all other nodes. This information is transmitted by the Stats and Websocket Micro-Service to all connected websocket clients to get them updated. This will also happen for the website instance emitting the edit request, so its content is also updated.
+
+\section{Add, edit, delete Rubrics content}
+
+\section{Add, edit, delete, assign Rubrics to Transmitter/-Groups}
+
+\section{Ports and Loadbalacing Concept}
+
+\section{Periodic Tasks (Scheduler)}
+
+\section{Plugin Interface}
+
+\section{Transmitter Connection}
+Transmitter connections consist of two connections to a Node. A REST connection for initial announcement of a new transmitter, heartbeat messages and transmitter configuration and a RabbitMQ connection to receive the data to be transmitted.
+
+The workflow for a transmitter connection is the following:
+\begin{enumerate}
+\item Announce new connecting transmitter via Core REST Interface (\ref{protocoldef:TXsignon}).
+\item Get as response the transmitter configuration or an error message (\ref{protocoldef:TXconfig_or_error}).
+\item Initiate RabbitMQ connection to get the data to be transmitted (\ref{protocoldef:RabbitMQ:Transmitters}).
+\end{enumerate}
+
+The authentication of the transmitter's REST calls consist of the transmitter name and its AuthKey, which is checked against the value in the CouchDB for this transmitter.
+
+
+
+
+\section{Transmitter connections}
+If a transmitter wants to connect to DAPNET, the first step is to sign-in and show it's presence via the Core REST interface. This interface is also used for transmitter configuration like enabled timeslots and keep-alive polling.
+
+\subsection{Authentication of all HTTP-Requests in this context}
+All HTTP-requests issued from a transmitter have to send a valid HTTP authentication, which is checked against the CouchDB. It consists of the transmitter name and its AuthKey.
+
+\section{DAPNET-Proxy}
