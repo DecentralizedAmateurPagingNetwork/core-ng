@@ -31,7 +31,7 @@ DAPNET Network Definition
 Internal Programming Workflows
 	Sent calls
 	Add, edit, delete User
-	Add, edit, delete subscriber
+	Add, edit, delete Subscriber
 	Add, edit, delete Node (tbd)
 	Add, edit, delete Transmitter
 	Implementation of Transmitter Groups
@@ -40,7 +40,9 @@ Internal Programming Workflows
 	Ports and Loadbalacing Concept
 	Periodic Tasks (Scheduler)
 	Plugin Interface
+	Transmitter Connection
 	DAPNET-Proxy
+	
 
 External Usage Workflows
 	General Concept of REST and Websocket-Updates
