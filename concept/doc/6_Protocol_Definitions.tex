@@ -241,7 +241,24 @@ To inform the website or the app about changes in the CouchDB database, the webs
 
 \section{CouchDB Documents and Structure}
 \todo{als Tabelle darstellen}
+
+
+
 \subsection{Users}
+
+\begin{table}[h]
+ \caption{CouchDB: Users}
+ \begin{tabular}{r|r|r|r}
+  Key & Value-Type & Valid Value Range & Example \\
+  _id & STRING & N/A & dl1abc
+  password & Bcrypt with rand. salt & N/A & ?? \\
+  admin & boolean & true/false & true \\
+  enabled & boolean & true/false & true \\
+  created_on & DATTEIME & & ??\\
+  last_change_by & STING & valid user name & dh3wr \\
+  email_valid & boolean & true/false & true \\
+  avatar_picture & couchdb_attachment & & \\
+\end{table}
 
 \begin{lstlisting}
 {
