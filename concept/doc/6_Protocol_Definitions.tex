@@ -5,7 +5,6 @@
 \todo{define all the website/app REST calls to interact with DAPNET}
 
 \subsection{Management and User interactions}
-
 \subsubsection{Calls}
 
 \subsubsection{Users}
@@ -112,12 +111,12 @@ If network wants to initiate handover to other node
 
 \section{RabbitMQ}
 \label{protocoldef:RabbitMQ}
-There are 3 exchanges on each RabbitMQ instance available:
-\begin{enumerate}
-\item dapnet.calls: Messages coming from other nodes but the node where the instance is running
-\item dapnet.local\_calls: Messages coming from the local node instance
-\item dapnet.telemetry: Messages containing telemetry from transmitters
-\end{enumerate}
+There are 3 exchanges available on each RabbitMQ instance:
+\begin{description}
+\item[dapnet.calls] Messages shared between all nodes
+\item[dapnet.local\_calls] Messages coming from the local node instance
+\item[dapnet.telemetry] Messages containing telemetry from transmitters
+\end{description}
 
 
 \subsection{Transmitters}
@@ -127,29 +126,36 @@ Valid Messages are:
 
 \subsubsection{dapnet.calls}
 \label{protocoldef:RabbitMQ:dapnet.calls}
-The messages to transfer data to be transmitted by the transmitter have the following format.
-For each transmission, there is a separate RabbitMQ message, as different receivers might need different text encoding. All encoding is already done, when this message is created. The transmitter does no character encoding at all. Both personal pagings and rubric related messages are transmitted with this protocol.
+The messages to transfer data to be transmitted by the transmitter have the
+following format.
+
+For each transmission, there is a separate RabbitMQ message, as different
+receivers might need different text encoding. All encoding is already done, when
+this message is created. The transmitter does no character encoding at all. Both
+personal pagings and rubric related messages are transmitted with this protocol.
 
 \begin{lstlisting}
 {
-	"pagingcall" : {
-		"ric" : 12342,
-		"subric" : 0 to 3,
-		"speed" : 1200,
-		"type" : "POCSAG",
-		"priority" : 3,
-		"message" : "ahdjkahskl"
+  "id": "016c25fd-70e0-56fe-9d1a-56e80fa20b82",
+  "protocol": "POCSAG",
+  "priority": 3,
+  "message": {
+    "ric": 12342,
+    "subric": 0 to 3,
+    "type": "ALPHANUM",
+    "speed": 1200,
+    "function": 3,
+    "data": "Lorem ipsum dolor sit amet"
   }
 }
 \end{lstlisting}
-The selection of the transmitter is done by means of the routing key. Besides, the priority is also used in the RabbitMQ queuing to deliver higher priority messages first.
-
+The selection of the transmitter is done by means of the routing key. Besides,
+the priority is also used in the RabbitMQ queuing to deliver higher priority
+messages first.
 
 \subsubsection{dapnet.local\_calls}
 \label{protocoldef:RabbitMQ:dapnet.local_calls}
 Same as for the the network originated calls in section \ref{protocoldef:RabbitMQ:dapnet.calls}.
-
-
 
 \subsection{Telemetry}
 On the telemetry exchange, all transmitters publish their telemetry messages. The format the same as in section \ref{protocoldef:telemetry}.
@@ -172,167 +178,152 @@ The encoding of the data is UTF-8.
 The format of the data published for \textbf{personal paging calls} is
 \begin{lstlisting}
 {
-	"pagingcall" : {
-		"srccallsign" : "dl2ic",		
-		"dstcallsign" : "dh3wr",
-		"dstric" : 12344,
-		"dstsubric" : 0 ... 3,
-		"priority" : 3,
-		"message" : "DAPNET 2.0 rocks dear YL/OM"
-		"transmitted_by" : [
-			{
-				"callsign" : "db0abc",
-				"lat" : 12.123456,
-				"long" : 32.123456,
-				"type" : "PERONAL" | "WIDERANGE"
-			},
-			{
-				"callsign" : "db0def",
-				"lat" : 12.123456,
-				"long" : 32.123456,
-				"type" : "PERONAL" | "WIDERANGE"
-			}
-		],
-		"timestamp" : <TIMESTAMP>
-	}
+  "pagingcall" : {
+    "srccallsign" : "dl2ic",
+    "dstcallsign" : "dh3wr",
+    "dstric" : 12344,
+    "dstsubric" : 0 ... 3,
+    "priority" : 3,
+    "message" : "DAPNET 2.0 rocks dear YL/OM"
+    "transmitted_by" : [
+      {
+        "callsign" : "db0abc",
+        "lat" : 12.123456,
+        "long" : 32.123456,
+        "type" : "PERONAL" | "WIDERANGE"
+      },
+      {
+        "callsign" : "db0def",
+        "lat" : 12.123456,
+        "long" : 32.123456,
+        "type" : "PERONAL" | "WIDERANGE"
+      }
+    ],
+    "timestamp" : <TIMESTAMP>
+  }
 }
 \end{lstlisting}
 
 The format of the data published for \textbf{rubric\_content paging calls} is
 \begin{lstlisting}
 {
-	"rubricmessage" : {
-		
-		"message" : ""
-		"transmitted_by" : [
-			{
-				"callsign" : "db0abc",
-				"lat" : 12.123456,
-				"long" : 32.123456,
-				"type" : "PERONAL" | "WIDERANGE"
-			},
-			{
-				"callsign" : "db0def",
-				"lat" : 12.123456,
-				"long" : 32.123456,
-				"type" : "PERONAL" | "WIDERANGE"
-			}
-		],
-		"timestamp" : <TIMESTAMP>
-	}
+  "rubricmessage" : {
+    "message" : ""
+    "transmitted_by" : [
+      {
+        "callsign" : "db0abc",
+        "lat" : 12.123456,
+        "long" : 32.123456,
+        "type" : "PERONAL" | "WIDERANGE"
+      },
+      {
+        "callsign" : "db0def",
+        "lat" : 12.123456,
+        "long" : 32.123456,
+        "type" : "PERONAL" | "WIDERANGE"
+      }
+    ],
+    "timestamp" : <TIMESTAMP>
+  }
 }
 \end{lstlisting}
 
 \section{Telemetry}
 \label{protocoldef:telemetry}
-Telemetry is sent from transmitters to the RabbitMQ exchange \textbf{dapnet.telemetry} as defined in section \ref{protocoldef:RabbitMQ}. It is also used in the same way on the websocket API to inform the website and the app about the telemetry in real-time in section \ref{protcoldef:websocketapi:telemetry}.
+Telemetry is sent from transmitters to the RabbitMQ exchange
+\textbf{dapnet.telemetry} as defined in section \ref{protocoldef:RabbitMQ}. It
+is also used in the same way on the websocket API to inform the website and the
+app about the telemetry in real-time in section
+\ref{protcoldef:websocketapi:telemetry}.
 
-This is sent every minute in complete. If there are changes, just a subset is sent. The \"name\" key is always mandatory.
+This is sent every minute in complete. If there are changes, just a subset is sent.
+The name of the transmitter is used as routing key for the message.
 \begin{lstlisting}
 {
-    "name": "db0acb",
-    "onair" : true,
-    "telemetry" : {
-        "ConnectionStatus": {
-            "Connected" : true,
-            "ConnectedtoNodeName" : "db0xyz"
-            "ConnectedtoNodeIP" : "1.2.3.4"
-            "ConnectedtoNodePort" : 1234
-            "ConnectedSince" : "<timestamp-format>",
-	    	"NTPSynced" : true,
-            "NTPOffestMilliseconds" : 124
-            "NTPServerUsedIP" : ["134.130.4.1", "12.2.3.2"]
-        },
-		"QueueStatus" : {
-        	"QueuedMessages" : {
-                "Total" : 1234,
-                "Prio1": 1234,
-                "Prio2": 1234,
-                "Prio3": 1234,
-                "Prio4": 1234,
-                "Prio5": 1234,
-                "Prio10": 1234
-	        },
-	        "SentMessages": {
-                "Total" : 1234,
-                "Prio1": 1234,
-                "Prio2": 1234,
-                "Prio3": 1234,
-                "Prio4": 1234,
-                "Prio5": 1234,
-                "Prio10": 1234
-			},
-		},
-		message_count: 1234,
-        "PrefinedTemperatures" : {
-            "Unit" : "C" | "F" | "K",
-         
-            "AirInlet" : 12.2,
-            "AirOutlet" : 14.2,
-            "Transmitter" : 42.2,
-            "PowerAmplifier" : 45.2,
-            "CPU" : 93.2,
-            "PowerSupply" : 32.4
-        },
-        "CustomTemperatures" : {
-            "Unit" : "C" | "F" | "K",
-            [
-                {"Value" : 12.2, "Description" : "Aircon Inlet"},
-                {"Value" : 16.2, "Description" : "Aircon Outlet"},
-                {"Value" : 12.3, "Description" : "Fridge Next to Programmer"}
-            ],
-        },
-        "PowerSupply" : {
-            "OnBattery": false,
-            "OnEmergencyPower": false,
-            "DCInputVoltage" : 12.4,
-            "DCInputCurrent" : 3.23
-        },
-        "RFoutput" : {
-            "OutputPowerForwardinWatts": 12.2,
-            "OutputPowerReturninWatts" : 12.2,
-            "OutputVSWR" : 1.2
-        }
-	"transmitter_configuration" : {
-		"ConfiguredIP": "123.4.3.2",
-		"timeslots" : [true, false,...,	false],
-		"SoftwareType" : "Unipager" | "MMDVM" | "DAPNET-Proxy",
-        "SoftwareVersion" : "v1.2.3", | "20180504" | "v2.3.4",
-		"CPUHardwareType" : "Raspberry Pi 3B+"
-		"RFHardware" : {
-			"C9000" : {
-				"UnipagerPowered" : true,
-				"ArduinoPADummy" : true,
-				"ArduinoPADummySettinginWatts" : 123,
-				"ArduinoPADummyPort" : "/devttyUSB0"
-or
-				"RPC-CardPowered" : false,
-				"RPC-Version" : "XOS/2.23pre",
-			},
-            "Raspager" : {
-				"RaspagerMod" : 13,
-				"RaspagerPower" : 63,
-				"ExternalPowerAmplifier": false,
-				"RaspagerRFVersion" : "V2"
-			},
-			"Audio" : {
-				"TXModel" : ["GM1200", "T7F", "GM340", "FREITEXT"],
-				"AudioLevelUnipager" : 83,
-				"TxDelayinMilliseconds" : 3
-			},
-			"RFM69" : {
-				"Port" : "/dev/ttyUSB0"
-			},
-			"MMDVM DualHS..." : {
-				"DAPNETExclusive" : true
-			}
-		},
-		"DAPNET_Proxy" : {
-			"ConnectionStatus" : "connected",
-			"ConnectionStatus" : "connecting",
-			"ConnectionStatus" : "disconnected"
-		}
-	}
+  "onair": true,
+  "node": {
+    "name": "db0xyz",
+    "ip": "44.42.23.8",
+    "port": 1234,
+    "connected": true,
+    "connected_since": "<timestamp-format>"
+   },
+  "ntp": {
+    "synced": true,
+    "offset": 124,
+    "server": ["134.130.4.1", "12.2.3.2"],
+  },
+  "messages": {
+    "queued": [123, 123, 123, 123, 123, 123],
+    "sent": [123, 123, 123 , 123, 123, 123]
+  },
+  "temperatures": {
+    "unit": "C" | "F" | "K",
+    "air_inlet": 12.2,
+    "air_outlet": 14.2,
+    "transmitter": 42.2,
+    "power_amplifier": 45.2,
+    "cpu": 93.2,
+    "power_supply": 32.4,
+    "custom": [
+      {"value": 12.2, "description": "Aircon Inlet"},
+      {"value": 16.2, "description": "Aircon Outlet"},
+      {"value": 12.3, "description": "Fridge Next to Programmer"}
+    ]
+  },
+  "power_supply": {
+    "on_battery": false,
+    "on_emergency_power": false,
+    "dc_input_voltage": 12.4,
+    "dc_input_current": 3.23
+  },
+  "rf_output" : {
+    "fwd": 12.2,
+    "refl" : 12.2,
+    "vswr" : 1.2
+  },
+  "config": {
+    "ip": "123.4.3.2",
+    "timeslots" : [true, false,...,	false],
+    "software": {
+      name: "Unipager" | "MMDVM" | "DAPNET-Proxy",
+      version: "v1.2.3", | "20180504" | "v2.3.4",
+    },
+  }
+  "hardware": {
+    "platform": "Raspberry Pi 3B+"
+  },
+  "rf_hardware": {
+    "c9000": {
+      "<pa_dummy>": {
+        "output_power": 123,
+        "port": "/dev/ttyUSB0"
+      }
+      "<rpc>": {
+        "version" : "XOS/2.23pre"
+      }
+    },
+    "raspager": {
+      "modulation": 13,
+      "power": 63,
+      "external_pa": false,
+      "version": "V2"
+    },
+    "audio": {
+      "transmitter": "GM1200" | "T7F" | "GM340" | "FREITEXT",
+      "audio_level": 83,
+      "tx_delay": 3
+    },
+    "rfm69": {
+      "port": "/dev/ttyUSB0"
+    },
+    "mmdvm_dualhs": {
+     "dapnet_exclusive": true
+    }
+  },
+  "proxy" : {
+    "status": "connected" | "connecting" | "disconnected"
+  }
 }
 \end{lstlisting}
 
@@ -345,32 +336,38 @@ Statistics are given in JSON with number values only to may parsing easier.
 
 \texttt{GET /stats}
 
-No authentication required. 
+No authentication required.
 
 Answer:
 \texttt{200 OK}
 \begin{lstlisting}
 {
-	"users" : 1234,
-	"transmitters_total" : 123,
-	"transmitters_online" : {
-		"widerange" : 13,
-		"personal" : 3
-	},
-	"nodes_total" : 10,
-	"nodes_online" : 19,
-	"processed_calls" : 1234,
-	"processed_rubric_content_changes" : 234	
+  "users" : 1234,
+  "transmitters": {
+    "personal": {
+      "online": 13
+      "total": 34
+    },
+    "widerage": {
+      "online": 53,
+      "total": 97
+    }
+  }
+  "nodes": {
+    "online": 10,
+    "total": 19
+  },
+  "processed_calls": 1234,
+  "processed_rubric_content_changes": 234
 }
 \end{lstlisting}
 
 \todo{On the calls and rubric content changes: Always increasing counter link traffic on network device or reset at 00:00 am?}
 
-
 \subsection{Status}
 \texttt{GET /status}
 
-No authentication required. 
+No authentication required.
 
 Answer:
 \texttt{200 OK}
@@ -384,15 +381,16 @@ Answer:
       "last_seen": "2018-07-03T07:43:52.783611Z",
       "response_time": 42
     }
-  ]
-  "rabbitmq_connection_running" : true,
-  "couchdb_connection_running" : true,
-  "is_hamcloud_node" : false,
-  "connection_to_hamcloud_node" : true,
-  "general_health" : true
+  ],
+  "connections": {
+    "rabbitmq": true,
+    "couchdb": true,
+    "hamcloud": true,
+  },
+  "hamcloud_node": false,
+  "general_health": true
 }
 \end{lstlisting}
-
 
 \subsection{Telemetry}
 
@@ -413,9 +411,12 @@ Answer:
 
 See \ref{protocoldef:telemetry}\\\\
 
-\texttt{GET /telemetry/<transmittername>/<section\_of\_telemetry}
+\texttt{GET /telemetry/<transmittername>/<section\_of\_telemetry>}
 
-No authentication required. Here all stored telemetry within the telemetry section from the specified transmitter is provided. Possible sections are 2. Level JSON groups, see \ref{protocoldef:telemetry}.\\
+No authentication required. Here all stored telemetry within the telemetry
+section from the specified transmitter is provided. Possible sections are 2.
+Level JSON groups, see \ref{protocoldef:telemetry}.
+
 Examples: onair, telemetry, transmitter\_configuration
 
 Answer:
@@ -423,21 +424,32 @@ Answer:
 
 See \ref{protocoldef:telemetry}
 
-
-
 \section{Websocket API}
 \label{protocoldef:websocketapi}
-The idea is to provide an API for the website and the app to display real-time information without the need of polling. A websocket server is listing to websocket connections. Authentication is done by a custom JOSN handshake. The connection might be encrypted with SSL if using the Internet or plain if using HAMNET.
+The idea is to provide an API for the website and the app to display real-time
+information without the need of polling. A websocket server is listing to
+websocket connections. Authentication is done by a custom JOSN handshake. The
+connection might be encrypted with SSL if using the Internet or plain if using
+HAMNET.
 
 \subsection{Telemetry}
 \label{protcoldef:websocketapi:telemetry}
 URL: \texttt{ws://FQDN/telemetry}.
-The data is the same as received from the \textbf{dapnet.telemetry} exchange from the RabbitMQ instance. It is defined in section \ref{protocoldef:telemetry}.
+
+The data is the same as received from the \textbf{dapnet.telemetry} exchange
+from the RabbitMQ instance. It is defined in section
+\ref{protocoldef:telemetry}.
 
 \subsection{Database Changes}
 \label{protcoldef:websocketapi:databasechanges}
 URL: \texttt{ws://FQDN/database\_changes}.
-To inform the website or the app about changes in the CouchDB database, the websocket mirocservice keeps a connection to the local CouchDB API and receives a stream of updated to the database. As there may be data in the changes that are confidential, the stream is parsed and sent out in a reduced form to the websocket client. Further information: \url{http://docs.couchdb.org/en/2.0.0/api/database/changes.html}
+
+To inform the website or the app about changes in the CouchDB database, the
+websocket mirocservice keeps a connection to the local CouchDB API and receives
+a stream of updated to the database. As there may be data in the changes that
+are confidential, the stream is parsed and sent out in a reduced form to the
+websocket client. Further information:
+\url{http://docs.couchdb.org/en/2.0.0/api/database/changes.html}
 
 The format of the updates is:
 
@@ -446,7 +458,13 @@ The format of the updates is:
 
 \subsection{Administration}
 \label{protocoldef:RabbitMQ:dapnet.administration}
-If there is any update on the CouchDB, the other CouchDB instances are notified and updated automatically, but there is no trigger event to notify the websocket service about the change. As changes should be display immediately on the website or app, they have to be announced via websocket. In order to generate a trigger for changes in the CouchDB, the RabbitMQ exchange \textbf{dapnet.administration} is used and filled. All websocket microservices consume this exchange.
+If there is any update on the CouchDB, the other CouchDB instances are notified
+and updated automatically, but there is no trigger event to notify the websocket
+service about the change. As changes should be display immediately on the
+website or app, they have to be announced via websocket. In order to generate a
+trigger for changes in the CouchDB, the RabbitMQ exchange
+\textbf{dapnet.administration} is used and filled. All websocket microservices
+consume this exchange.
 
 
 \subsubsection{Transmitter related}
@@ -633,67 +651,74 @@ If there is any update on the CouchDB, the other CouchDB instances are notified 
 \subsection{Users}
 
 \begin{table}[h]
+ \centering
  \caption{CouchDB: Users}
- \begin{tabular}{r|r|r|r}
+ \begin{tabular}{|l|l|l|l|} \hline
   Key & Value-Type & Valid Value Range & Example \\
   \hline
-  \_id & STRING & N/A & dl1abc \\
-  password & Bcrypt with rand. salt & N/A & ?? \\
-  admin & boolean & true/false & true \\
-  enabled & boolean & true/false & true \\
-  created\_on & DATETIME & & ??\\
-  last\_change\_by & STING & valid user name & dh3wr \\
-  email\_valid & boolean & true/false & true \\
-  avatar\_picture & couchdb\_attachment & & \\
+  \_id & string & & dl1abc \\
+  password & string & bcrypt hash & --- \\
+  email & string & & dl1abc@darc.de \\
+  admin & boolean & & true \\
+  enabled & boolean & & true \\
+  created\_on & string & ISO8601 & 2018-07-08T11:50:02.168325Z \\
+  changed\_on & string & ISO8601 & 2018-07-08T11:50:02.168325Z \\
+  changed\_by & string & valid user name & dh3wr \\
+  email\_valid & boolean & & true \\
+  avatar\_picture & couchdb\_attachment & & \\ \hline
   \end{tabular}
   \label{tab:couchdb:users}
 \end{table}
 
 \begin{lstlisting}
 {
-	"_id": "dl1abc",
-	"password": "some hash",
-    "email": "user@example.com",
-    "admin": true,
-    "enabled":true,
-    "created_on":<DATETIME>,
-    "last_change_by":"dh3wr",
-    "email_valid":true
-    "avatar_picture": <couchdb attachment??>
+  "_id": "dl1abc",
+  "password": "<bcrypt hash>",
+  "email": "dl1abc@darc.de",
+  "admin": true,
+  "enabled": true,
+  "created_on": <DATETIME>,
+  "created_by":"dh3wr",
+  "changed_on": <DATETIME>,
+  "changed_by":"dh3wr",
+  "email_valid": true
+  "avatar_picture": <couchdb attachment>
 }
 \end{lstlisting}
+
+\todo{Wofür genau braucht man email\_valid?}
 
 \subsection{Nodes}
 \begin{table}[h]
  \caption{CouchDB: Nodes}
- \begin{tabular}{r|r|r|r}
+ \begin{tabular}{|l|l|l|l|} \hline
   Key & Value-Type & Valid Value Range & Example \\
   \hline
   \_id & STRING & N/A & db0abc \\
-  status & ENUM/STRING & OFFLINE | ONLINE | ERROR & ONLINE \\
-  version & STRING & ?.?.? & 1.2.3 \\
-  ip\_address & IPv4/STRING & & 1.2.3.4 \\
-  latitude & decimal number, 6 dec. digits & -90 ... 90 & 34.123456 \\
-  longitude & decimal number, 6 dec. digits & -180 ... 180 & 34.123456 \\
-  hamcloudnode & boolean & true/false & true \\
-  owners & ARRAY of STRING & N/A & ["dl1abc","dh3wr","dl2ic"] \\
-  avatar\_picture & couchdb\_attachment & & \\
+  coordinates & [number; 2]  & [lat, lon] & [34.123456, 6.23144] \\
+  hamcloud & boolean & true/false & true \\
+  created\_on & string & ISO8601 & 2018-07-08T11:50:02.168325Z \\
+  changed\_by & string & valid user name & dh3wr \\
+  changed\_on & string & ISO8601 & 2018-07-08T11:50:02.168325Z \\
+  changed\_by & string & valid user name & dh3wr \\
+  owners & [string] & N/A & ["dl1abc","dh3wr","dl2ic"] \\
+  avatar\_picture & couchdb\_attachment & & \\ \hline
   \end{tabular}
   \label{tab:couchdb:nodes}
 \end{table}
 
 \begin{lstlisting}
 {
-	"_id" : "db0abc",
-	"status" : "OFFLINE" | "ONLINE" | "ERROR",
-	"last_update" : DATETIME,
-    "version" : "1.2.3",
-    "ip_address" : "1.2.3.4",
-    "latitude" : 34.123456,
-    "longitude" : -23.123456,
-    "hamcloudnode" : true,
-    "owners" : ["dl1abc","dh3wr","dl2ic"],
-    "avatar_picture": <couchdb attachment??>
+  "_id": "db0abc",
+  "auth_key": "super_secret_key",
+  "coordinates": [34.123456, -23.123456],
+  "hamcloud": true,
+  "created_on": <DATETIME>,
+  "created_by":"dh3wr",
+  "changed_on": <DATETIME>,
+  "changed_by":"dh3wr",
+  "owners": ["dl1abc","dh3wr","dl2ic"],
+  "avatar_picture": <couchdb attachment??>
 }
 \end{lstlisting}
 
@@ -701,86 +726,78 @@ If there is any update on the CouchDB, the other CouchDB instances are notified 
 \todo{Tabelle weiter machen}
 \begin{table}[h]
  \caption{CouchDB: Transmitters}
- \begin{tabular}{r|r|r|r}
+ \begin{tabular}{|l|l|l|l|}\hline
   Key & Value-Type & Valid Value Range & Example \\
   \hline
-  \_id & STRING & N/A & db0abc \\
-  auth\_key & STRING & N/A & asd2FD3q3rF \\
+  \_id & string & N/A & db0abc \\
+  auth\_key & string & N/A & asd2FD3q3rF \\
   enabled & boolean & true/false & true \\
-  status & ENUM/STRING & OFFLINE | ONLINE | UNKNOWN & ONLINE \\
-  site\_type & ENUM/STRING & PERSONAL | WIDERANGE & WIDERANGE \\
-  aprs\_reporting\_enabled & boolean & true/false & true \\
-  last\_update & DATETIME & & ??\\
-  last\_connect & DATETIME & & ??\\
-  ip\_address & IPv4/STRING & & 1.2.3.4 \\
-  device\_type & STRING & Unipager | DAPNET-Proxy & Unipager \\
-  device\_version & STRING & ?.?.? & 1.2.3 \\
-  latitude & decimal number, 6 dec. digits & -90 ... 90 & 34.123456 \\
-  longitude & decimal number, 6 dec. digits & -180 ... 180 & 34.123456 \\
-  rf\_power\_watt & decimal number, 3 dec. digits & 0.001 ...  & 12.3 \\ 
-    
-  
+  usage & string & PERSONAL | WIDERANGE & WIDERANGE \\
+  coordinates & [number; 2]  & [lat, lon] & [34.123456, 6.23144] \\
+  power & number & 0.001 ...  & 12.3 \\
+  created\_on & string & ISO8601 & 2018-07-08T11:50:02.168325Z \\
+  changed\_by & string & valid user name & dh3wr \\
+  changed\_on & string & ISO8601 & 2018-07-08T11:50:02.168325Z \\
+  changed\_by & string & valid user name & dh3wr \\
   owners & ARRAY of STRING & N/A & ["dl1abc","dh3wr","dl2ic"] \\
-  avatar\_picture & couchdb\_attachment & & \\
+  avatar\_picture & couchdb\_attachment & & \\ \hline
   \end{tabular}
   \label{tab:couchdb:transmitters}
 \end{table}
 
 \begin{lstlisting}
 {
-	"_id" : "db0abc",
-    "auth_key" : "hdjaskhdlj",
-    "enabled" : true,
-	"status" : "UNKNOWN" | "OFFLINE" | "ONLINE",
-	"site_type" : "PERSONAL" | "WIDERANGE",
-	"aprs_reporting_enabled" : true,
-    "last_update" : "<DATETIME>",
-	"last_connect" : "<DATETIME>",
-    "ip_address" : "1.2.3.4",
-    "device_type" : "Unipager",
-    "device_version" : "1.3.2",
-    "latitude" : 23.123456,
-    "longitude" : -31.123456
-    "rf_power_watt": 12.3,
-    "cable_loss_db" : 4.2,
-    "antenna_gain_dbi" : 2.34,
-	"antenna_agl_m" : 23.4,
-	"antenna_type" : "OMNI" | "DIRECTIONAL",
-	"antenna_direction" : 123.2,
-    "owners" : ["dl1abc","dh3wr","dl2ic"],
-    "groups" : ["dl-hh", "dl-all"],
-    "frequency_MHz" : 439.9875,
-    "emergency_power_available" : false,
-    "infinite_emergency_power" : false,
-	"emergency_power_duration_hours" : 23.0        
-    "antenna_pattern" : <couchDB attachment>,
-    "avatar_picture" : <couchDB attachment>
+  "_id": "db0abc",
+  "auth_key": "hdjaskhdlj",
+  "enabled": true,
+  "usage": "PERSONAL" | "WIDERANGE",
+  "coordinates": [34.123456, -23.123456],
+  "power": 12.3,
+  "antenna": {
+    "agl": 23.4,
+    "gain": 2.34,
+    "type": "OMNI" | DIRECTIONAL,
+    "direction": 123.2,
+    "cable_loss": 4.2
+  }
+  "owners" : ["dl1abc","dh3wr","dl2ic"],
+  "groups" : ["dl-hh", "dl-all"],
+  "emergency_power": {
+    "available": false,
+    "infinite": false,
+    "duration": 23*60*60 // seconds
+  },
+  "created_on": <DATETIME>,
+  "created_by":"dh3wr",
+  "changed_on": <DATETIME>,
+  "changed_by":"dh3wr",
+  "aprs_broadcast": false,
+  "antenna_pattern" : <couchDB attachment>,
+  "avatar_picture" : <couchDB attachment>
 }
 \end{lstlisting}
 
- 
+
 \subsection{Subscribers}
 \label{protocoldef:couchdb:subscribers}
 \todo{check if [] is valid JSON}
 \begin{lstlisting}
 {
-	"_id" : "dl1abc",
-	"description" : "Peter",
-	"pagers" : [
-		{
-    		"ric" : {123456, "A"} ... "ric" : {123456, "D"},
-
-			"uuid" : "0023-1233-aefe-1234-3423-9812",
-    		"name" : "Peters Alphapoc",
-
-			"type" : "UNKNOWN" | "Skyper" | "AlphaPoc" | "QUIX" | "Swissphone" | "SCALL_XT" | "Birdy"
-
-			"is_enabled" : true
-     	},
-     	...
-     ],
-    "enabled_third_party_services" : ["APRS", "BM"],
-    "owner" : ["dh3wr", "dl1abc"]
+  "_id" : "dl1abc",
+  "description" : "Peter",
+  "pagers" : [
+    {
+      "ric": 123456,
+      "subric": 0 .. 3,
+      "uuid": "0023-1233-aefe-1234-3423-9812",
+      "name": "Peters Alphapoc",
+      "type" : "UNKNOWN" | "Skyper" | "AlphaPoc" | "QUIX" | "Swissphone" | "SCALL_XT" | "Birdy"
+      "enabled" : true
+    },
+    ...
+  ],
+  "third_party_services" : ["APRS", "BM"],
+  "owner": ["dh3wr", "dl1abc"]
 }
 \end{lstlisting}
 
@@ -788,10 +805,10 @@ If there is any update on the CouchDB, the other CouchDB instances are notified 
 
 \begin{lstlisting}
 {
-	"_id" : "ov-G01",
-	"description" : "Ortverband Aachen",
-	"member_subscribers" : ["dl1abc", "dh3wr"],
-    "owner" : ["dh3wr", "dl1abc"],
+  "_id" : "ov-G01",
+  "description": "Ortverband Aachen",
+  "subscribers": ["dl1abc", "dh3wr"],
+  "owner": ["dh3wr", "dl1abc"],
 }
 \end{lstlisting}
 
@@ -800,15 +817,15 @@ If there is any update on the CouchDB, the other CouchDB instances are notified 
 
 \begin{lstlisting}
 {
-   	"uuid" : "<UUID>"
-    "number" : 14,
-    "description" : "Wetter DL-HH",
-    "label" : "WX DL-HH",
-    "transmitter_groups" : ["dl-hh","dl-ns"],
-    "transmitters" : ["db0abc"],
-	"cyclic_transmit_enabled" : true,
-    "cyclic_transmit_interval_minutes": 123,
- 	"owner" : ["dh3wr", "dl1abc"]
+  "_id": "wx-dl-hh"
+  "number": 14,
+  "description": "Wetter DL-HH",
+  "label": "WX DL-HH",
+  "transmitter_groups": ["dl-hh","dl-ns"],
+  "transmitters": ["db0abc"],
+  "cyclic_transmit": true,
+  "cyclic_transmit_interval": 60*60, // seconds
+  "owner" : ["dh3wr", "dl1abc"]
 }
 \end{lstlisting}
 
@@ -817,8 +834,13 @@ If there is any update on the CouchDB, the other CouchDB instances are notified 
 
 \begin{lstlisting}
 {
-	"uuid" : "<UUID>",
-	["content_message1",..,"content_message10"],
+  "_id" : "<UUID>",
+  "rubric": "wx-dl-hh",
+  "content": [
+    "message1",
+    ..,
+    "message10"
+  ],
 }
 \end{lstlisting}
 
@@ -826,16 +848,14 @@ If there is any update on the CouchDB, the other CouchDB instances are notified 
 \label{protocoldef:couchdb:mqttservicesandsubscribers}
 \begin{lstlisting}
 {
-	"_id" : "APRS",
-	"mqtt_topic_name" : "aprs"
-	"allowed_subscribers" : [
-		{
-			"name" : "example",
-			"password" : "<bcrypt hash>"
-		},
-		...
-	]
+  "_id": "APRS",
+  "topic": "aprs"
+  "subscribers": [
+    {
+      "name": "example",
+      "password": "<bcrypt hash>"
+    },
+    ...
+  ]
 }
 \end{lstlisting}
-
-
