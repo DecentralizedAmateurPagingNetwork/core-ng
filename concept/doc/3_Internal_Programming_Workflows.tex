@@ -80,6 +80,108 @@ content is also updated.
 
 \section{Add, edit, delete, assign Rubrics to Transmitter/-Groups}
 
+\section{Microservices}
+
+A DAPNET node consists of serveral isolated microservices with different
+responsibilities. Each microservice runs in container and is automatically
+restarted if it should crash. Some microservices can be started in multiple
+instances to fully utilize multiple cores. The access to the microservices is
+proxied by a NGINX webserver which can also provide load balancing and caching.
+
+\begin{center}
+  \begin{tabular}{|l|l|} \hline
+    REST endpoint & Microservice \\ \hline \hline
+
+    \verb|*      /users/*| & Database Service \\
+    \verb|*      /nodes/*| &  \\
+    \verb|*      /rubrics/*| &  \\
+    \verb|*      /subscribers/*| & \\
+    \verb|*      /subscriber_groups/*| & \\
+    \verb|DELETE /transmitters/:id| & \\
+    \verb|PUT    /transmitters| & \\ \hline
+
+    \verb|*      /calls/*| & Call Service \\ \hline
+
+    \verb|*      /rubrics/:id/*| & Rubric Service \\ \hline
+
+    \verb|GET    /transmitters| & Transmitter Service \\
+    \verb|GET    /transmitters/:id| & \\
+    \verb|POST   /transmitters/bootstrap| & \\
+    \verb|POST   /transmitters/heartbeat| & \\ \hline
+
+    \verb|POST   /cluster/discovery| & Cluster Service \\ \hline
+
+    \verb|GET    /telemetry/*| & Telemetry Service \\ \hline
+    \verb|WS     /telemetry| & \\ \hline
+
+    \verb|WS     /changes| & Database Changes Service \\ \hline
+
+    \verb|GET    /status/*| & Status Service \\ \hline
+
+    \verb|GET    /statistics| & Statistics Service \\ \hline
+
+    \verb|GET    /rabbitmq/*| & RabbitMQ Auth Service \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Database Service}
+\begin{itemize}
+\item Proxies calls to the CouchDB database
+\item Controls access to different database actions
+\item Removes private/admin only fields from documents
+\end{itemize}
+
+\subsection{Call Service}
+\begin{itemize}
+\item Generates and publishes calls to RabbitMQ
+\item Receives all calls from RabbitMQ
+\item Maintains a database of all calls
+\end{itemize}
+
+\subsection{Rubric Service}
+\begin{itemize}
+\item Publishes rubric content as calls to RabbitMQ
+\item Periodically publishes rubric names as calls to RabbitMQ
+\end{itemize}
+
+\subsection{Transmitter Service}
+\begin{itemize}
+\item Maintains a list of all transmitters and their current status
+\end{itemize}
+
+\subsection{Cluster Service}
+\begin{itemize}
+\item Maintains a list of known nodes and their current status
+\item Manages federation between RabbitMQ queues
+\item Manages replication between CouchDB databases
+\end{itemize}
+
+\subsection{Telemetry Service}
+\begin{itemize}
+\item Maintains the telemetry state of all transmitters
+\item Forwards telemetry updates via websocket
+\end{itemize}
+
+\subsection{Database Changes Service}
+\begin{itemize}
+\item Forwards database changes via websocket
+\end{itemize}
+
+\subsection{Status Service}
+\begin{itemize}
+\item Periodically checks all other services and connections
+\end{itemize}
+
+\subsection{RabbitMQ Auth Service}
+\begin{itemize}
+\item Provides authentication for RabbitMQ against the CouchDB users database
+\end{itemize}
+
+\subsection{Time and Identification Service}
+\begin{itemize}
+\item Sends periodic time and identification messages to RabbitMQ
+\end{itemize}
+
 \section{Ports and Loadbalacing Concept}
 
 \section{Periodic Tasks (Scheduler)}
