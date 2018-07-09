@@ -39,13 +39,18 @@ public final class RestApiService implements Service {
 
 	@Override
 	public void start() throws Exception {
+		if (running) {
+			LOGGER.debug("REST API service already started.");
+			return;
+		}
+
 		LOGGER.info("Starting REST API service on port {}", config.getPort());
 
 		URI endpoint = new URI("http", null, config.getHostname(), config.getPort(), config.getPath(), null, null);
-		ResourceConfig config = new RestResourceConfig();
+		ResourceConfig rcfg = new RestResourceConfig(config);
 
 		synchronized (lockObject) {
-			server = GrizzlyHttpServerFactory.createHttpServer(endpoint, config);
+			server = GrizzlyHttpServerFactory.createHttpServer(endpoint, rcfg);
 		}
 
 		running = true;

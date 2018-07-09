@@ -1,6 +1,8 @@
 package org.dapnet.core;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -31,6 +33,7 @@ import org.dapnet.core.scheduler.SchedulerService;
 public final class Program {
 
 	private static final String CORE_VERSION = getVersionFromPackage();
+	private static final Instant STARTUP_TIME = Instant.now();
 	// private static final String API_VERSION = getApiVersionFromPackage();
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Deque<Service> startedServices = new LinkedList<>();
@@ -44,6 +47,24 @@ public final class Program {
 	 */
 	public static String getCoreName() {
 		return coreName;
+	}
+
+	/**
+	 * Returns the DAPNET core version number.
+	 * 
+	 * @return Version number
+	 */
+	public static String getCoreVersion() {
+		return CORE_VERSION;
+	}
+
+	/**
+	 * Returns the time since the program has started.
+	 * 
+	 * @return Uptime
+	 */
+	public static Duration getCoreUptime() {
+		return Duration.between(STARTUP_TIME, Instant.now());
 	}
 
 	/**

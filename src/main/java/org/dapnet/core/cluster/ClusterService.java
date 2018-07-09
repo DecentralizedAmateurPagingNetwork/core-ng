@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dapnet.core.Service;
 
+import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -18,8 +19,8 @@ import com.rabbitmq.client.ConnectionFactory;
  */
 public final class ClusterService implements Service {
 
-	private static final String[] EXCHANGE_NAMES = { "dapnet.transmitters", "dapnet.telemetry" };
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final String[] EXCHANGE_NAMES = { "dapnet.calls", "dapnet.local_calls" };
 	private final ClusterConfiguration config;
 	private volatile boolean running = false;
 	private Connection connection;
@@ -99,7 +100,7 @@ public final class ClusterService implements Service {
 
 			for (String exchange : EXCHANGE_NAMES) {
 				LOGGER.trace("Declaring exchange {}", exchange);
-				channel.exchangeDeclare(exchange, "topic", true);
+				channel.exchangeDeclare(exchange, BuiltinExchangeType.TOPIC, true);
 			}
 		} catch (Exception ex) {
 			closeChannel();

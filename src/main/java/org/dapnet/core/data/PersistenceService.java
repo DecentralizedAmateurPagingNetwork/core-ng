@@ -2,6 +2,8 @@ package org.dapnet.core.data;
 
 import java.util.Objects;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dapnet.core.Service;
 
 /**
@@ -11,6 +13,7 @@ import org.dapnet.core.Service;
  */
 public final class PersistenceService implements Service {
 
+	private static final Logger LOGGER = LogManager.getLogger();
 	private final PersistenceConfiguration config;
 	private volatile boolean running = false;
 
@@ -30,11 +33,13 @@ public final class PersistenceService implements Service {
 
 	@Override
 	public void start() throws Exception {
+		LOGGER.info("Starting persistence service");
 		running = true;
 	}
 
 	@Override
 	public void shutdown() throws Exception {
+		LOGGER.info("Stopping persistence service");
 		running = false;
 	}
 
