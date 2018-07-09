@@ -1,0 +1,222 @@
+\chapter{Internal Programming Workflows}
+
+\section{Sent calls}
+
+\section{Add, edit, delete User}
+\subsection*{Show current users}
+\begin{enumerate}
+  \item Get current status via \texttt{GET /users} on Core URL
+  \item Handle updates via Websocket
+\end{enumerate}
+
+\subsection*{Add and Edit User}
+\begin{enumerate}
+  \item If edit: Get current status via \texttt{GET /users/<username>} on Core URL
+  \item Show edit form and place data
+  \item On save button event, send \texttt{POST /users/<username>} on Core URL
+\end{enumerate}
+
+The core will update the CouchDB and generate a RabbitMQ administration message
+to inform all other nodes. This information is transmitted by the Stats and
+Websocket Micro-Service to all connected websocket clients to get them updated.
+This will also happen for the website instance emitting the edit request, so its
+content is also updated.
+
+
+\subsection*{Delete User}
+\begin{enumerate}
+\item Ask "Are you sure?"
+\item If yes, send \texttt{DELETE /users/<username>} on Core URL
+\end{enumerate}
+
+The core will update the CouchDB and generate a RabbitMQ administration message
+to inform all other nodes. This information is transmitted by the Stats and
+Websocket Micro-Service to all connected websocket clients to get them updated.
+This will also happen for the website instance emitting the edit request, so its
+content is also updated.
+
+\section{Add, edit, delete Subscriber}
+
+\section{Add, edit, delete Node (tbd)}
+
+\section{Add, edit, delete Transmitter}
+
+\section{Implementation of Transmitter Groups}
+
+\section{Add, edit, delete Rubrics}
+
+\textbf{Show current configuration}
+\begin{enumerate}
+  \item Get current status via \texttt{GET /rubrics} on Core URL
+  \item Handle updates via websocket
+\end{enumerate}
+
+\textbf{Add and Edit rubrics}
+\begin{enumerate}
+\item If edit: Get current status via \texttt{GET /rubrics/<rubricname>} on Core URL
+\item Show edit form and place data
+\item On save button event, send \texttt{POST /users/<rubricname>} on Core URL
+\end{enumerate}
+
+The core will update the CouchDB and generate a RabbitMQ administration message
+to inform all other nodes. This information is transmitted by the Stats and
+Websocket Micro-Service to all connected websocket clients to get them updated.
+This will also happen for the website instance emitting the edit request, so its
+content is also updated.
+
+\textbf{Delete rubric}
+\begin{enumerate}
+\item Ask "Are you sure?"
+\item If yes, send \texttt{DELETE /users/<rubricname>} on Core URL
+\end{enumerate}
+
+The core will update the CouchDB and generate a RabbitMQ administration message
+to inform all other nodes. This information is transmitted by the Stats and
+Websocket Micro-Service to all connected websocket clients to get them updated.
+This will also happen for the website instance emitting the edit request, so its
+content is also updated.
+
+\section{Add, edit, delete Rubrics content}
+
+\section{Add, edit, delete, assign Rubrics to Transmitter/-Groups}
+
+\section{Microservices}
+
+A DAPNET node consists of serveral isolated microservices with different
+responsibilities. Each microservice runs in container and is automatically
+restarted if it should crash. Some microservices can be started in multiple
+instances to fully utilize multiple cores. The access to the microservices is
+proxied by a NGINX webserver which can also provide load balancing and caching.
+
+\begin{center}
+  \begin{tabular}{|l|l|} \hline
+    REST endpoint & Microservice \\ \hline \hline
+
+    \verb|*      /users/*| & Database Service \\
+    \verb|*      /nodes/*| &  \\
+    \verb|*      /rubrics/*| &  \\
+    \verb|*      /subscribers/*| & \\
+    \verb|*      /subscriber_groups/*| & \\
+    \verb|DELETE /transmitters/:id| & \\
+    \verb|PUT    /transmitters| & \\ \hline
+
+    \verb|*      /calls/*| & Call Service \\ \hline
+
+    \verb|*      /rubrics/:id/*| & Rubric Service \\ \hline
+
+    \verb|GET    /transmitters| & Transmitter Service \\
+    \verb|GET    /transmitters/:id| & \\
+    \verb|POST   /transmitters/bootstrap| & \\
+    \verb|POST   /transmitters/heartbeat| & \\ \hline
+
+    \verb|POST   /cluster/discovery| & Cluster Service \\ \hline
+
+    \verb|GET    /telemetry/*| & Telemetry Service \\ \hline
+    \verb|WS     /telemetry| & \\ \hline
+
+    \verb|WS     /changes| & Database Changes Service \\ \hline
+
+    \verb|GET    /status/*| & Status Service \\ \hline
+
+    \verb|GET    /statistics| & Statistics Service \\ \hline
+
+    \verb|GET    /rabbitmq/*| & RabbitMQ Auth Service \\ \hline
+  \end{tabular}
+\end{center}
+
+\subsection{Database Service}
+\begin{itemize}
+\item Proxies calls to the CouchDB database
+\item Controls access to different database actions
+\item Removes private/admin only fields from documents
+\end{itemize}
+
+\subsection{Call Service}
+\begin{itemize}
+\item Generates and publishes calls to RabbitMQ
+\item Receives all calls from RabbitMQ
+\item Maintains a database of all calls
+\end{itemize}
+
+\subsection{Rubric Service}
+\begin{itemize}
+\item Publishes rubric content as calls to RabbitMQ
+\item Periodically publishes rubric names as calls to RabbitMQ
+\end{itemize}
+
+\subsection{Transmitter Service}
+\begin{itemize}
+\item Maintains a list of all transmitters and their current status
+\end{itemize}
+
+\subsection{Cluster Service}
+\begin{itemize}
+\item Maintains a list of known nodes and their current status
+\item Manages federation between RabbitMQ queues
+\item Manages replication between CouchDB databases
+\end{itemize}
+
+\subsection{Telemetry Service}
+\begin{itemize}
+\item Maintains the telemetry state of all transmitters
+\item Forwards telemetry updates via websocket
+\end{itemize}
+
+\subsection{Database Changes Service}
+\begin{itemize}
+\item Forwards database changes via websocket
+\end{itemize}
+
+\subsection{Status Service}
+\begin{itemize}
+\item Periodically checks all other services and connections
+\end{itemize}
+
+\subsection{RabbitMQ Auth Service}
+\begin{itemize}
+\item Provides authentication for RabbitMQ against the CouchDB users database
+\end{itemize}
+
+\subsection{Time and Identification Service}
+\begin{itemize}
+\item Sends periodic time and identification messages to RabbitMQ
+\end{itemize}
+
+\section{Ports and Loadbalacing Concept}
+
+\section{Periodic Tasks (Scheduler)}
+
+\section{Plugin Interface}
+
+\section{Transmitter Connection}
+Transmitter connections consist of two connections to a Node. A REST connection
+for initial announcement of a new transmitter, heartbeat messages and
+transmitter configuration and a RabbitMQ connection to receive the data to be
+transmitted.
+
+The workflow for a transmitter connection is the following:
+\begin{enumerate}
+\item Announce new connecting transmitter via Core REST Interface (\ref{protocoldef:TXsignon}).
+\item Get as response the transmitter configuration or an error message (\ref{protocoldef:TXconfig_or_error}).
+\item Initiate RabbitMQ connection to get the data to be transmitted (\ref{protocoldef:RabbitMQ:Transmitters}).
+\end{enumerate}
+
+The authentication of the transmitter's REST calls consist of the transmitter
+name and its AuthKey, which is checked against the value in the CouchDB for this
+transmitter.
+
+\section{Transmitter connections}
+If a transmitter wants to connect to DAPNET, the first step is to sign-in and
+show it's presence via the Core REST interface. This interface is also used for
+transmitter configuration like enabled timeslots and keep-alive polling.
+
+\subsection{Authentication of all HTTP-Requests in this context}
+All HTTP-requests issued from a transmitter have to send a valid HTTP
+authentication, which is checked against the CouchDB. It consists of the
+transmitter name and its AuthKey.
+
+\todo{Da es sich bei den Anfragen um POST-Requests mit JSON Body handelt, wäre
+es einfacher da den AuthKey mit dazu zu packen, so wie es auch schon in der
+Protokoll-Definition umgesetzt ist.}
+
+\section{DAPNET-Proxy}

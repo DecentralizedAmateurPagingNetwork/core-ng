@@ -1,0 +1,54 @@
+\documentclass[a4paper]{report}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{listings,xcolor}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+\lstset{
+  basicstyle=\footnotesize\ttfamily,
+  string=[s]{"}{"},
+  stringstyle=\color{blue},
+  comment=[l]{:},
+  commentstyle=\color{black},
+}
+
+\title{DAPNET 2.0 Concept and Interface Definition}
+\author{
+Ralf Wilke, DH3WR\\
+Thomas Gatzweiler, DL2IC\\
+Philipp Thiel, DL6PT
+}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This is the concept and interface description of the version 2 of the DAPNET. It's purpose in comparison to the first version released is a more robust clustering and network interaction solution to cope with the special requirements of IP connections over HAMNET which means that all network connections have to be considered with a WAN character resulting in unreliable network connectivity. In terms of consistence of the database, "eventually consistence" is considered to be the most reachable. There are "always right" database nodes inside the so called HAMCLOUD. In case of database conflicts, the version inside the HAMCLOUD cluster is always to be considered right.
+\end{abstract}
+
+\tableofcontents
+
+\include{1_Introduction}
+\include{2_DAPNET_Network_Definition}
+\include{3_Internal_Programming_Workflows}
+\include{4_External_Programming_Workflows}
+\include{5_Setup_and_Installation}
+\include{6_Protocol_Definitions}
+
+\end{document}
