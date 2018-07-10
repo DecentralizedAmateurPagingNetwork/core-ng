@@ -99,7 +99,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
+				<version>3.1.0</version>
 				<configuration>
 					<archive>
 						<index>true</index>
@@ -108,7 +108,7 @@
 							<classpathPrefix>lib</classpathPrefix>
 							<mainClass>org.dapnet.core.Program</mainClass>
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<addDefaultSpecificationEntries>false</addDefaultSpecificationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
 						</manifest>
 					</archive>
 				</configuration>
@@ -116,7 +116,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.0.2</version>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
 						<id>copy-dependencies</id>
@@ -129,6 +129,7 @@
 							<overWriteReleases>false</overWriteReleases>
 							<overWriteSnapshots>false</overWriteSnapshots>
 							<overWriteIfNewer>true</overWriteIfNewer>
+							<includeScope>runtime</includeScope>
 						</configuration>
 					</execution>
 				</executions>
@@ -155,8 +156,8 @@
 		</plugins>
 	</build>
 	<scm>
-		<url>https://github.com/DecentralizedAmateurPagingNetwork/Core</url>
-		<connection>scm:git:https://github.com/DecentralizedAmateurPagingNetwork/Core.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/DecentralizedAmateurPagingNetwork/Core.git</developerConnection>
+		<url>https://github.com/DecentralizedAmateurPagingNetwork/core-ng</url>
+		<connection>scm:git:https://github.com/DecentralizedAmateurPagingNetwork/core-ng.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/DecentralizedAmateurPagingNetwork/core-ng.git</developerConnection>
 	</scm>
 </project>
