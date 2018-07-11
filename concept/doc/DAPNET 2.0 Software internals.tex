@@ -28,16 +28,27 @@
   comment=[l]{:},
   commentstyle=\color{black},
 }
-
-\title{DAPNET 2.0 Concept and Interface Definition}
-\author{
-Ralf Wilke, DH3WR\\
-Thomas Gatzweiler, DL2IC\\
-Philipp Thiel, DL6PT
-}
-
 \begin{document}
-\maketitle
+
+\begin{titlepage}
+	\centering
+	\includegraphics[width=1\textwidth]{assets/rwth-afu-dapnet-logo.png}
+	\vspace{2cm}
+
+	{\scshape\LARGE DAPNET 2.0 Concept and Interface Definition \par}
+	\vspace{1cm}	
+	{\Large\itshape 
+		Ralf Wilke, DH3WR\\
+		Thomas Gatzweiler, DL2IC\\
+		Philipp Thiel, DL6PT
+	\par}
+	\vspace{3cm}
+	{\scshape\Large Last Change: \today\par}
+
+\end{titlepage}
+
+
+%\maketitle
 \begin{abstract}
 This is the concept and interface description of the version 2 of the DAPNET. It's purpose in comparison to the first version released is a more robust clustering and network interaction solution to cope with the special requirements of IP connections over HAMNET which means that all network connections have to be considered with a WAN character resulting in unreliable network connectivity. In terms of consistence of the database, "eventually consistence" is considered to be the most reachable. There are "always right" database nodes inside the so called HAMCLOUD. In case of database conflicts, the version inside the HAMCLOUD cluster is always to be considered right.
 \end{abstract}
