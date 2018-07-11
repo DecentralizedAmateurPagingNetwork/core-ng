@@ -201,8 +201,8 @@ transmitted.
 
 The workflow for a transmitter connection is the following:
 \begin{enumerate}
-\item Announce new connecting transmitter via Core REST Interface (\ref{protocoldef:TXsignon}).
-\item Get as response the transmitter configuration or an error message (\ref{protocoldef:TXconfig_or_error}).
+\item Announce new connecting transmitter via Core REST Interface (\ref{protcoldef:transmitters:bootstrap}).
+\item Get as response the transmitter configuration or an error message (\ref{protcoldef:transmitters:bootstrap}).
 \item Initiate RabbitMQ connection to get the data to be transmitted (\ref{protocoldef:RabbitMQ:Transmitters}).
 \end{enumerate}
 
@@ -212,7 +212,7 @@ transmitter.
 
 \section{Transmitter connections}
 If a transmitter wants to connect to DAPNET, the first step is to sign-in and
-show it's presence via the Core REST interface. This interface is also used for
+show its presence via the Core REST interface. This interface is also used for
 transmitter configuration like enabled timeslots and keep-alive polling.
 
 \subsection{Authentication of all HTTP-Requests in this context}
