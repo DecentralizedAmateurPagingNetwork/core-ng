@@ -1,0 +1,13 @@
+Count total widerange transmitters
+
+"countwiderangetotal": {
+  "map": "function(doc) { if(doc.usage == "WIDERANGE") emit(doc.post_id, 1); }",
+  "reduce": "_count"
+}
+
+Count total personal transmitters
+"countpersonaltotal": {
+  "map": "function(doc) { if(doc.usage == "PERSONAL") emit(doc.post_id, 1); }",
+  "reduce": "_count"
+}
+
