@@ -40,72 +40,6 @@ See \hyperref[internalprog:microservice]{Microservices definition}.
 \subsubsection{GET /transmitters/:id}
 
 \subsubsection{POST /transmitters/bootstrap}
-
-\subsubsection{POST /transmitters/heartbeat}
-
-
-\subsection{Cluster Service}
-
-\subsubsection{POST /cluster/discovery}
-
-
-\subsection{Telemetry Service}
-
-\subsubsection{GET /telemetry/*}
-
-\subsubsection{WS /telemetry}
-
-
-\subsection{Database Changes Service}
-
-\subsubsection{WS /changes}
-
-
-\subsection{Status Service}
-
-\subsubsection{GET /status}
-
-
-\subsection{Statistics Service}
-
-\subsubsection{GET /statistics}
-
-
-\subsection{RabbitMQ Service}
-
-\subsubsection{GET /rabbitmq/*}
-
-
-
-
-
-
-
-
-\subsection{* /rubrics/:id/*}
-
-\subsection{GET /subsrcibers/*}
-
-\subsubsection{REST}
-
-\subsubsection{Users}
-
-\subsubsection{Subscribers}
-
-\subsubsection{Transmitters}
-
-\subsubsection{Existing Transmitter Groups}
-
-\subsubsection{Rubrics}
-
-\subsubsection{Rubric Content}
-
-
-\subsubsection{Third-Party services and subscribers}
-
-\subsection{Transmitter sign-on, configuration and heartbeat}
-\label{protocoldef:TXsignon}
-
 \texttt{POST /transmitter/bootstrap}
 \begin{lstlisting}
 {
@@ -118,8 +52,8 @@ See \hyperref[internalprog:microservice]{Microservices definition}.
 }
 \end{lstlisting}
 
-\subsection{Answers to the bootstrap REST call}
-\label{protocoldef:TXconfig_or_error}
+\textbf{Answers to the bootstrap REST call}
+
 \texttt{200 OK}
 \begin{lstlisting}
 {
@@ -151,7 +85,7 @@ See \hyperref[internalprog:microservice]{Microservices definition}.
 \end{lstlisting}
 
 
-\subsection{Transmitter Heartbeat}
+\subsubsection{POST /transmitters/heartbeat}
 \texttt{POST /transmitter/heartbeat}
 \begin{lstlisting}
 {
@@ -161,7 +95,7 @@ See \hyperref[internalprog:microservice]{Microservices definition}.
 }
 \end{lstlisting}
 
-\subsubsection{Answers to the heartbeat REST call}
+\textbf{Answers to the heartbeat REST call}
 \texttt{200 OK}
 \begin{lstlisting}
 {
@@ -188,6 +122,85 @@ If network wants to initiate handover to other node
   "error": "Node not available, switch to other node."
 }
 \end{lstlisting}
+
+
+\subsection{Cluster Service}
+
+\subsubsection{POST /cluster/discovery}
+
+
+\subsection{Telemetry Service}
+
+\subsubsection{GET /telemetry/*}
+
+\subsubsection{WS /telemetry}
+
+
+\subsection{Database Changes Service}
+
+\subsubsection{WS /changes}
+
+
+\subsection{Status Service}
+The purpose of the status service is to provide a short overview of the DAPNET network and the microservices.
+
+\subsubsection{GET /status}
+\texttt{200 OK}
+\begin{lstlisting}
+{
+  "good_health" : true,
+  "microservices\_running" : {
+    "database" : true,
+    "call" : true,
+    "rubric" : true,
+    "transmitter" : true,
+    "cluster" : true,
+    "telemetry" : true,
+    "database-changes" : true,
+    "statistics" : true,
+    "rabbitmq" : true,
+    "thirdparty" : true
+  }
+}
+\end{lstlisting}
+
+\subsubsection{GET /status/<service\_name>}
+List of valid values for \textit{service\_name}:
+
+database-service\\
+call-service\\
+rubric-service\\
+transmitter-service\\
+cluster-service\\
+telemetry-service\\
+database-changes-service\\
+statistics-service\\
+rabbitmq-service
+
+
+\texttt{200 OK}
+\begin{lstlisting}
+<Status output from service itself>
+\end{lstlisting}
+
+
+\subsection{Statistics Service}
+
+\subsubsection{GET /statistics}
+
+
+\subsection{RabbitMQ Service}
+
+\subsubsection{GET /rabbitmq/*}
+
+
+\subsection{* /rubrics/:id/*}
+
+\subsection{GET /subsrcibers/*}
+
+
+\section{Third-Party services and subscribers}
+
 
 \section{RabbitMQ}
 \label{protocoldef:RabbitMQ}
