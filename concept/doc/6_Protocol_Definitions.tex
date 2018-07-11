@@ -40,6 +40,7 @@ See \hyperref[internalprog:microservice]{Microservices definition}.
 \subsubsection{GET /transmitters/:id}
 
 \subsubsection{POST /transmitters/bootstrap}
+\label{protcoldef:transmitters:bootstrap}
 \texttt{POST /transmitter/bootstrap}
 \begin{lstlisting}
 {
@@ -149,6 +150,7 @@ The purpose of the status service is to provide a short overview of the DAPNET n
 \begin{lstlisting}
 {
   "good_health" : true,
+  "version" : "1.2.3"
   "microservices\_running" : {
     "database" : true,
     "call" : true,
@@ -175,7 +177,7 @@ cluster-service\\
 telemetry-service\\
 database-changes-service\\
 statistics-service\\
-rabbitmq-service
+rabbitmq-service\\
 
 
 \texttt{200 OK}
@@ -192,14 +194,6 @@ rabbitmq-service
 \subsection{RabbitMQ Service}
 
 \subsubsection{GET /rabbitmq/*}
-
-
-\subsection{* /rubrics/:id/*}
-
-\subsection{GET /subsrcibers/*}
-
-
-\section{Third-Party services and subscribers}
 
 
 \section{RabbitMQ}
