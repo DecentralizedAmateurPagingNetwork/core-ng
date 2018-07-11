@@ -1,11 +1,92 @@
 \chapter{Protocol Definitions}
 
-\section{Core REST API}
-\label{protocoldef:corerestapi}
-\todo{define all the website/app REST calls to interact with DAPNET}
+\section{Microservices API}
+\label{protocoldef:microservicesapi}
+\todo{define all the REST / WS Interfaces}
+See \hyperref[internalprog:microservice]{Microservices definition}.
 
-\subsection{Management and User interactions}
-\subsubsection{Calls}
+\subsection{Database Service}
+\subsubsection{* /users/*}
+
+\subsubsection{* /nodes/*}
+
+\subsubsection{* /rubrics/*}
+
+\subsubsection{* /subscribers/*}
+
+\subsubsection{* /subscriber\_groups/*}
+
+\subsubsection{DELETE /transmitters/:id}
+
+\subsubsection{PUT /transmitters}
+
+
+\subsection{Call Service}
+
+\subsubsection{* /calls/*}
+
+
+\subsection{Rubric Service}
+
+\subsubsection{* /rubrics/:id/*}
+
+
+\subsection{Transmitter Service}
+
+\subsubsection{GET /transmitters}
+
+\subsubsection{GET /transmitters/:id}
+
+\subsubsection{GET /transmitters/:id}
+
+\subsubsection{POST /transmitters/bootstrap}
+
+\subsubsection{POST /transmitters/heartbeat}
+
+
+\subsection{Cluster Service}
+
+\subsubsection{POST /cluster/discovery}
+
+
+\subsection{Telemetry Service}
+
+\subsubsection{GET /telemetry/*}
+
+\subsubsection{WS /telemetry}
+
+
+\subsection{Database Changes Service}
+
+\subsubsection{WS /changes}
+
+
+\subsection{Status Service}
+
+\subsubsection{GET /status}
+
+
+\subsection{Statistics Service}
+
+\subsubsection{GET /statistics}
+
+
+\subsection{RabbitMQ Service}
+
+\subsubsection{GET /rabbitmq/*}
+
+
+
+
+
+
+
+
+\subsection{* /rubrics/:id/*}
+
+\subsection{GET /subsrcibers/*}
+
+\subsubsection{REST}
 
 \subsubsection{Users}
 
@@ -19,7 +100,6 @@
 
 \subsubsection{Rubric Content}
 
-\subsubsection{Nodes}
 
 \subsubsection{Third-Party services and subscribers}
 
