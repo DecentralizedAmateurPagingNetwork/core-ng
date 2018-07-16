@@ -3,7 +3,7 @@
 \section{Microservices API}
 \label{protocoldef:microservicesapi}
 \todo{define all the REST / WS Interfaces}
-See \hyperref[internalprog:microservice]{Microservices definition}.
+See \hyperref[internalprog:microservices]{Microservices definition}.
 
 \subsection{Database Service}
 \subsubsection{* /users/*}
@@ -226,6 +226,7 @@ personal pagings and rubric related messages are transmitted with this protocol.
   "id": "016c25fd-70e0-56fe-9d1a-56e80fa20b82",
   "protocol": "POCSAG",
   "priority": 3,
+  "expires": "2018-07-03T08:00:52.786458Z",
   "message": {
     "ric": 12342,
     "subric": 0 to 3,
@@ -245,7 +246,7 @@ messages first.
 Same as for the the network originated calls in section \ref{protocoldef:RabbitMQ:dapnet.calls}.
 
 \subsection{Telemetry}
-On the telemetry exchange, all transmitters publish their telemetry messages. The format the same as in section \ref{protocoldef:telemetry}.
+On the telemetry exchange, all transmitters and nodes publish their telemetry messages. The format the same as in section \ref{protocoldef:telemetrytx} and \ref{protocoldef:telemetrynodes}.
 
 \subsection{MQTT API for third-party consumers}
 \label{protocoldef:mqttapi}
@@ -315,13 +316,13 @@ The format of the data published for \textbf{rubric\_content paging calls} is
 }
 \end{lstlisting}
 
-\section{Telemetry}
-\label{protocoldef:telemetry}
+\section{Telemetry from Transmitters}
+\label{protocoldef:telemetrytx}
 Telemetry is sent from transmitters to the RabbitMQ exchange
 \textbf{dapnet.telemetry} as defined in section \ref{protocoldef:RabbitMQ}. It
 is also used in the same way on the websocket API to inform the website and the
 app about the telemetry in real-time in section
-\ref{protcoldef:websocketapi:telemetry}.
+\ref{protcoldef:websocketapi:telemetrytx}.
 
 This is sent every minute in complete. If there are changes, just a subset is sent.
 The name of the transmitter is used as routing key for the message.
@@ -414,6 +415,73 @@ The name of the transmitter is used as routing key for the message.
 }
 \end{lstlisting}
 
+\section{Telemetry from Nodes}
+\label{protocoldef:telemetrynodes}
+Telemetry is sent from nodes to the RabbitMQ exchange
+\textbf{dapnet.telemetry} as defined in section \ref{protocoldef:RabbitMQ}. It
+is also used in the same way on the websocket API to inform the website and the
+app about the telemetry in real-time in section
+\ref{protcoldef:websocketapi:telemetrynodes}.
+
+This is sent every minute in complete. If there are changes, just a subset is sent.
+The name of the nodes is used as routing key for the message.
+\begin{lstlisting}
+{
+  "good_health" : true,
+  "microservices" : {
+    "database" : {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "call" : {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "rubric" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "transmitter" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "cluster" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "telemetry" : {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "database-changes" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "statistics" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "rabbitmq" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "thirdparty" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+  },
+  "connections" : {
+    "transmitters" : 123,
+    "third_party" : 3
+  },
+  "system" : {
+    "free_disk_space_MB": 1234
+    "cpu_utilization": 0.2
+    "is_hamcloud" : false
+  }
+}
+\end{lstlisting}
+
 \section{Statistic, Status and Telemetry REST API}
 The statistic and telemetry REST API provides up-to-date information regarding the transmitters and the network via REST. This can be used by e.g. grafana to draw nice graphes or nagios plugins.
 
@@ -479,37 +547,57 @@ Answer:
 }
 \end{lstlisting}
 
-\subsection{Telemetry}
+\subsection{Telemetry from Transmitters}
 
-\texttt{GET /telemetry}
+\texttt{GET /telemetry/transmitter}
 
 No authentication required. Here all stored telemetry from all transmitters is provided.
 
 Answer:
 \texttt{200 OK}
-See \ref{protocoldef:telemetry}\\\\
+See \ref{protocoldef:telemetrytx}\\\\
 
-\texttt{GET /telemetry/<transmittername>}
+\texttt{GET /telemetry/transmitter/<transmittername>}
 
 No authentication required. Here all stored telemetry from the specified transmitter is provided.
 
 Answer:
 \texttt{200 OK}
 
-See \ref{protocoldef:telemetry}\\\\
+See \ref{protocoldef:telemetrytx}\\\\
 
-\texttt{GET /telemetry/<transmittername>/<section\_of\_telemetry>}
+\texttt{GET /telemetry/transmitter/<transmittername>/<section\_of\_telemetry>}
 
 No authentication required. Here all stored telemetry within the telemetry
 section from the specified transmitter is provided. Possible sections are 2.
-Level JSON groups, see \ref{protocoldef:telemetry}.
+Level JSON groups, see \ref{protocoldef:telemetrytx}.
 
 Examples: onair, telemetry, transmitter\_configuration
 
 Answer:
 \texttt{200 OK}
 
-See \ref{protocoldef:telemetry}
+See \ref{protocoldef:telemetrytx}
+
+\subsection{Telemetry from Nodes}
+
+\texttt{GET /telemetry/nodes}
+
+No authentication required. Here all stored telemetry from all nodes is provided.
+
+Answer:
+\texttt{200 OK}
+See \ref{protocoldef:telemetrynodes}\\\\
+
+\texttt{GET /telemetry/nodes/<nodename>}
+
+No authentication required. Here all stored telemetry from the specified node is provided.
+
+Answer:
+\texttt{200 OK}
+
+See \ref{protocoldef:telemetrynodes}\\\\
+
 
 \section{Websocket API}
 \label{protocoldef:websocketapi}
@@ -519,13 +607,39 @@ websocket connections. Authentication is done by a custom JOSN handshake. The
 connection might be encrypted with SSL if using the Internet or plain if using
 HAMNET.
 
-\subsection{Telemetry}
-\label{protcoldef:websocketapi:telemetry}
+\subsection{Telemetry from Transmitters}
+\label{protcoldef:websocketapi:telemetrytx}
 URL: \texttt{ws://FQDN/telemetry}.
 
 The data is the same as received from the \textbf{dapnet.telemetry} exchange
 from the RabbitMQ instance. It is defined in section
-\ref{protocoldef:telemetry}.
+\ref{protocoldef:telemetrytx}.
+The websocket-Server has to add a JSON Key-Value-Pair to identify that's a transmitter and what is its name:
+
+\begin{lstlisting}
+{
+  "type": "transmitter",
+  "name": "db0abc",
+  ... (Telemetry-Content)
+}
+\end{lstlisting}
+
+\subsection{Telemetry from Nodes}
+\label{protcoldef:websocketapi:telemetrynodes}
+URL: \texttt{ws://FQDN/telemetry}.
+
+The data is the same as received from the \textbf{dapnet.telemetry} exchange
+from the RabbitMQ instance. It is defined in section
+\ref{protocoldef:telemetrynodes}.
+The websocket-Server has to add a JSON Key-Value-Pair to identify that's a Node and what is its name:
+
+\begin{lstlisting}
+{
+  "type": "node",
+  "name": "db0abc",
+  ... (Telemetry-Content)
+}
+\end{lstlisting}
 
 \subsection{Database Changes}
 \label{protcoldef:websocketapi:databasechanges}
@@ -540,8 +654,8 @@ websocket client. Further information:
 
 The format of the updates is:
 
+\todo{define format}
 
-\subsection{Telemetry}
 
 \subsection{Administration}
 \label{protocoldef:RabbitMQ:dapnet.administration}
