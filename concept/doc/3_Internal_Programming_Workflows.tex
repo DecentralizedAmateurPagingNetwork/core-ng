@@ -117,8 +117,10 @@ proxied by a NGINX webserver which can also provide load balancing and caching.
     \verb|POST   /cluster/discovery| & Cluster Service \\ \hline
 
     \verb|GET    /telemetry/*| & Telemetry Service \\ \hline
-    \verb|WS     /telemetry| & \\ \hline
-
+    \verb|WS     /telemetry/transmitters| & Summary data of all TX\\
+    \verb|WS     /telemetry/transmitters/<TxName>| & Details for TX <TxName>\\
+    \verb|WS     /telemetry/nodes| & Summary data of all nodes\\
+    \verb|WS     /telemetry/nodes/<NodeName>| & Details for Node <NodeName>\\ \hline
     \verb|WS     /changes| & Database Changes Service \\ \hline
 
     \verb|GET    /status/*| & Status Service \\ \hline

@@ -322,10 +322,11 @@ Telemetry is sent from transmitters to the RabbitMQ exchange
 \textbf{dapnet.telemetry} as defined in section \ref{protocoldef:RabbitMQ}. It
 is also used in the same way on the websocket API to inform the website and the
 app about the telemetry in real-time in section
-\ref{protcoldef:websocketapi:telemetrytx}.
+\ref{protcoldef:websocketapi:telemetrytxsummary} and \ref{protcoldef:websocketapi:telemetrytxdetail}.
 
 This is sent every minute in complete. If there are changes, just a subset is sent.
 The name of the transmitter is used as routing key for the message.
+
 \begin{lstlisting}
 {
   "onair": true,
@@ -383,30 +384,35 @@ The name of the transmitter is used as routing key for the message.
   },
   "rf_hardware": {
     "c9000": {
-      "<pa_dummy>": {
-        "output_power": 123,
-        "port": "/dev/ttyUSB0"
+      "name" : "C9000 Compact",
+      "<pa_dummy>" : {
+        "output_power" : 123,
+        "port" : "/dev/ttyUSB0"
       }
       "<rpc>": {
         "version" : "XOS/2.23pre"
       }
     },
     "raspager": {
+      "name": Raspager",
       "modulation": 13,
       "power": 63,
       "external_pa": false,
       "version": "V2"
     },
     "audio": {
+      "name" = "Audio",
       "transmitter": "GM1200" | "T7F" | "GM340" | "FREITEXT",
       "audio_level": 83,
       "tx_delay": 3
     },
     "rfm69": {
+      "name" : "RFM69",
       "port": "/dev/ttyUSB0"
     },
-    "mmdvm_dualhs": {
-     "dapnet_exclusive": true
+    "mmdvm": {
+      "name" : "MMDVM",
+      "dapnet_exclusive": true
     }
   },
   "proxy" : {
@@ -421,7 +427,7 @@ Telemetry is sent from nodes to the RabbitMQ exchange
 \textbf{dapnet.telemetry} as defined in section \ref{protocoldef:RabbitMQ}. It
 is also used in the same way on the websocket API to inform the website and the
 app about the telemetry in real-time in section
-\ref{protcoldef:websocketapi:telemetrynodes}.
+\ref{protcoldef:websocketapi:telemetrynodessummary} and \ref{protcoldef:websocketapi:telemetrynodesdetail}.
 
 This is sent every minute in complete. If there are changes, just a subset is sent.
 The name of the nodes is used as routing key for the message.
@@ -607,46 +613,286 @@ websocket connections. Authentication is done by a custom JOSN handshake. The
 connection might be encrypted with SSL if using the Internet or plain if using
 HAMNET.
 
-\subsection{Telemetry from Transmitters}
-\label{protcoldef:websocketapi:telemetrytx}
-URL: \texttt{ws://FQDN/telemetry}.
+The data is taken from the \textbf{dapnet.telemetry} exchange
+from the RabbitMQ instance and further other sources if necessary.
+
+\todo{Define if authentication is necessary of some endpoints?}
+
+There are 4 main endpoints in the websocket interface:
+
+
+\begin{center}
+  \begin{tabular}{|l|l|} \hline
+    Endpoint & Microservice \\ \hline \hline
+    \verb|WS     /telemetry/transmitters| & Summary data of all TX \\ \hline
+    \verb|WS     /telemetry/transmitters/<TxName>| & Details for TX <TxName>\\ \hline
+    \verb|WS     /telemetry/nodes| & Summary data of all Nodes\\ \hline
+    \verb|WS     /telemetry/nodes/<NodeName>| & Details for Node <NodeName>\\ \hline
+    \verb|WS     /changes| & Database changes\\ \hline
+
+  \end{tabular}
+\end{center}
+
+
+\subsection{Telemetry from Transmitters - Summary of all TX}
+\label{protcoldef:websocketapi:telemetrytxsummary}
+URL: \texttt{ws://FQDN/telemetry/transmitters}\\\\
 
 The data is the same as received from the \textbf{dapnet.telemetry} exchange
 from the RabbitMQ instance. It is defined in section
-\ref{protocoldef:telemetrytx}.
-The websocket-Server has to add a JSON Key-Value-Pair to identify that's a transmitter and what is its name:
+\ref{protocoldef:telemetrytx}.\\
+The websocket-Server generates an array of JSON Objects which have the name of the transmitter obtained from the RabbitMQ routing key.\\
+The current time slot is also sent in the summary and updated also by its own every time a time slot change happens.
 
 \begin{lstlisting}
 {
-  "type": "transmitter",
-  "name": "db0abc",
-  ... (Telemetry-Content)
+  "transmitters": [
+    "db0abc" : {
+      "onair": true,
+      "node": {
+        "name": "db0xyz",
+        "ip": "44.42.23.8",
+        "port": 1234,
+        "connected": true,
+        "connected_since": "<timestamp-format>"
+       },
+      "ntp": {
+        "synced": true
+      },
+      "messages": {
+        "queued": [123, 123, 123, 123, 123, 123],
+        "sent": [123, 123, 123 , 123, 123, 123]
+      },
+      "config": {
+        "ip": "123.4.3.2",
+        "timeslots" : [true, false,...,	false],
+      "software": {
+        name: "Unipager" | "MMDVM" | "DAPNET-Proxy",
+        version: "v1.2.3", | "20180504" | "v2.3.4"
+      },
+      "proxy" : {
+        "status": "connected" | "connecting" | "disconnected"
+      }
+    },
+    "db0xyz" : {
+      "onair": true,
+      "node": {
+    ....
+    }        
+  ],
+  "current_timeslot" : 12
 }
 \end{lstlisting}
 
-\subsection{Telemetry from Nodes}
-\label{protcoldef:websocketapi:telemetrynodes}
-URL: \texttt{ws://FQDN/telemetry}.
+\subsection{Telemetry from Transmitters - Details of Transmitter}
+\label{protcoldef:websocketapi:telemetrytxdetail}
+URL: \texttt{ws://FQDN/telemetry/transmitters/<transmittername>}\\\\
 
 The data is the same as received from the \textbf{dapnet.telemetry} exchange
 from the RabbitMQ instance. It is defined in section
-\ref{protocoldef:telemetrynodes}.
-The websocket-Server has to add a JSON Key-Value-Pair to identify that's a Node and what is its name:
+\ref{protocoldef:telemetrytx}.\\
+The websocket-Server gives out all the telemetry data from a certain transmitter. The name of the transmitter obtained from the RabbitMQ routing key. 
 
 \begin{lstlisting}
 {
-  "type": "node",
-  "name": "db0abc",
-  ... (Telemetry-Content)
+  "onair": true,
+  "node": {
+  "name": "db0xyz",
+  "ip": "44.42.23.8",
+    "port": 1234,
+    "connected": true,
+    "connected_since": "<timestamp-format>"
+  },
+  "ntp": {
+    "synced": true,
+    "offset": 124,
+    "server": ["134.130.4.1", "12.2.3.2"],
+  },
+  "messages": {
+    "queued": [123, 123, 123, 123, 123, 123],
+    "sent": [123, 123, 123 , 123, 123, 123]
+  },
+  "temperatures": {
+    "unit": "C" | "F" | "K",
+    "air_inlet": 12.2,
+    "air_outlet": 14.2,
+    "transmitter": 42.2,
+    "power_amplifier": 45.2,
+    "cpu": 93.2,
+    "power_supply": 32.4,
+    "custom": [
+      {"value": 12.2, "description": "Aircon Inlet"},
+      {"value": 16.2, "description": "Aircon Outlet"},
+      {"value": 12.3, "description": "Fridge Next to Programmer"}
+    ]
+  },
+  "power_supply": {
+    "on_battery": false,
+    "on_emergency_power": false,
+    "dc_input_voltage": 12.4,
+    "dc_input_current": 3.23
+  },
+  "rf_output" : {
+    "fwd": 12.2,
+    "refl" : 12.2,
+    "vswr" : 1.2
+  },
+  "config": {
+    "ip": "123.4.3.2",
+    "timeslots" : [true, false,...,	false],
+    "software": {
+      name: "Unipager" | "MMDVM" | "DAPNET-Proxy",
+      version: "v1.2.3", | "20180504" | "v2.3.4",
+    },
+  }
+  "hardware": {
+    "platform": "Raspberry Pi 3B+"
+  },
+  "rf_hardware": {
+    "c9000": {
+      "name" : "C9000 Compact",
+      "<pa_dummy>" : {
+        "output_power" : 123,
+        "port" : "/dev/ttyUSB0"
+      }
+      "<rpc>": {
+        "version" : "XOS/2.23pre"
+      }
+    },
+    "raspager": {
+      "name": Raspager",
+      "modulation": 13,
+      "power": 63,
+      "external_pa": false,
+      "version": "V2"
+    },
+    "audio": {
+      "name" = "Audio",
+      "transmitter": "GM1200" | "T7F" | "GM340" | "FREITEXT",
+      "audio_level": 83,
+      "tx_delay": 3
+    },
+    "rfm69": {
+      "name" : "RFM69",
+      "port": "/dev/ttyUSB0"
+    },
+    "mmdvm": {
+      "name" : "MMDVM",
+      "dapnet_exclusive": true
+    }
+  },
+  "proxy" : {
+    "status": "connected" | "connecting" | "disconnected"
+  }
+}
+\end{lstlisting}
+
+\subsection{Telemetry from Nodes - Summary of all Nodes}
+\label{protcoldef:websocketapi:telemetrynodessummary}
+URL: \texttt{ws://FQDN/telemetry/nodes}\\\\
+
+The websocket-Server generates an array of JSON Objects which have the name of the node obtained from the RabbitMQ routing key.
+
+\begin{lstlisting}
+{
+  "nodes" : [
+    "db0sda" : {
+      "good_health" : true,
+      "connections" : {
+        "transmitters" : 123,
+        "third_party" : 3
+      },
+      "system" : {
+        "is_hamcloud" : false
+      }
+    },
+    "hamcloud1" : {
+      "good_health" : true,
+      "connections" : {
+        "transmitters" : 658,
+        "third_party" : 25
+      },
+      "system" : {
+        "is_hamcloud" : true
+      }
+    },
+    ....
+  ]
+}
+\end{lstlisting}
+
+\subsection{Telemetry from Transmitters - Details of Node}
+\label{protcoldef:websocketapi:telemetrynodesdetail}
+URL: \texttt{ws://FQDN/telemetry/nodess/<nodename>}\\\\
+
+The data is the same as received from the \textbf{dapnet.telemetry} exchange
+from the RabbitMQ instance. It is defined in section
+\ref{protocoldef:telemetrytx}.\\
+The websocket-Server gives out all the telemetry data from a certain node. The name of the transmitter obtained from the RabbitMQ routing key. 
+
+\begin{lstlisting}
+{
+  "good_health" : true,
+  "microservices" : {
+    "database" : {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "call" : {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "rubric" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "transmitter" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "cluster" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "telemetry" : {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "database-changes" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "statistics" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "rabbitmq" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+    "thirdparty" :  {
+      "ok" : true,
+      "version" : "1.2.3"
+    },
+  },
+  "connections" : {
+    "transmitters" : 123,
+    "third_party" : 3
+  },
+  "system" : {
+    "free_disk_space_mb": 1234
+    "cpu_utilization": 0.2
+    "is_hamcloud" : false
+  }
 }
 \end{lstlisting}
 
 \subsection{Database Changes}
 \label{protcoldef:websocketapi:databasechanges}
-URL: \texttt{ws://FQDN/database\_changes}.
+URL: \texttt{ws://FQDN/changes}\\
 
 To inform the website or the app about changes in the CouchDB database, the
-websocket mirocservice keeps a connection to the local CouchDB API and receives
+websocket microservice keeps a connection to the local CouchDB API and receives
 a stream of updated to the database. As there may be data in the changes that
 are confidential, the stream is parsed and sent out in a reduced form to the
 websocket client. Further information:
@@ -654,19 +900,7 @@ websocket client. Further information:
 
 The format of the updates is:
 
-\todo{define format}
-
-
-\subsection{Administration}
-\label{protocoldef:RabbitMQ:dapnet.administration}
-If there is any update on the CouchDB, the other CouchDB instances are notified
-and updated automatically, but there is no trigger event to notify the websocket
-service about the change. As changes should be display immediately on the
-website or app, they have to be announced via websocket. In order to generate a
-trigger for changes in the CouchDB, the RabbitMQ exchange
-\textbf{dapnet.administration} is used and filled. All websocket microservices
-consume this exchange.
-
+\todo{define/review format}
 
 \subsubsection{Transmitter related}
 \texttt{New transmitter added}
@@ -677,7 +911,7 @@ consume this exchange.
   "action" : "added",
   "name": "db0abc",
   "data" : {
-  (Complete Data dump as stored in CouchDB. If websocket client is authenticated as non-admin, remove AuthKey)
+  (Data from CouchDB Change feed in processed way)
   }
 }
 \end{lstlisting}
@@ -689,7 +923,7 @@ consume this exchange.
   "action" : "changed",
   "name": "db0abc",
   "data" : {
-  (Complete Data dump as stored in CouchDB. If websocket client is authenticated as non-admin, remove AuthKey))
+  (Data from CouchDB Change feed in processed way)
   }
 }
 \end{lstlisting}
@@ -710,7 +944,7 @@ consume this exchange.
   "action" : "added",
   "name": "db1abc",
   "data" : {
-  (Complete Data dump as stored in CouchDB. If websocket client is authenticated as non-admin, just provide callsign.)
+  (Data from CouchDB Change feed in processed way)
   }
 }
 \end{lstlisting}
@@ -722,7 +956,7 @@ consume this exchange.
   "action" : "changed",
   "name": "db1abc",
   "data" : {
-  (Complete Data dump as stored in CouchDB. If websocket client is authenticated as non-admin, just provide callsign.)
+  (Data from CouchDB Change feed in processed way)
   }
 }
 \end{lstlisting}
@@ -745,7 +979,7 @@ consume this exchange.
   "action" : "added",
   "id": "...",
   "data" : {
-  (Complete Data dump as stored in CouchDB)
+  (Data from CouchDB Change feed in processed way)
   }
 }
 \end{lstlisting}
@@ -757,7 +991,7 @@ consume this exchange.
   "action" : "changed",
   "id": "...",
   "data" : {
-  (Complete Data dump as stored in CouchDB)
+  (Data from CouchDB Change feed in processed way)
   }
 }
 \end{lstlisting}
@@ -819,7 +1053,7 @@ consume this exchange.
   "action" : "added",
   "name": "db0abc",
   "data" : {
-  (Complete Data dump as stored in CouchDB. If websocket client is authenticated as non-admin, just provide node name.)
+  (Data from CouchDB Change feed in processed way)
   }
 }
 \end{lstlisting}
@@ -831,7 +1065,7 @@ consume this exchange.
   "action" : "changed",
   "name": "db0abc",
   "data" : {
-  (Complete Data dump as stored in CouchDB. If websocket client is authenticated as non-admin, just provide node name.)
+  (Data from CouchDB Change feed in processed way)
   }
 }
 \end{lstlisting}
