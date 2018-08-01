@@ -1,9 +1,35 @@
 \chapter{Setup and Installation}
 
+
+\subsection{Accessible ports from HAMNET}
+
 \section{Unipager}
 
 \section{DAPNET-Proxy}
 
 \section{DAPNET Core}
 
-\section{Special issues for Core running in HAMCLOUD}
+\section{Special issues for Core running in Hamcloud}
+
+\subsection{Accessible ports from internet}
+To offer the endpoints to internet-based transmitters and users, the following port have to be accessible:
+
+\begin{tabular}{r|r|l}
+Type & Port & Application\\
+\hline
+TCP & 80 & HTTP Webinterface and Websocket\\
+TCP & 443 & HTTPS Webinterface  and Websocket\\
+TCP & 5672 & RabbitMQ Client connection\\
+\end{tabular}
+
+\subsection{Load balancing and high availability}
+\textbf{Internet-based}\\
+To offer load balancing and high availability, the internet-based DNS record \textit{hampager.de} would use DNS round-robin with the static internet IPs of the Hamcloud instances.
+
+\textbf{HAMNET/Hamcloud-based}\\
+The Hamcloud instances would offer an anycast IP to for transmitter and user connections. There is a special subnet of 44.0.0.0/8 IPs designated for this anycast approach. Besides, the Hamcloud DAPNET instances will have unicast IPs for administration and their inter-node-synchronization.
+To connect other nodes besides from the three hamcloud instances, the endpoint to be attached will also be distributed via anycast for maximal fail-over capability.
+
+
+
+
