@@ -287,7 +287,7 @@ The format of the data published for \textbf{personal paging calls} is
         "type" : "PERONAL" | "WIDERANGE"
       }
     ],
-    "timestamp" : <TIMESTAMP>
+    "timestamp" : "2018-07-03T08:00:52.786458Z"
   }
 }
 \end{lstlisting}
@@ -311,7 +311,7 @@ The format of the data published for \textbf{rubric\_content paging calls} is
         "type" : "PERONAL" | "WIDERANGE"
       }
     ],
-    "timestamp" : <TIMESTAMP>
+    "timestamp" : "2018-07-03T08:00:52.786458Z"
   }
 }
 \end{lstlisting}
@@ -335,7 +335,7 @@ The name of the transmitter is used as routing key for the message.
     "ip": "44.42.23.8",
     "port": 1234,
     "connected": true,
-    "connected_since": "<timestamp-format>"
+    "connected_since": "2018-07-03T08:00:52.786458Z"
    },
   "ntp": {
     "synced": true,
@@ -654,7 +654,7 @@ The current time slot is also sent in the summary and updated also by its own ev
         "ip": "44.42.23.8",
         "port": 1234,
         "connected": true,
-        "connected_since": "<timestamp-format>"
+        "connected_since": "2018-07-03T08:00:52.786458Z"
        },
       "ntp": {
         "synced": true
@@ -686,7 +686,7 @@ The current time slot is also sent in the summary and updated also by its own ev
 
 \subsection{Telemetry from Transmitters - Details of Transmitter}
 \label{protcoldef:websocketapi:telemetrytxdetail}
-URL: \texttt{ws://FQDN/telemetry/transmitters/<transmittername>}\\\\
+URL: \texttt{ws://FQDN/telemetry/transmitter/<transmittername>}\\\\
 
 The data is the same as received from the \textbf{dapnet.telemetry} exchange
 from the RabbitMQ instance. It is defined in section
@@ -700,7 +700,7 @@ The websocket-Server gives out all the telemetry data from a certain transmitter
   "ip": "44.42.23.8",
     "port": 1234,
     "connected": true,
-    "connected_since": "<timestamp-format>"
+    "connected_since": "2018-07-03T08:00:52.786458Z"
   },
   "ntp": {
     "synced": true,
@@ -822,7 +822,7 @@ The websocket-Server generates an array of JSON Objects which have the name of t
 
 \subsection{Telemetry from Transmitters - Details of Node}
 \label{protcoldef:websocketapi:telemetrynodesdetail}
-URL: \texttt{ws://FQDN/telemetry/nodess/<nodename>}\\\\
+URL: \texttt{ws://FQDN/telemetry/node/<nodename>}\\\\
 
 The data is the same as received from the \textbf{dapnet.telemetry} exchange
 from the RabbitMQ instance. It is defined in section
@@ -1111,9 +1111,9 @@ The format of the updates is:
   "email": "dl1abc@darc.de",
   "admin": true,
   "enabled": true,
-  "created_on": <DATETIME>,
-  "created_by":"dh3wr",
-  "changed_on": <DATETIME>,
+  "created_on": "2018-07-03T08:00:52.786458Z",
+  "created_by": "dh3wr",
+  "changed_on": "2018-07-03T08:00:52.786458Z",
   "changed_by":"dh3wr",
   "email_valid": true
   "avatar_picture": <couchdb attachment>
@@ -1147,9 +1147,9 @@ The format of the updates is:
   "auth_key": "super_secret_key",
   "coordinates": [34.123456, -23.123456],
   "hamcloud": true,
-  "created_on": <DATETIME>,
+  "created_on": "2018-07-03T08:00:52.786458Z",
   "created_by":"dh3wr",
-  "changed_on": <DATETIME>,
+  "changed_on": "2018-07-03T08:00:52.786458Z",
   "changed_by":"dh3wr",
   "owners": ["dl1abc","dh3wr","dl2ic"],
   "avatar_picture": <couchdb attachment??>
@@ -1201,10 +1201,10 @@ The format of the updates is:
     "infinite": false,
     "duration": 23*60*60 // seconds
   },
-  "created_on": <DATETIME>,
-  "created_by":"dh3wr",
-  "changed_on": <DATETIME>,
-  "changed_by":"dh3wr",
+  "created_on": "2018-07-03T08:00:52.786458Z",
+  "created_by": "dh3wr",
+  "changed_on": "2018-07-03T08:00:52.786458Z",
+  "changed_by": "dh3wr",
   "aprs_broadcast": false,
   "antenna_pattern" : <couchDB attachment>,
   "avatar_picture" : <couchDB attachment>
