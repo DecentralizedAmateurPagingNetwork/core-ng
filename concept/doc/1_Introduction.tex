@@ -3,6 +3,19 @@
 
 
 \section{Key Features}
+The version 2 will please the user/operator with the following key features:
+\begin{itemize}
+\item Reliable clustering of Node instances over unreliable WAN connections like HAMNET
+\item Transmitter telemetry realtime display on Website and App with Websockets
+\item Use of microservices instead of one big application. Easier to develop, maintain and update
+\item Load-Balancing and fail-over for user and transmitter interfaces
+\item Real-time on-air display of transmitters on map
+\item Third-Party API for Brandmeister, APRS, etc.
+\item Priority Queuing for transmitters
+\item Send calls to individual transmitters and/or transmitter groups
+\item Inflexible concept of transmitter groups is replaced by group tags on transmitters
+\item Improved Cluster status monitoring
+\end{itemize}
 
 \section{Historic Background}
 \todo{write some history}
@@ -13,15 +26,16 @@ An overview of the DAPNET 2.0 concept is given in Fig. \ref{fig:concept_overview
 
 \begin{figure}[htbp] 
   \centering
-     \includegraphics[width=0.8\textwidth]{{"assets/Concept Version 2.0 Overview"}.png}
+     \includegraphics[width=1\textwidth]{{"assets/Concept Version 2.0 Overview"}.png}
   \caption{Overview of DAPNET Clutering and Network Structure}
   \label{fig:concept_overview}
 \end{figure}
 
+\newpage
 The details of a single node implementation are shown in Fig. \ref{fig:node_details}.
-\begin{figure}[htbp] 
+\begin{figure}[ht] 
   \centering
-     \includegraphics[width=0.8\textwidth]{{"assets/Concept Version 2.0 Node Details"}.png}
+     \includegraphics[width=1\textwidth]{{"assets/Concept Version 2.0 Node Details"}.pdf}
   \caption{Node Details}
   \label{fig:node_details}
 \end{figure}
@@ -30,19 +44,52 @@ The details of a single node implementation are shown in Fig. \ref{fig:node_deta
 \section{Transmitter Software}
 
 \subsection{Unipager}
+The default software for new transmitters is \href{https://hampager.de/dokuwiki/doku.php?id=unipager}{Unipager}. It is developed and maintained by Thomas Gatzweiler, DL2IC. There is a debian based repository available. CI technology is used to assure automated compiling of new versions. Transmitters can be updated all at once if they subscribe to the \href{https://hampager.de/dokuwiki/doku.php?id=salt-minion}{SaltStack} remote management program.
 
-\subsection{DAPNET-Proxy}
+\subsection{Backward compatibility to XOS slave protocol}
+The former amateur radio paging transmitters use the XOS slave protocol. It is defined \href{https://www.afu.rwth-aachen.de/images/vortraege/Wilke_FunkrufTX_Weinheim2012.pdf}{here}. There is a NTP like time sync sequence at the beginning of each connection establishment to assure the synchronicity of the transmitters for TDMA. In times of packet-radio, this approach was necessary. Nowadays NTP is used to sync the transmitter clocks; anyway it's still supported.\\
+As DAPNET V2 introduces RabbitMQ and REST interfaces towards transmitters, there is a need for a backward compatibility module, which is also part of the DAPNET V2 package. We hope that after some month, all IP based transmitters have switched to the new interface implementation.
+
+\subsection{DAPNET-Proxy for AX.25 transmitters}
+For AX.25 only transmitters like \href{https://hampager.de/dokuwiki/doku.php?id=pr430}{PR430}, there is still a demand to support thee XOS slave protocol over plain AX.25. There is a already working solution to pipe the TCP Data through a lot of intermediate programs towards a AX.25 device. The general data flow is shown \href{https://hampager.de/dokuwiki/doku.php?id=pr430#general_dataflow}{in the DAPNET DokuWiki}. Figure \ref{fig:dapnet-proxy} in shown for reference only.
+
+\begin{figure}[htbp] 
+  \centering
+     \includegraphics[width=1\textwidth]{{"assets/pr430_or_rpc_local_dapnetproxy"}.png}
+  \caption{Data flow for AX.25 connections from DAPNET}
+  \label{fig:dapnet-proxy}
+\end{figure}
+
 
 \section{DAPNET Network}
 
 \subsection{Overview and Concept}
 
 \subsection{Used third-party Software}
+Used third-party Software is:
+\begin{itemize}
+\item RabbitMQ for Message delivery to transmitters and between nodes
+\item CouchDB as distributed database backend working on unreliable WAN connections
+\item NGINX as low resource high performance load balancing server for default Interface endpoints
+\item Docker for easy deployment and update purposes
+\item SaltStack for easy distributed updates and maintenance 
+\end{itemize}
 
 \subsection{HAMCLOUD Description}
 The HAMCLOUD is a virtual server combination of server central services on the HAMNET and provide short hop connectivity to deployed service on HAMNET towards the Internet. There are three data centers at Essen, Nürnberg and Aachen, which have high bandwidth interlinks over the DFN. There are address spaces for uni- and anycast services. How this concept is deployed is still tbd.
+
 \todo{Define if uni- or anycast entry points will exist}
-More information is here \url{https://www.swiss-artg.ch/fileadmin/Dokumente/HAMNET/HamCloud_-_Angebotene_Dienste_in_der_HamCloud.pdf} and here \url{http://hamnetdb.net/?m=as&q=hamcloud}.
+\todo{Define if all 3 hamcloud sites will have the same internet incoming ports, and what is the Internet DNS concept}
+
+More information is \href{https://www.swiss-artg.ch/fileadmin/Dokumente/HAMNET/HamCloud_-_Angebotene_Dienste_in_der_HamCloud.pdf}{here} and \href{http://hamnetdb.net/?m=as&q=hamcloud}{here}.
+
+\subsection{Transmitter Group Handling Concept}
+In the first Version of DAPNET, transmitters had to be member of one or more logical transmitter groups. Personal calls and rubric content could only be send to a transmitter group, which afterwards sent the data to be member transmitters. Changes in membership required the assigned owner of the group to do so.\\
+In DAPNET V2, there will by just \textit{virtual} transmitter groups by assigning one of more \textit{tags} to a transmitter by its owner himself. Messages can be sent to either a single or group of individual transmitters and/or a single or group of tags. Each transmitter containing the tag will send out the message.
+
+
 \subsection{Rubric Handling Concept}
 
 \subsection{Queuing Priority Concept}
+A main drawback of the original DAPNET implementation was the lack of priorities in the message queuing on a transmitter. With increasing popularity the load on the transmitters increased and the FIFO working principle led to personal calls being sent out several 10 minutes later than submitted.\\
+To overcome this, a 5 class priority scheme is implemented in DAPNET. Messages to send out are queued 
