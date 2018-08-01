@@ -228,7 +228,7 @@ personal pagings and rubric related messages are transmitted with this protocol.
   "priority": 3,
   "expires": "2018-07-03T08:00:52.786458Z",
   "message": {
-    "addr": 12342, (max 21 Bits)
+    "ric": 12342, (max 21 Bits)
     "type": "alphanum", | "numeric"
     "speed": 1200,
     "function": 0 to 3,
@@ -268,8 +268,8 @@ The format of the data published for \textbf{personal paging calls} is
   "pagingcall" : {
     "srccallsign" : "dl2ic",
     "dstcallsign" : "dh3wr",
-    "dstric" : 12344,
-    "dstsubric" : 0 ... 3,
+    "dstric" : 12354,
+    "dstfunction" : 0 .. 3,
     "priority" : 3,
     "message" : "DAPNET 2.0 rocks dear YL/OM"
     "transmitted_by" : [
@@ -277,13 +277,13 @@ The format of the data published for \textbf{personal paging calls} is
         "callsign" : "db0abc",
         "lat" : 12.123456,
         "long" : 32.123456,
-        "type" : "PERONAL" | "WIDERANGE"
+        "type" : "personal" | "widerange"
       },
       {
         "callsign" : "db0def",
         "lat" : 12.123456,
         "long" : 32.123456,
-        "type" : "PERONAL" | "WIDERANGE"
+        "type" : "personal" | "widerange"
       }
     ],
     "timestamp" : "2018-07-03T08:00:52.786458Z"
