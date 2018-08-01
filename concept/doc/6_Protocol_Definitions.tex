@@ -228,11 +228,10 @@ personal pagings and rubric related messages are transmitted with this protocol.
   "priority": 3,
   "expires": "2018-07-03T08:00:52.786458Z",
   "message": {
-    "ric": 12342,
-    "subric": 0 to 3,
+    "addr": 12342, (max 21 Bits)
     "type": "alphanum", | "numeric"
     "speed": 1200,
-    "function": 3,
+    "function": 0 to 3,
     "data": "Lorem ipsum dolor sit amet"
   }
 }
@@ -1184,13 +1183,13 @@ The format of the updates is:
   "_id": "db0abc",
   "auth_key": "hdjaskhdlj",
   "enabled": true,
-  "usage": "PERSONAL" | "WIDERANGE",
+  "usage": "personal" | "widerange",
   "coordinates": [34.123456, -23.123456],
   "power": 12.3,
   "antenna": {
     "agl": 23.4,
     "gain": 2.34,
-    "type": "OMNI" | DIRECTIONAL,
+    "type": "omni" | "directional",
     "direction": 123.2,
     "cable_loss": 4.2
   }
@@ -1215,6 +1214,7 @@ The format of the updates is:
 \subsection{Subscribers}
 \label{protocoldef:couchdb:subscribers}
 \todo{check if [] is valid JSON}
+\textbf{If type is "Skyper", function is always 3. Keep this in mind }
 \begin{lstlisting}
 {
   "_id" : "dl1abc",
@@ -1222,7 +1222,7 @@ The format of the updates is:
   "pagers" : [
     {
       "ric": 123456,
-      "subric": 0 .. 3,
+      "function": 0 .. 3,
       "uuid": "0023-1233-aefe-1234-3423-9812",
       "name": "Peters Alphapoc",
       "type" : "UNKNOWN" | "Skyper" | "AlphaPoc" | "QUIX" | "Swissphone" | "SCALL_XT" | "Birdy"
