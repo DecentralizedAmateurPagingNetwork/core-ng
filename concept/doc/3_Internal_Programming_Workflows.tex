@@ -88,7 +88,7 @@ content is also updated.
 \label{internalprog:microservices}
 
 A DAPNET node consists of serveral isolated microservices with different
-responsibilities. Each microservice runs in container and is automatically
+responsibilities. Each microservice runs in a container and is automatically
 restarted if it should crash. Some microservices can be started in multiple
 instances to fully utilize multiple cores. The access to the microservices is
 proxied by a NGINX webserver which can also provide load balancing and caching.
@@ -97,17 +97,17 @@ proxied by a NGINX webserver which can also provide load balancing and caching.
   \begin{tabular}{|l|l|} \hline
     REST endpoint & Microservice \\ \hline \hline
 
-    \verb|*      /users/*| & Database Service \\
-    \verb|*      /nodes/*| &  \\
-    \verb|*      /rubrics/*| &  \\
-    \verb|*      /subscribers/*| & \\
-    \verb|*      /subscriber_groups/*| & \\
-    \verb|DELETE /transmitters/:id| & \\
-    \verb|PUT    /transmitters| & \\ \hline
+    \verb|*      /user(s)/*| & Database Service \\
+    \verb|*      /node(s)/*| &  \\
+    \verb|*      /rubric(s)/*| &  \\
+    \verb|*      /subscriber(s)/*| & \\
+    \verb|*      /subscriber_group(s)/*| & \\
+    \verb|DELETE /transmitter/<transmittername>| & \\
+    \verb|PUT    /transmitter/<transmittername>| & \\ \hline
 
     \verb|*      /calls/*| & Call Service \\ \hline
 
-    \verb|*      /rubrics/:id/*| & Rubric Service \\ \hline
+    \verb|*      /rubrics/content/*| & Rubric Service \\ \hline
 
     \verb|GET    /transmitters| & Transmitter Service \\
     \verb|GET    /transmitters/:id| & \\
