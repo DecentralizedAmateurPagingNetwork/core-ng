@@ -306,7 +306,59 @@ See \hyperref[protcoldef:websocketapi:databasechanges]{the section for Websocket
 \subsection{Status Service}
 The purpose of the status service is to provide a short overview of the DAPNET network and the microservices.
 
+\subsubsection{GET /status/nodes}
+No authentication required.
+
+Answer:
+\texttt{200 OK}
+\begin{lstlisting}
+{
+  "nodes": [
+    {
+      "host": "node1.ampr.org",
+      "port": 4000,
+      "reachable": true,
+      "last_seen": "2018-07-03T07:43:52.783611Z",
+      "response_time": 42
+    }
+  ],
+  "connections": {
+    "rabbitmq": true,
+    "couchdb": true,
+    "hamcloud": true,
+  },
+  "hamcloud_node": false,
+  "general_health": true
+}
+\end{lstlisting}
+\todo{What is "port"?}
+
+\subsubsection{GET /status/node/<nodename>}
+No authentication required.
+
+Answer:
+\texttt{200 OK}
+\begin{lstlisting}
+{
+  "host": "node1.ampr.org",
+  "port": 4000,
+  "reachable": true,
+  "last_seen": "2018-07-03T07:43:52.783611Z",
+  "response_time": 42,
+  "connections": {
+    "rabbitmq": true,
+    "couchdb": true,
+    "hamcloud": true,
+  },
+  "hamcloud_node": false,
+  "general_health": true
+}
+\end{lstlisting}
+\todo{What is "port"?}
+
+
 \subsubsection{GET /status}
+Get status of this node.
 \texttt{200 OK}
 \begin{lstlisting}
 {
@@ -350,7 +402,33 @@ rabbitmq-service\\
 \subsection{Statistics Service}
 
 \subsubsection{GET /statistics}
+No authentication required.
 
+Answer:
+\texttt{200 OK}
+\begin{lstlisting}
+{
+  "users" : 1234,
+  "transmitters": {
+    "personal": {
+      "online": 13
+      "total": 34
+    },
+    "widerage": {
+      "online": 53,
+      "total": 97
+    }
+  }
+  "nodes": {
+    "online": 10,
+    "total": 19
+  },
+  "processed_calls": 1234,
+  "processed_rubric_content_changes": 234
+}
+\end{lstlisting}
+
+\todo{On the calls and rubric content changes: Always increasing counter link traffic on network device or reset at 00:00 am?}
 
 \subsection{RabbitMQ Service}
 
@@ -652,66 +730,8 @@ The name of the nodes is used as routing key for the message.
 The statistic and telemetry REST API provides up-to-date information regarding the transmitters and the network via REST. This can be used by e.g. grafana to draw nice graphes or nagios plugins.
 
 
-\subsection{Statistics}
-Statistics are given in JSON with number values only to may parsing easier.
 
-\texttt{GET /stats}
 
-No authentication required.
-
-Answer:
-\texttt{200 OK}
-\begin{lstlisting}
-{
-  "users" : 1234,
-  "transmitters": {
-    "personal": {
-      "online": 13
-      "total": 34
-    },
-    "widerage": {
-      "online": 53,
-      "total": 97
-    }
-  }
-  "nodes": {
-    "online": 10,
-    "total": 19
-  },
-  "processed_calls": 1234,
-  "processed_rubric_content_changes": 234
-}
-\end{lstlisting}
-
-\todo{On the calls and rubric content changes: Always increasing counter link traffic on network device or reset at 00:00 am?}
-
-\subsection{Status}
-\texttt{GET /status}
-
-No authentication required.
-
-Answer:
-\texttt{200 OK}
-\begin{lstlisting}
-{
-  "nodes": [
-    {
-      "host": "node1.ampr.org",
-      "port": 4000,
-      "reachable": true,
-      "last_seen": "2018-07-03T07:43:52.783611Z",
-      "response_time": 42
-    }
-  ],
-  "connections": {
-    "rabbitmq": true,
-    "couchdb": true,
-    "hamcloud": true,
-  },
-  "hamcloud_node": false,
-  "general_health": true
-}
-\end{lstlisting}
 
 \subsection{Telemetry from Transmitters}
 
