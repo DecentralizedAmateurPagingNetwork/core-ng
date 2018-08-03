@@ -97,11 +97,12 @@ proxied by a NGINX webserver which can also provide load balancing and caching.
   \begin{tabular}{|l|l|} \hline
     REST endpoint & Microservice \\ \hline \hline
 
-    \verb|*      /user(s)/*| & Database Service \\
-    \verb|*      /node(s)/*| &  \\
-    \verb|*      /rubric(s)/*| &  \\
-    \verb|*      /subscriber(s)/*| & \\
+    \verb|*      /users/*| & Database Service \\
+    \verb|*      /nodes/*| &  \\
+    \verb|*      /rubrics/*| &  \\
+    \verb|*      /subscribers/*| & \\
     \verb|*      /subscriber_group(s)/*| & \\
+    \verb|GET    /transmitter/grouptags | & \\
     \verb|DELETE /transmitter/<transmittername>| & \\
     \verb|PUT    /transmitter/<transmittername>| & \\ \hline
 

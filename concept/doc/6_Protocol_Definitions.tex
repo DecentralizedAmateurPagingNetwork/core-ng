@@ -13,83 +13,86 @@ See \hyperref[internalprog:microservices]{Microservices definition}.
 \subsubsection{GET /users}
 Returns all users with all details in JSON format.
 
-\subsubsection{GET /user/<username>}
+\subsubsection{GET /users/<username>}
 Return all details just of <username> in JSON format.
 
 \subsubsection{GET /users/usernames}
 Return just an JSON array of all usernames. Used where selections have to be done on the website.
 
-\subsubsection{PUT /user/<username>}
+\subsubsection{PUT /users/<username>}
 Add or if existent edit the user <username>. If it's existing before, just the changed values have to be sent.
 
-\subsubsection{DELETE /user/<username>}
+\subsubsection{DELETE /users/<username>}
 Delete user <username>. The Database Service has be make sure that all dependencies of a user account are deleted as well, for example transmitters subscribers or rubrics, that contain \textbf{just} this <username> as owner as the only one entry (left).
 
 \subsubsection{GET /nodes}
 Returns all nodes with all details in JSON format.
 
-\subsubsection{GET /node/<nodename>}
+\subsubsection{GET /nodes/<nodename>}
 Return all details just of <nodename> in JSON format.
 
 \subsubsection{GET /nodes/nodenames}
 Return just an JSON array of all nodenames and their description. Used where selections have to be done on the website.
 
-\subsubsection{PUT /node/<nodename>}
+\subsubsection{PUT /nodes/<nodename>}
 Add or if existent edit the node <nodename>. If it's existing before, just the changed values have to be sent.
 
-\subsubsection{DELETE /node/<nodename>}
+\subsubsection{DELETE /nodes/<nodename>}
 Delete node <nodename>. No dependency check necessary.
 \todo{Maybe the transmitter service should inform the connected transmitters to the now deleted node to do a switch-over?}
 
 \subsubsection{GET /rubrics}
 Returns all rubrics with all setting details in JSON format. This does \textbf{not} include the content of the 10 rubric message slots.
 
-\subsubsection{GET /rubric/<rubricname>}
+\subsubsection{GET /rubrics/<rubricname>}
 Return all setting details just of <rubricname> in JSON format. This does \textbf{not} include the content of the 10 rubric message slots.
 
 \subsubsection{GET /rubrics/rubricnames}
 Return just an JSON array of all rubricnames and their description. Used where selections have to be done on the website.
 
-\subsubsection{PUT /rubric/<rubricname>}
+\subsubsection{PUT /rubrics/<rubricname>}
 Add or if existent edit the rubric <rubricname>. If it's existing before, just the changed values have to be sent. This is just about the rubrics details, and does \textbf{not} include the content of the 10 rubric message slots.
 
-\subsubsection{DELETE /rubric/<rubricname>}
+\subsubsection{DELETE /rubrics/<rubricname>}
 Delete rubric <rubricname>. No dependency check necessary. Also delete content of this rubric.
 
 \subsubsection{GET /subscribers}
 Returns all subscribers with all details in JSON format.
 
-\subsubsection{GET /subscriber/<subscribername>}
+\subsubsection{GET /subscribers/<subscribername>}
 Return all details just of <subscribername> in JSON format.
 
 \subsubsection{GET /subscribers/subscribernames}
 Return just an JSON array of all subscribernames and their description. Used where selections have to be done on the website.
 
-\subsubsection{PUT /subscriber/<subscribername>}
+\subsubsection{PUT /subscribers/<subscribername>}
 Add or if existent edit the subscriber <subscribername>. If it's existing before, just the changed values have to be sent.
 
-\subsubsection{DELETE /subscriber/<subscribername>}
+\subsubsection{DELETE /subscribers/<subscribername>}
 Delete subscriber <subscribername>. If must be also deleted from any subscriber\_group that is containing it. If it is the only one subscriber on a subscriber\_group also delete that subscriber\_group.
 
 \subsubsection{GET /subscriber\_groups}
 Returns all subscribers\_goups with all details in JSON format.
 
-\subsubsection{GET /subscriber\_group/<subscriber\_groupname>}
+\subsubsection{GET /subscriber\_groups/<subscriber\_groupname>}
 Return all details just of <subscriber\_groupname> in JSON format.
 
 \subsubsection{GET /subscriber\_groups/subscriber\_groupsnames}
 Return just an JSON array of all subscriber\_groupnames and their description. Used where selections have to be done on the website.
 
-\subsubsection{PUT /subscriber\_group/<subscriber\_groupname>}
+\subsubsection{PUT /subscriber\_groups/<subscriber\_groupname>}
 Add or if existent edit the subscriber\_group <subscriber\_groupname>. If it's existing before, just the changed values have to be sent.
 
-\subsubsection{DELETE /subscriber\_group/<subscriber\_groupname>}
+\subsubsection{DELETE /subscriber\_groups/<subscriber\_groupname>}
 Delete subscriber\_group <subscriber\_groupname>. No checks necessary.
 
-\subsubsection{DELETE /transmitter/<transmittername>}
+\subsubsection{GET /transmitter/grouptags}
+Returns a JSON array of used transmitter groups tags from all known transmitters. Used for a suggestion of already existing transmitter group tags on the website.
+
+\subsubsection{DELETE /transmitters/<transmittername>}
 Delete the transmitter <transmittername>. Also delete the transmitter from explicit entries on rubrics
 
-\subsubsection{PUT /transmitter/<transmittername>}
+\subsubsection{PUT /transmitters/<transmittername>}
 Add or if existent edit the transmitter <transmittername>. If it's existing before, just the changed values have to be sent.
 \todo{Is an active connection reset to that transmitter necessary? If the Authkey changes, an already established connection will keep working? And what about timeslot changes? They have to be applied immediately to the transmitter.}
 
@@ -98,53 +101,43 @@ Add or if existent edit the transmitter <transmittername>. If it's existing befo
 \subsubsection{GET /calls}
 Returns the last 100 calls with all details.
 
-\subsubsection{GET /calls}
-With POST content:
-\begin{lstlisting}
-{
-  "number\_limit": <number>
-}
-\end{lstlisting}
+\subsubsection{GET /calls?limit=<number>}
 
-Returns the last <number\_limit> of calls with all details. If the <number\_limit> is higher than the available calls, just return all available calls.
+Returns the last <number> of calls with all details. If <number> is higher than the available calls, just return all available calls.
 
-\subsubsection{GET /calls}
-With POST content:
-\begin{lstlisting}
-{
-  "timefrom": "2018-07-03T08:00:52.786458Z",
-  "timeto": "2018-07-04T08:00:52.786458Z"
-}
-\end{lstlisting}
+\subsubsection{GET /calls/\_view/byDate}
+With GET parameters:
+
+\begin{verbatim}
+GET /calls/_view/byDate?startkey="<startddate">&endkey="<enddate>"
+\end{verbatim}
+
 Returns the calls made within the specified time span with all details. If there are no calls stored in the specified time span, return empty JSON.
 
-\subsubsection{GET /calls}
-With POST content:
-\begin{lstlisting}
-{
-  "fromuser": "dh3wr"
-}
-\end{lstlisting}
-Returns all the calls with destination callsign dh3wr with all details. If there are no calls stored in the specified time span, return empty JSON.
+\subsubsection{GET /calls/\_view/byIssuer}
+\begin{verbatim}
+GET /calls/_view/byIssuer?key="dh3wr"
+\end{verbatim}
 
-\subsubsection{GET /calls}
-With POST content:
-\begin{lstlisting}
-{
-  "destsubscriber": "dh3wr"
-}
-\end{lstlisting}
-Returns all the calls with source callsign dh3wr with all details. If there are no calls stored in the specified time span, return empty JSON.
+Returns all the calls issued from callsign dh3wr with all details. If there are no calls stored with in the specified time span, return empty JSON. (The microservice has to transfrom the request into \textit{startkey="dh3wr"\&endkey="dh3wr"} to the CouchDB GET request by itself.)
 
-Any combination of the given filter method shall be possible.
+\subsubsection{GET /calls/\_view/byRecipient}
+\begin{verbatim}
+GET /calls/_view/byRecipient?key="dh3wr"
+\end{verbatim}
 
-\subsubsection{GET /calls/pending}
+Returns all the calls with recipient callsign dh3wr with all details. If there are no calls stored in the specified time span, return empty JSON. (The microservice has to transfrom the request into \textit{startkey="dh3wr"\&endkey="dh3wr"} to the CouchDB GET request by itself.)
+
+\todo{Any combination of the given filter method shall be possible. It this possible?}
+
+\subsubsection{GET /calls/\_view/pending}
+
 Return all details of pending calls, that are not transmitted by at least one transmitter.
 
-\subsubsection{GET /calls/pending\_all}
+\subsubsection{GET /calls/\_view/pending\_all}
 Return all details of pending calls, that are not transmitted by all designated transmitters.
 
-\subsubsection{PUT /call}
+\subsubsection{POST /call}
 Insert call to the system. Send in POST content:
 \begin{lstlisting}
 {
@@ -157,13 +150,17 @@ Insert call to the system. Send in POST content:
 
 \subsection{Rubric Service}
 
-\subsubsection{GET /rubrics/content}
+\subsubsection{GET /news}
 Returns an array of all rubrics and their content in JSON format.
 
-\subsubsection{GET /rubrics/content/<rubricname>}
+\subsubsection{GET /news/\_view/byRubric}
+\begin{verbatim}
+GET /news/_view/byRubric?startkey="metar-dl"&endkey="metar-dl"
+\end{verbatim}
+
 Returns just the content of <rubricname> content in JSON format.
 
-\subsubsection{GET /rubrics/content/<rubricname>/<message\_no>}
+\subsubsection{GET /news/\_view/byRubric/message\_no>}
 Returns just the content of <rubricname> content and message number <message\_no> in JSON format.
 
 \subsubsection{PUT /rubrics/content/<rubricname>}
@@ -285,13 +282,13 @@ If network wants to initiate handover to other node
 \subsubsection{GET /telemetry/transmitters}
 Return the stored telemetry \textbf{summary} values for all transmitters.
 
-\subsubsection{GET /telemetry/transmitter/<transmittername>}
+\subsubsection{GET /telemetry/transmitters/<transmittername>}
 Return all the stored telemetry values for transmitter <transmittername>.
 
 \subsubsection{GET /telemetry/nodes}
 Return the stored telemetry \textbf{summary} values for all nodes.
 
-\subsubsection{GET /telemetry/node/<nodesname>}
+\subsubsection{GET /telemetry/nodes/<nodesname>}
 Return all the stored telemetry values for node <nodename>.
 
 \subsubsection{WS /telemetry}
@@ -735,7 +732,7 @@ The statistic and telemetry REST API provides up-to-date information regarding t
 
 \subsection{Telemetry from Transmitters}
 
-\texttt{GET /telemetry/transmitter}
+\texttt{GET /telemetry/transmitters}
 
 No authentication required. Here all stored telemetry from all transmitters is provided.
 
@@ -743,7 +740,7 @@ Answer:
 \texttt{200 OK}
 See \ref{protocoldef:telemetrytx}\\\\
 
-\texttt{GET /telemetry/transmitter/<transmittername>}
+\texttt{GET /telemetry/transmitters/<transmittername>}
 
 No authentication required. Here all stored telemetry from the specified transmitter is provided.
 
@@ -752,7 +749,7 @@ Answer:
 
 See \ref{protocoldef:telemetrytx}\\\\
 
-\texttt{GET /telemetry/transmitter/<transmittername>/<section\_of\_telemetry>}
+\texttt{GET /telemetry/transmitters/<transmittername>/<section\_of\_telemetry>}
 
 No authentication required. Here all stored telemetry within the telemetry
 section from the specified transmitter is provided. Possible sections are 2.
@@ -798,7 +795,7 @@ from the RabbitMQ instance and further other sources if necessary.
 
 \todo{Define if authentication is necessary of some endpoints?}
 
-There are 4 main endpoints in the websocket interface:
+There are 5 main endpoints in the websocket interface:
 
 
 \begin{center}
@@ -866,7 +863,7 @@ The current time slot is also sent in the summary and updated also by its own ev
 
 \subsection{Telemetry from Transmitters - Details of Transmitter}
 \label{protcoldef:websocketapi:telemetrytxdetail}
-URL: \texttt{ws://FQDN/telemetry/transmitter/<transmittername>}\\\\
+URL: \texttt{ws://FQDN/telemetry/transmitters/<transmittername>}\\\\
 
 The data is the same as received from the \textbf{dapnet.telemetry} exchange
 from the RabbitMQ instance. It is defined in section
@@ -1002,7 +999,7 @@ The websocket-Server generates an array of JSON Objects which have the name of t
 
 \subsection{Telemetry from Transmitters - Details of Node}
 \label{protcoldef:websocketapi:telemetrynodesdetail}
-URL: \texttt{ws://FQDN/telemetry/node/<nodename>}\\\\
+URL: \texttt{ws://FQDN/telemetry/nodes/<nodename>}\\\\
 
 The data is the same as received from the \textbf{dapnet.telemetry} exchange
 from the RabbitMQ instance. It is defined in section
