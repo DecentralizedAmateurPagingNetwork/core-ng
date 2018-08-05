@@ -6,24 +6,200 @@
 \subsection{Preamble}
 All HTTP(s) communication should be compress with gzip to reduce network load. That's especially important for the answers to GET-calls of all entity's details.
 
-\todo{define all the REST / WS Interfaces}
 See \hyperref[internalprog:microservices]{Microservices definition}.
 
 \subsection{Database Service}
 \subsubsection{GET /users}
-Returns all users with all details in JSON format.
+\label{protocoldef:microservicesapi:database:getusers}
+Returns all users with all details in JSON format.\\
+
+Role \textbf{admin} or \textbf{support} example result:
+\begin{lstlisting}
+{
+  "total_rows": 2,
+  "offset": 0,
+  "rows": [
+    {
+      "_id": "dh3wr",
+      "_rev": "1-09352254509c9ddf86e80fd83868d557",
+      "email": "ralf@secret.com",
+      "role": "user",
+      "enabled": true,
+      "created_on": "2018-07-08T11:50:02.168325Z",
+      "created_by": "dl2ic"
+    },
+    {
+      "_id": "dl2ic",
+      "_rev": "1-c0a6ecb1a60b58254e808fc68d61ec00",
+      "email": "mail@secret.de",
+      "role": "admin",
+      "enabled": true,
+      "created_on": "2018-07-08T11:50:02.168325Z",
+      "created_by": "dh3wr"
+    }
+  ]
+}
+\end{lstlisting}
+
+Role \textbf{user} example result, here user dh3wr is asking:
+\begin{lstlisting}
+{
+  "total_rows": 2,
+  "offset": 0,
+  "rows": [
+    {
+      "_id": "dh3wr",
+      "_rev": "1-09352254509c9ddf86e80fd83868d557",
+      "email": "ralf@secret.com",
+      "role": "user",
+      "enabled": true,
+      "created_on": "2018-07-08T11:50:02.168325Z",
+      "created_by": "dl2ic"
+    },
+    {
+      "_id": "dl2ic",
+      "role": "admin",
+      "enabled": true,
+      "created_on": "2018-07-08T11:50:02.168325Z",
+      "created_by": "dh3wr"
+    }
+  ]
+}
+\end{lstlisting}
+
+Mapping to CouchDB with filtering on microservice:\\
+\verb|GET /users/_all_docs?include_docs=true|
+
+
+\subsubsection{GET /users?startkey="dh3wr"\&endkey="dl2ic"}
+Return all details of all users in alphabetical order between dh3wr and dl2ic in JSON format.\\
+Mapping to CouchDB:\\
+\verb|GET /users/_all_docs?startkey="dh3wr"&endkey="dl2ic"&include_docs=true|
+
+Output filtering is the same as \hyperref[protocoldef:microservicesapi:database:getusers]{for single user request} regarding output content and requestor's role
+
 
 \subsubsection{GET /users/<username>}
-Return all details just of <username> in JSON format.
+\label{protocoldef:microservicesapi:database:getusername}
+Return details of <username> in JSON format.\\
+Mapping to CouchDB :\\
+\verb|GET /users/<username>|
 
-\subsubsection{GET /users/usernames}
-Return just an JSON array of all usernames. Used where selections have to be done on the website.
+Role \textbf{user} example result (dh3wr is asking for dl2ic):
+\begin{lstlisting}
+{
+  "_id": "dl2ic",
+  "role": "admin",
+  "enabled": true,
+  "created_on": "2018-07-08T11:50:02.168325Z",
+  "created_by": "dh3wr"
+}
+\end{lstlisting}
 
-\subsubsection{PUT /users/<username>}
-Add or if existent edit the user <username>. If it's existing before, just the changed values have to be sent.
+Role \textbf{user} example result asking for her/himself or role \textbf{admin} or \textbf{support}:
+\begin{lstlisting}
+{
+  "_id": "dh3wr",
+  "_rev": "1-09352254509c9ddf86e80fd83868d557",
+  "email": "ralf@secret.com",
+  "role": "user",
+  "enabled": true,
+  "created_on": "2018-07-08T11:50:02.168325Z",
+  "created_by": "dl2ic"
+}
+\end{lstlisting}
 
-\subsubsection{DELETE /users/<username>}
+
+\subsubsection{GET /users/\_usernames}
+Return just an JSON array of all usernames. Used where selections have to be done on the website.\\
+Mapping to CouchDB with filtering in microservice:\\
+\verb|GET /users/_all_docs?include_docs=false|
+
+Role \textbf{*} example result:
+\begin{lstlisting}
+{
+  ["dh3wr","dl2ic"]
+}
+\end{lstlisting}
+
+\subsubsection{PUT /users/<username> - Add new user}
+Add the user <username>.
+
+Role \textbf{admin} or \textbf{support} or editing the requestor's own entry are the only allowed roles.
+
+User to API: Example content to add user dl6pt
+\begin{lstlisting}
+{
+  "_id" : "dl6pt",
+  "password": "$2y$12$lqUueRVo94f439Tt7zqrZOHPfm6YoBzNawWLLIykF3nMip3L6mxLK",
+  "email": "ralf@secret.com",
+  "role": "admin",
+  "enabled": true,
+}
+\end{lstlisting}
+
+Mapping to CouchDB with adding information by microservice:\\
+\verb|PUT /users/<username>|
+
+\begin{lstlisting}
+{
+  "_id" : "dl6pt",
+  "password": "$2y$12$lqUueRVo94f439Tt7zqrZOHPfm6YoBzNawWLLIykF3nMip3L6mxLK",
+  "email": "ralf@secret.com",
+  "admin": "admin",
+  "enabled": true,
+  "created_on": "2018-07-08T11:50:02.168325Z",
+  "created_by": "dl2ic"
+}
+\end{lstlisting}
+The \verb|created_by| and \verb|created_on| content has to be added by the microservice.
+
+
+\subsubsection{PUT /users/<username> - Edit existing user}
+Edit the existing user <username>. Just the changed values have to be sent. The \verb|_id| and \verb|_rev| must be sent always.
+
+Role \textbf{admin} or \textbf{support} or editing the requestor's own entry are the only allowed roles.
+
+User to API: Example content to edit user:\\
+First get the user's revision as in \ref{protocoldef:microservicesapi:database:getusername}.
+
+Then generate \verb|PUT| request with content:
+\begin{lstlisting}
+{
+  "_id" : "dl6pt",
+  "_rev": "1-09352254509c9ddf86e80fd83868d557",
+  "password": "$2y$12$lqUueRVo94f439Tt7zqrZOHPfm6YoBzNawWLLIykF3nMip3L6mxLK",
+  "email": "ralf@secret.com",
+  "role": "support",
+  "enabled": true,
+}
+\end{lstlisting}
+
+Mapping to CouchDB with adding information by microservice:\\
+\verb|PUT /users/<username>|
+\begin{lstlisting}
+{
+  "_id" : "dl6pt",
+  "_rev": "1-09352254509c9ddf86e80fd83868d557",
+  "password": "$2y$12$lqUueRVo94f439Tt7zqrZOHPfm6YoBzNawWLLIykF3nMip3L6mxLK",
+  "email": "ralf@secret.com",
+  "role": "support",
+  "enabled": true,
+  "created_on": "2018-07-08T11:50:02.168325Z",
+  "created_by": "dl2ic"
+}
+\end{lstlisting}
+
+\subsubsection{DELETE /users/<username>?rev=}
 Delete user <username>. The Database Service has be make sure that all dependencies of a user account are deleted as well, for example transmitters subscribers or rubrics, that contain \textbf{just} this <username> as owner as the only one entry (left).
+
+Role \textbf{admin} or \textbf{support} or deleting the requestor's own entry are the only allowed roles.
+
+First get the user's revision as in \ref{protocoldef:microservicesapi:database:getusername}.\\
+User to API: \verb|DELETE /users/<username>?rev=1-09352254509c9ddf86e80fd83868d557|
+
+Mapping to CouchDB: direct forward of request
+
 
 \subsubsection{GET /nodes}
 Returns all nodes with all details in JSON format.
@@ -86,7 +262,7 @@ Add or if existent edit the subscriber\_group <subscriber\_groupname>. If it's e
 \subsubsection{DELETE /subscriber\_groups/<subscriber\_groupname>}
 Delete subscriber\_group <subscriber\_groupname>. No checks necessary.
 
-\subsubsection{GET /transmitter/grouptags}
+\subsubsection{GET /transmitters/\_view/groups}
 Returns a JSON array of used transmitter groups tags from all known transmitters. Used for a suggestion of already existing transmitter group tags on the website.
 
 \subsubsection{DELETE /transmitters/<transmittername>}
@@ -1270,7 +1446,7 @@ The format of the updates is:
   \_id & string & & dl1abc \\
   password & string & bcrypt hash & --- \\
   email & string & & dl1abc@darc.de \\
-  admin & boolean & & true \\
+  role & string & "admin"|"support"|"user" & true \\
   enabled & boolean & & true \\
   created\_on & string & ISO8601 & 2018-07-08T11:50:02.168325Z \\
   changed\_on & string & ISO8601 & 2018-07-08T11:50:02.168325Z \\
@@ -1286,7 +1462,7 @@ The format of the updates is:
   "_id": "dl1abc",
   "password": "<bcrypt hash>",
   "email": "dl1abc@darc.de",
-  "admin": true,
+  "role": "admin",
   "enabled": true,
   "created_on": "2018-07-03T08:00:52.786458Z",
   "created_by": "dh3wr",
@@ -1297,7 +1473,7 @@ The format of the updates is:
 }
 \end{lstlisting}
 
-\todo{Wofür genau braucht man email\_valid?}
+\todo{Wofür genau braucht man email\_valid? - Um ab und zu mal eine Testmail an die User zu schicken, ob sie unter der Email noch erreichbar sind und sonst sie zu löschen.}
 
 \subsection{Nodes}
 \begin{table}[h]
