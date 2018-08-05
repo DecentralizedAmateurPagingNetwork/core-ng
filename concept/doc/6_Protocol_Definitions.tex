@@ -395,19 +395,174 @@ User to API: \verb|DELETE /node/<node>?rev=1-09352254509c9ddf86e80fd83868d557|
 
 
 \subsubsection{GET /rubrics}
+\label{protocoldef:microservicesapi:database:rubrics}
 Returns all rubrics with all setting details in JSON format. This does \textbf{not} include the content of the 10 rubric message slots.
 
+Mapping to CouchDB:\\
+\verb|GET /rubrics/_all_docs?include_docs=true|
+Filter couchDB output to produce just the output below:
+
+Role \textbf{admin} or \textbf{support} example result:
+\begin{lstlisting}
+{
+  "total_rows": 1,
+  "offset": 0,
+  "rows": [
+    {
+      "_id": "dx-kw",
+      "_rev": "1-166c3257894d0aea8ee68c1861ca508a",
+      "number": 4,
+      "description": "DX Cluster Spots KW",
+      "label": "DX KW",
+      "transmitter_groups": [
+        "dl-hh"
+      ],
+      "transmitters": [
+        "db0abc"
+      ],
+      "cyclic_transmit": false,
+      "cyclic_transmit_interval": 0,
+      "owner": [
+        "dh3wr",
+        "dl1abc"
+      ]
+    }
+  ]
+}
+\end{lstlisting}
+
+Role \textbf{user} example result. All details but the \verb|_rev| are also given out to role \textbf{user}.
+\begin{lstlisting}
+{
+  "total_rows": 1,
+  "offset": 0,
+  "rows": [
+    {
+      "_id": "dx-kw",
+      "number": 4,
+      "description": "DX Cluster Spots KW",
+      "label": "DX KW",
+      "transmitter_groups": [
+        "dl-hh"
+      ],
+      "transmitters": [
+        "db0abc"
+      ],
+      "cyclic_transmit": false,
+      "cyclic_transmit_interval": 0,
+      "owner": [
+        "dh3wr",
+        "dl1abc"
+      ]
+    }
+  ]
+}
+\end{lstlisting}
+
+\subsubsection{GET /rubrics/\_view/byNumber?startkey=<n>\&endkey=<m>}
+Just get the output as in section \ref{protocoldef:microservicesapi:database:rubrics}, but just for rubric numbers between <n> and <m>. Check before passing the request to CouchDB, that neither <n> nor <m> are higher then 95.
+
+\subsubsection{GET /rubrics/\_view/byTransmitter?startkey="db0abc"\&endkey="db0abc"}
+Just get the output as in section \ref{protocoldef:microservicesapi:database:rubrics}, but just for rubric that contain \textit{db0abc} in the \verb|"transmitters"| array.
+
+\subsubsection{GET /rubrics/\_view/byTransmitterGroup?startkey="dh-hh"\&endkey="dh-hh"}
+Just get the output as in section \ref{protocoldef:microservicesapi:database:rubrics}, but just for rubric that contain \textit{dl-hh} in the \verb|"transmitter_groups"| array.
+
+\subsubsection{GET /rubrics/\_view/withCyclicTransmit}
+Just get the output as in section \ref{protocoldef:microservicesapi:database:rubrics}, but just for rubric that have the cyclic transmit flag enabled.
+
 \subsubsection{GET /rubrics/<rubricname>}
-Return all setting details just of <rubricname> in JSON format. This does \textbf{not} include the content of the 10 rubric message slots.
+\label{protocoldef:microservicesapi:database:getrubricname}
+Return all setting details just of <rubricname> in JSON format. This does \textbf{not} include the content of the 10 rubric message slots. Output as in section \ref{protocoldef:microservicesapi:database:rubrics}.
 
-\subsubsection{GET /rubrics/rubricnames}
-Return just an JSON array of all rubricnames and their description. Used where selections have to be done on the website.
+Mapping to CouchDB :\\
+\verb|GET /rubrics/<rubricname>|
 
-\subsubsection{PUT /rubrics/<rubricname>}
-Add or if existent edit the rubric <rubricname>. If it's existing before, just the changed values have to be sent. This is just about the rubrics details, and does \textbf{not} include the content of the 10 rubric message slots.
 
-\subsubsection{DELETE /rubrics/<rubricname>}
-Delete rubric <rubricname>. No dependency check necessary. Also delete content of this rubric.
+\subsubsection{GET /rubrics/\_rubricnames}
+Return just an JSON array of all rubricnames in a JSON Array. Allowed with all roles. Used where selections have to be done on the website.
+
+For all roles example result:
+\begin{lstlisting}
+{
+  ["dl-hh", "dl-nw"]
+}
+\end{lstlisting}
+
+\subsubsection{GET /rubrics/\_rubricnamesdescription}
+Return just an JSON array of all rubricnames and their description in a JSON Array. Allowed with all roles. Used where selections have to be done on the website.
+
+For all roles example result:
+\begin{lstlisting}
+{
+  [
+    {
+      "_id: "dl-hh",
+      "description": "Germany, Hamburg"
+    },
+    {
+      "_id: "dl-by",
+      "description": "Bavaria"
+    }
+  ]  
+}
+\end{lstlisting}
+
+\subsubsection{PUT /rubrics - Add new rubric}
+Role \textbf{user} gets \verb|403 Forbidden|.
+
+Only role \textbf{admin} and \textbf{support} is allowed.\\
+Example POST message to send:
+\begin{lstlisting}
+{
+  "_id": "dx-kw",
+  "number": 4,
+  "description": "DX Cluster Spots KW",
+  "label": "DX KW",
+  "transmitter_groups": [
+    "dl-hh"
+  ],
+  "transmitters": [
+    "db0abc"
+  ],
+  "cyclic_transmit": false,
+  "cyclic_transmit_interval": 0,
+  "owner": [
+    "dh3wr",
+    "dl1abc"
+  ]
+}
+\end{lstlisting}
+
+\subsubsection{PUT /rubrics - Edit existing rubric}
+This is just about the rubrics details, and does \textbf{not} include the content of the 10 rubric message slots.
+
+Role \textbf{admin} and \textbf{support} are allowed to do changes.\\
+Role \textbf{user} gets returned \verb|403 Forbidden|.
+
+First get node like in section \ref{protocoldef:microservicesapi:database:getrubricname} to get the revision. Then send the PUT request with just the changed values. The \verb|_id| and \verb|_rev| must be sent always.
+
+Example POST message to send:
+\begin{lstlisting}
+{
+  "_id": "dx-kw",
+  "_rev": "1-166c3257894d0aea8ee68c1861ca508a",
+  "description": "DX Cluster Spots KW"
+}
+\end{lstlisting}
+
+
+\subsubsection{DELETE /rubrics/<rubricname>?rev=}
+Delete rubric <rubricname>.\\
+\textbf{Also delete content of this rubric.}
+\todo{muss unten noch eingebaut werden.}
+
+Role \textbf{admin} and \textbf{support} are allowed.\\
+Role \textbf{user} gets returned \verb|403 Forbidden|.
+
+First get the rubric's revision as in \ref{protocoldef:microservicesapi:database:getrubricname}.\\
+User to API: \verb|DELETE /rubrics/<rubricname>?rev=1-09352254509c9ddf86e80fd83868d557|
+
 
 \subsubsection{GET /subscribers}
 Returns all subscribers with all details in JSON format.
@@ -1779,8 +1934,8 @@ The format of the updates is:
 }
 \end{lstlisting}
 
-\subsection{Rubrics List}
-\label{rubric_list}
+\subsection{Rubrics}
+\label{rubrics}
 
 \begin{lstlisting}
 {
@@ -1791,7 +1946,7 @@ The format of the updates is:
   "transmitter_groups": ["dl-hh","dl-ns"],
   "transmitters": ["db0abc"],
   "cyclic_transmit": true,
-  "cyclic_transmit_interval": 60*60, // seconds
+  "cyclic_transmit_interval": 3600, // seconds
   "owner" : ["dh3wr", "dl1abc"]
 }
 \end{lstlisting}
