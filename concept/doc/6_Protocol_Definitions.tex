@@ -199,9 +199,9 @@ Role \textbf{admin} or \textbf{support} example result:
       "description": "some words about that node",
       "hamcloud": true,
       "created_on": "2018-07-03T08:00:52.786458Z",
-      "created_by":"dh3wr",
+      "created_by": "dh3wr",
       "changed_on": "2018-07-03T08:00:52.786458Z",
-      "changed_by":"dh3wr",
+      "changed_by": "dh3wr",
       "owners": ["dl1abc","dh3wr","dl2ic"],
       "avatar_picture": <couchdb attachment??>
     },
@@ -598,8 +598,11 @@ Role \textbf{admin} or \textbf{support} example result:
       "owner": [
         "dh3wr",
         "dl1abc"
+      ],
+      "groups": [
+        "rwth-afu"
       ]
-   }
+    }
   ]
 }
 \end{lstlisting}
@@ -647,8 +650,11 @@ Role \textbf{user} example result. If the user is one of the owners of a the sub
       "owner": [
         "dl1abc",
         "dh3wr"
+      ],
+      "groups": [
+       "rwth-afu"
       ]
-   }
+    }
   ]
 }
 \end{lstlisting}
@@ -699,7 +705,7 @@ All roles example result:
 
 \subsubsection{PUT /subscribers - Add new subscriber}
 
-Role \textbf{user} gets \verb|403 Forbidden|, if not part of owner array.
+Role \textbf{user} gets \verb|403 Forbidden|
 
 Only role \textbf{admin} and \textbf{support} is allowed.\\
 Example POST message to send:
@@ -723,7 +729,8 @@ Example POST message to send:
   "owner": [
     "dh3wr",
     "dl1abc"
-  ]
+  ],
+  "groups": []
 }
 \end{lstlisting}
 
@@ -760,17 +767,109 @@ Role \textbf{user} gets returned \verb|403 Forbidden|, if not in owner array.
 \subsubsection{GET /subscriber\_groups}
 Returns all subscribers\_goups with all details in JSON format.
 
+If role \textbf{admin} or \textbf{support} or \textbf{user} but in owner array example output:
+\begin{lstlisting}
+{
+  "total_rows": 2,
+  "offset": 0,
+  "rows": [
+    {
+      "_id": "OV-G01",
+      "_rev": "1-b3c5f37d949d87ecc1758a2f3c2479f4",
+      "description": "Ortverband Aachen",
+      "owner":["dh3wr"]
+    },
+    {
+      "_id": "rwth-afu",
+      "_rev": "1-8388367522d75bca44aff40a3b6bdf40",
+      "description": "RWTH Aachen Amateur Radop Group",
+      "owner":["dh3wr"]
+    }
+  ]
+}
+\end{lstlisting}
+
+If role \textbf{user} and not owner, filter out the \verb|_rev| key/value. 
+
 \subsubsection{GET /subscriber\_groups/<subscriber\_groupname>}
+\label{protocoldef:microservicesapi:database:getsubscribergroupname}
 Return all details just of <subscriber\_groupname> in JSON format.
 
+If role \textbf{admin} or \textbf{support} or \textbf{user} but in owner array example output:
+\begin{lstlisting}
+{
+  "_id": "OV-G01",
+  "_rev": "1-b3c5f37d949d87ecc1758a2f3c2479f4",
+  "description": "Ortverband Aachen",
+  "owner":["dh3wr"]
+}
+\end{lstlisting}
+
+If role \textbf{user} and not owner, filter out the \verb|_rev| key/value. 
+
 \subsubsection{GET /subscriber\_groups/subscriber\_groupsnames}
+Return just an JSON array of all subscriber\_groupnames. Used where selections have to be done on the website.
+\begin{lstlisting}
+{
+  {"OV-G01", "rwth-afu"]
+}
+\end{lstlisting}
+
+\subsubsection{GET /subscriber\_groups/subscriber\_groupsnamesdescription}
 Return just an JSON array of all subscriber\_groupnames and their description. Used where selections have to be done on the website.
+\begin{lstlisting}
+{
+  [
+    {
+      "_id": "OV-G01",
+      "description": "Ortverband Aachen"
+    },
+    {
+      "_id: "rwth-afu",
+      "description": "RWTH Aachen Amateur Radio Group"
+    }
+  ]      
+}
+\end{lstlisting}
 
-\subsubsection{PUT /subscriber\_groups/<subscriber\_groupname>}
-Add or if existent edit the subscriber\_group <subscriber\_groupname>. If it's existing before, just the changed values have to be sent.
+\subsubsection{PUT /subscribers\_groups - Add new subscriber group}
 
-\subsubsection{DELETE /subscriber\_groups/<subscriber\_groupname>}
-Delete subscriber\_group <subscriber\_groupname>. No checks necessary.
+Role \textbf{user} gets \verb|403 Forbidden|
+
+Only role \textbf{admin} and \textbf{support} is allowed.\\
+Example POST message to send:
+\begin{lstlisting}
+{
+  "_id": "OV-G01",
+  "description": "Ortverband Aachen",
+  "owner": [
+    "dh3wr"
+  ]
+}
+\end{lstlisting}
+
+\subsubsection{PUT /subscribers\_groups - Edit existing subscriber group}
+Role \textbf{admin} and \textbf{support} are allowed to do changes.\\
+Role \textbf{user} gets returned \verb|403 Forbidden|, if not in owner array.
+
+First get subscriber\_group like in section \ref{protocoldef:microservicesapi:database:getsubscribergroupname} to get the revision. Then send the PUT request with just the changed values. The \verb|_id| and \verb|_rev| must be sent always.
+
+Example POST message to send:
+\begin{lstlisting}
+{
+  "_id": "OV-G01",
+  "_rev": "2-31d4571746a0b805384c9be93e5b20b4",
+  "description": "Ortverband Aachen",
+  "owner": [
+    "dh3wr",
+    "dl9kaw"
+  ]
+}
+\end{lstlisting}
+
+\subsubsection{DELETE /subscriber\_groups/<subscriber\_groupname>?ref=}
+Delete subscriber\_group <subscriber\_groupname>. Check in all subscribers, that this group is not any longer part of the \textit{groups} array.
+Mapping to CouchDB: direct forward of request
 
 \subsubsection{GET /transmitters/\_view/groups}
 Returns a JSON array of used transmitter groups tags from all known transmitters. Used for a suggestion of already existing transmitter group tags on the website.
@@ -2076,6 +2175,22 @@ The format of the updates is:
 }
 \end{lstlisting}
 
+\subsection{transmitter\_groups}
+\label{protocoldef:couchdb:transmitter_groups}
+\begin{lstlisting}
+{
+  "_id" : "dl-hh",
+  "description" : "Germany, Hamburg",
+  "borders": [
+  51.23,23.12,
+  51.3,23.1,
+  50.1,20,
+  52,20
+  ]
+{
+\end{lstlisting}
+
+
 
 \subsection{Subscribers}
 \label{protocoldef:couchdb:subscribers}
@@ -2096,7 +2211,8 @@ The format of the updates is:
     ...
   ],
   "third_party_services" : ["APRS", "BM"],
-  "owner": ["dh3wr", "dl1abc"]
+  "owner": ["dh3wr", "dl1abc"],
+  "groups" : ["rwth-afu"]
 }
 \end{lstlisting}
 
@@ -2104,10 +2220,9 @@ The format of the updates is:
 
 \begin{lstlisting}
 {
-  "_id" : "ov-G01",
+  "_id" : "OV-G01",
   "description": "Ortverband Aachen",
-  "subscribers": ["dl1abc", "dh3wr"],
-  "owner": ["dh3wr", "dl1abc"],
+  "owner":["dh3wr"]
 }
 \end{lstlisting}
 
