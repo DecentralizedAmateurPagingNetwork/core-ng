@@ -319,6 +319,15 @@ Role \textbf{user} example result if owner of node or role \textbf{admin} or \te
 \end{lstlisting}
 
 \subsubsection{GET /nodes/\_nodenames}
+Return just an JSON array of all nodenames. Used where selections have to be done on the website.
+For all roles example result:
+\begin{lstlisting}
+{
+  ["db0sda-dc1", "db0sda-dc2"]
+}
+\end{lstlisting}
+
+\subsubsection{GET /nodes/\_nodenamedescription}
 Return just an JSON array of all nodenames and their description. Used where selections have to be done on the website.
 For all roles example result:
 \begin{lstlisting}
@@ -335,6 +344,8 @@ For all roles example result:
   ]  
 }
 \end{lstlisting}
+
+
 
 \subsubsection{PUT /nodes - Add new node}
 Role \textbf{user} and \textbf{support} get \verb|403 Forbidden|.
