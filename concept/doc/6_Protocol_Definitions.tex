@@ -41,37 +41,13 @@ Role \textbf{admin} or \textbf{support} example result:
 }
 \end{lstlisting}
 
-Role \textbf{user} example result, here user dh3wr is asking:
-\begin{lstlisting}
-{
-  "total_rows": 2,
-  "offset": 0,
-  "rows": [
-    {
-      "_id": "dh3wr",
-      "_rev": "1-09352254509c9ddf86e80fd83868d557",
-      "email": "ralf@secret.com",
-      "role": "user",
-      "enabled": true,
-      "created_on": "2018-07-08T11:50:02.168325Z",
-      "created_by": "dl2ic"
-    },
-    {
-      "_id": "dl2ic",
-      "role": "admin",
-      "enabled": true,
-      "created_on": "2018-07-08T11:50:02.168325Z",
-      "created_by": "dh3wr"
-    }
-  ]
-}
-\end{lstlisting}
+Role \textbf{user} example result: \verb|403 Forbidden|
 
-Mapping to CouchDB with filtering on microservice:\\
-\verb|GET /users/_all_docs?include_docs=true|
 
 
 \subsubsection{GET /users?startkey="dh3wr"\&endkey="dl2ic"}
+Just for role \textbf{admin} or \textbf{support}. Role \textbf{user} will get\verb|403 Forbidden|.
+
 Return all details of all users in alphabetical order between dh3wr and dl2ic in JSON format.\\
 Mapping to CouchDB:\\
 \verb|GET /users/_all_docs?startkey="dh3wr"&endkey="dl2ic"&include_docs=true|
@@ -85,16 +61,7 @@ Return details of <username> in JSON format.\\
 Mapping to CouchDB :\\
 \verb|GET /users/<username>|
 
-Role \textbf{user} example result (dh3wr is asking for dl2ic):
-\begin{lstlisting}
-{
-  "_id": "dl2ic",
-  "role": "admin",
-  "enabled": true,
-  "created_on": "2018-07-08T11:50:02.168325Z",
-  "created_by": "dh3wr"
-}
-\end{lstlisting}
+Role \textbf{user} will get \verb|403 Forbidden|, if not asking for her/himself.
 
 Role \textbf{user} example result asking for her/himself or role \textbf{admin} or \textbf{support}:
 \begin{lstlisting}
@@ -122,7 +89,7 @@ Role \textbf{*} example result:
 }
 \end{lstlisting}
 
-\subsubsection{PUT /users/<username> - Add new user}
+\subsubsection{PUT /users - Add new user}
 Add the user <username>.
 
 Role \textbf{admin} or \textbf{support} or editing the requestor's own entry are the only allowed roles.
@@ -155,10 +122,10 @@ Mapping to CouchDB with adding information by microservice:\\
 The \verb|created_by| and \verb|created_on| content has to be added by the microservice.
 
 
-\subsubsection{PUT /users/<username> - Edit existing user}
+\subsubsection{PUT /users - Edit existing user}
 Edit the existing user <username>. Just the changed values have to be sent. The \verb|_id| and \verb|_rev| must be sent always.
 
-Role \textbf{admin} or \textbf{support} or editing the requestor's own entry are the only allowed roles.
+Role \textbf{admin} or \textbf{support} or editing the requestor's own entry are the only allowed roles. Other requests result in returning \verb|403 Forbidden|.
 
 User to API: Example content to edit user:\\
 First get the user's revision as in \ref{protocoldef:microservicesapi:database:getusername}.
@@ -193,7 +160,7 @@ Mapping to CouchDB with adding information by microservice:\\
 \subsubsection{DELETE /users/<username>?rev=}
 Delete user <username>. The Database Service has be make sure that all dependencies of a user account are deleted as well, for example transmitters subscribers or rubrics, that contain \textbf{just} this <username> as owner as the only one entry (left).
 
-Role \textbf{admin} or \textbf{support} or deleting the requestor's own entry are the only allowed roles.
+Role \textbf{admin} or \textbf{support} or deleting the requestor's own entry are the only allowed roles. Others get as return message \verb|403 Forbidden|.
 
 First get the user's revision as in \ref{protocoldef:microservicesapi:database:getusername}.\\
 User to API: \verb|DELETE /users/<username>?rev=1-09352254509c9ddf86e80fd83868d557|
