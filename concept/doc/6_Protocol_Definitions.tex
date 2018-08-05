@@ -13,6 +13,10 @@ See \hyperref[internalprog:microservices]{Microservices definition}.
 \label{protocoldef:microservicesapi:database:getusers}
 Returns all users with all details in JSON format.\\
 
+Mapping to CouchDB:\\
+\verb|GET /users/_all_docs?include_docs=true|
+Filter couchDB output to produce just the output below:
+
 Role \textbf{admin} or \textbf{support} example result:
 \begin{lstlisting}
 {
@@ -46,6 +50,7 @@ Role \textbf{user} example result: \verb|403 Forbidden|
 
 
 \subsubsection{GET /users?startkey="dh3wr"\&endkey="dl2ic"}
+\label{protocoldef:microservicesapi:database:filtername}
 Just for role \textbf{admin} or \textbf{support}. Role \textbf{user} will get\verb|403 Forbidden|.
 
 Return all details of all users in alphabetical order between dh3wr and dl2ic in JSON format.\\
@@ -54,6 +59,10 @@ Mapping to CouchDB:\\
 
 Output filtering is the same as \hyperref[protocoldef:microservicesapi:database:getusers]{for single user request} regarding output content and requestor's role
 
+\subsubsection{GET /users?limit=<n>\&skip=<m>}
+Skip the first <n> entries and output just <m> entries. Used for pagination. Can be combined with the filtering from section \ref{protocoldef:microservicesapi:database:filtername}.
+
+The \verb|limit| and \verb|skip| parameters are passed as they to the CouchDB REST API.
 
 \subsubsection{GET /users/<username>}
 \label{protocoldef:microservicesapi:database:getusername}
@@ -82,7 +91,7 @@ Return just an JSON array of all usernames. Used where selections have to be don
 Mapping to CouchDB with filtering in microservice:\\
 \verb|GET /users/_all_docs?include_docs=false|
 
-Role \textbf{*} example result:
+All roles example result:
 \begin{lstlisting}
 {
   ["dh3wr","dl2ic"]
