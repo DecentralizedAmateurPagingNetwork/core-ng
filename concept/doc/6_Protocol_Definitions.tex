@@ -50,7 +50,7 @@ Role \textbf{user} example result: \verb|403 Forbidden|
 
 
 \subsubsection{GET /users?startkey="dh3wr"\&endkey="dl2ic"}
-\label{protocoldef:microservicesapi:database:filtername}
+\label{protocoldef:microservicesapi:database:filterusername}
 Just for role \textbf{admin} or \textbf{support}. Role \textbf{user} will get\verb|403 Forbidden|.
 
 Return all details of all users in alphabetical order between dh3wr and dl2ic in JSON format.\\
@@ -60,7 +60,7 @@ Mapping to CouchDB:\\
 Output filtering is the same as \hyperref[protocoldef:microservicesapi:database:getusers]{for single user request} regarding output content and requestor's role
 
 \subsubsection{GET /users?limit=<n>\&skip=<m>}
-Skip the first <n> entries and output just <m> entries. Used for pagination. Can be combined with the filtering from section \ref{protocoldef:microservicesapi:database:filtername}.
+Skip the first <n> entries and output just <m> entries. Used for pagination. Can be combined with the filtering from section \ref{protocoldef:microservicesapi:database:filterusername}.
 
 The \verb|limit| and \verb|skip| parameters are passed as they to the CouchDB REST API.
 
@@ -178,20 +178,210 @@ Mapping to CouchDB: direct forward of request
 
 
 \subsubsection{GET /nodes}
+\label{protocoldef:microservicesapi:database:getnodes}
 Returns all nodes with all details in JSON format.
 
+Mapping to CouchDB:\\
+\verb|GET /nodes/_all_docs?include_docs=true|
+Filter couchDB output to produce just the output below:
+
+Role \textbf{admin} or \textbf{support} example result:
+\begin{lstlisting}
+{
+  "total_rows": 2,
+  "offset": 0,
+  "rows": [
+    {
+      "_id": "db0sda-dc1",
+      "_rev": "1-cf7d2abfe193f476888be7108a0f548f",
+      "auth_key": "8PL9eJXccQ6X9Yq"
+      "coordinates": [34.123456, -23.123456],
+      "description": "some words about that node",
+      "hamcloud": true,
+      "created_on": "2018-07-03T08:00:52.786458Z",
+      "created_by":"dh3wr",
+      "changed_on": "2018-07-03T08:00:52.786458Z",
+      "changed_by":"dh3wr",
+      "owners": ["dl1abc","dh3wr","dl2ic"],
+      "avatar_picture": <couchdb attachment??>
+    },
+    {
+      "_id": "db0sda-dc2",
+      "_rev": "1-ee070b17db9c3c58658d10fdedad2f48",
+      "auth_key": "73mxX4JLttzmVZ2"
+      "coordinates": [34.123456, -23.123456],
+      "description": "some words about that node",
+      "hamcloud": true,
+      "created_on": "2018-07-03T08:00:52.786458Z",
+      "created_by":"dh3wr",
+      "changed_on": "2018-07-03T08:00:52.786458Z",
+      "changed_by":"dh3wr",
+      "owners": ["dl1abc","dh3wr","dl2ic"],
+      "avatar_picture": <couchdb attachment??>
+    }
+  ]
+}
+\end{lstlisting}
+
+Role \textbf{user} example result. If the user is one of the owners of a node, display also the detail-Information, like in the second array entry. Here dh3wr is requesting.
+\begin{lstlisting}
+
+{
+  "total_rows": 2,
+  "offset": 0,
+  "rows": [
+
+    {
+      "_id": "db0sda-dc1",
+      "coordinates": [34.123456, -23.123456],
+      "description": "some words about that node",
+      "hamcloud": true,
+      "created_on": "2018-07-03T08:00:52.786458Z",
+      "created_by":"dl2ic",
+      "changed_on": "2018-07-03T08:00:52.786458Z",
+      "changed_by":"dl2ic",
+      "owners": ["dl1abc","dl2ic"],
+      "avatar_picture": <couchdb attachment??>
+    },
+    {
+      "_id": "db0sda-dc2",
+      "_rev": "1-ee070b17db9c3c58658d10fdedad2f48",
+      "auth_key": "73mxX4JLttzmVZ2"
+      "coordinates": [34.123456, -23.123456],
+      "description": "some words about that node",
+      "hamcloud": true,
+      "created_on": "2018-07-03T08:00:52.786458Z",
+      "created_by":"dh3wr",
+      "changed_on": "2018-07-03T08:00:52.786458Z",
+      "changed_by":"dh3wr",
+      "owners": ["dl1abc","dh3wr","dl2ic"],
+      "avatar_picture": <couchdb attachment??>
+    }
+  ]
+}
+\end{lstlisting}
+
+\subsubsection{GET /nodes?startkey="db0sda-dc1"\&endkey="db0sda-dc3"}
+\label{protocoldef:microservicesapi:database:filternodename}
+Just for role \textbf{admin} or \textbf{support}. Role \textbf{user} will get\verb|403 Forbidden|.
+
+Return all details of all users in alphabetical order between db0sda-dc1 and db0sda-dc3 in JSON format.\\
+Mapping to CouchDB:\\
+\verb|GET /nodes/_all_docs?startkey="db0sda-dc1"&endkey="db0sda-dc2"&include_docs=true|
+
+Output filtering is the same as \hyperref[protocoldef:microservicesapi:database:getnodes](for single user request) regarding output content and requestor's role
+
+\subsubsection{GET /users?limit=<n>\&skip=<m>}
+Skip the first <n> entries and output just <m> entries. Used for pagination. Can be combined with the filtering from section \ref{protocoldef:microservicesapi:database:filternodename}.
+
+The \verb|limit| and \verb|skip| parameters are passed as they to the CouchDB REST API.
+
+
 \subsubsection{GET /nodes/<nodename>}
-Return all details just of <nodename> in JSON format.
+\label{protocoldef:microservicesapi:database:getnodename}
 
-\subsubsection{GET /nodes/nodenames}
+Return details of <nodename> in JSON format.\\
+Mapping to CouchDB :\\
+\verb|GET /users/<nodename>|
+
+Role \textbf{user} example result if not owner:
+\begin{lstlisting}
+{
+  "_id": "db0sda-dc2",
+  "coordinates": [34.123456, -23.123456],
+  "description": "some words about that node",
+  "hamcloud": true,
+  "created_on": "2018-07-03T08:00:52.786458Z",
+  "created_by":"dh3wr",
+  "changed_on": "2018-07-03T08:00:52.786458Z",
+  "changed_by":"dh3wr",
+  "owners": ["dl1abc","dh3wr","dl2ic"],
+  "avatar_picture": <couchdb attachment??>
+}
+\end{lstlisting}
+
+Role \textbf{user} example result if owner of node or role \textbf{admin} or \textbf{support}:
+\begin{lstlisting}
+{
+  "_id": "db0sda-dc2",
+  "_rev": "1-ee070b17db9c3c58658d10fdedad2f48",
+  "auth_key": "73mxX4JLttzmVZ2"
+  "coordinates": [34.123456, -23.123456],
+  "description": "some words about that node",
+  "hamcloud": true,
+  "created_on": "2018-07-03T08:00:52.786458Z",
+  "created_by":"dh3wr",
+  "changed_on": "2018-07-03T08:00:52.786458Z",
+  "changed_by":"dh3wr",
+  "owners": ["dl1abc","dh3wr","dl2ic"],
+  "avatar_picture": <couchdb attachment??>
+}
+\end{lstlisting}
+
+\subsubsection{GET /nodes/\_nodenames}
 Return just an JSON array of all nodenames and their description. Used where selections have to be done on the website.
+For all roles example result:
+\begin{lstlisting}
+{
+  [
+    {
+      "_id: "db0sda-dc1",
+      "description": "some words about that node"
+    },
+    {
+      "_id: "db0sda-dc2",
+      "description": "some words about that node"
+    }
+  ]  
+}
+\end{lstlisting}
 
-\subsubsection{PUT /nodes/<nodename>}
-Add or if existent edit the node <nodename>. If it's existing before, just the changed values have to be sent.
+\subsubsection{PUT /nodes - Add new node}
+Role \textbf{user} and \textbf{support} get \verb|403 Forbidden|.
 
-\subsubsection{DELETE /nodes/<nodename>}
+Only role \textbf{admin} is allowed. Example POST message to send:
+\begin{lstlisting}
+{
+  "_id": "db0sda-dc2",
+  "auth_key": "73mxX4JLttzmVZ2"
+  "coordinates": [34.123456, -23.123456],
+  "description": "some words about that node",
+  "hamcloud": true,
+  "created_on": "2018-07-03T08:00:52.786458Z",
+  "created_by":"dh3wr",
+  "changed_on": "2018-07-03T08:00:52.786458Z",
+  "changed_by":"dh3wr",
+  "owners": ["dl1abc","dh3wr","dl2ic"],
+  "avatar_picture": <couchdb attachment??>
+}
+\end{lstlisting}
+
+\subsubsection{PUT /nodes - Edit existing node}
+Role \textbf{user} and \textbf{support} get returned \verb|403 Forbidden|.
+
+First get node like in section \ref{protocoldef:microservicesapi:database:getusername} to get the revision. Then send the PUT request with just the changed values. The \verb|_id| and \verb|_rev| must be sent always.
+Only role \textbf{admin} is allowed.
+Example POST message to send:
+
+\begin{lstlisting}
+{
+  "_id": "db0sda-dc2",
+  "_rev": "1-ee070b17db9c3c58658d10fdedad2f48",
+  "auth_key": "73mxX4JLttzmVZ2"
+  "coordinates": [34.123456, -2.123456],
+  "description": "New description with changed position"
+}
+\end{lstlisting}
+
+\subsubsection{DELETE /nodes/<nodename>?rev=}
 Delete node <nodename>. No dependency check necessary.
 \todo{Maybe the transmitter service should inform the connected transmitters to the now deleted node to do a switch-over?}
+
+Role \textbf{admin} is the only allowed role. Others get as return message \verb|403 Forbidden|.
+
+First get the node's revision as in \ref{protocoldef:microservicesapi:database:getnodename}.\\
+User to API: \verb|DELETE /node/<node>?rev=1-09352254509c9ddf86e80fd83868d557|
+
 
 \subsubsection{GET /rubrics}
 Returns all rubrics with all setting details in JSON format. This does \textbf{not} include the content of the 10 rubric message slots.
