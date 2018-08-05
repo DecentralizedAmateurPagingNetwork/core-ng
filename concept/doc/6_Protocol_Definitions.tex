@@ -540,7 +540,7 @@ This is just about the rubrics details, and does \textbf{not} include the conten
 Role \textbf{admin} and \textbf{support} are allowed to do changes.\\
 Role \textbf{user} gets returned \verb|403 Forbidden|.
 
-First get node like in section \ref{protocoldef:microservicesapi:database:getrubricname} to get the revision. Then send the PUT request with just the changed values. The \verb|_id| and \verb|_rev| must be sent always.
+First get rubric like in section \ref{protocoldef:microservicesapi:database:getrubricname} to get the revision. Then send the PUT request with just the changed values. The \verb|_id| and \verb|_rev| must be sent always.
 
 Example POST message to send:
 \begin{lstlisting}
@@ -555,7 +555,7 @@ Example POST message to send:
 \subsubsection{DELETE /rubrics/<rubricname>?rev=}
 Delete rubric <rubricname>.\\
 \textbf{Also delete content of this rubric.}
-\todo{muss unten noch eingebaut werden.}
+\todo{Noch herausfinden, wie das genau geht.}
 
 Role \textbf{admin} and \textbf{support} are allowed.\\
 Role \textbf{user} gets returned \verb|403 Forbidden|.
@@ -565,19 +565,197 @@ User to API: \verb|DELETE /rubrics/<rubricname>?rev=1-09352254509c9ddf86e80fd838
 
 
 \subsubsection{GET /subscribers}
-Returns all subscribers with all details in JSON format.
+\label{protocoldef:microservicesapi:database:subscribers}
+Returns all nodes with all details in JSON format.
+
+Mapping to CouchDB:\\
+\verb|GET /nodes/_all_docs?include_docs=true|
+Filter couchDB output to produce just the output below:
+
+Role \textbf{admin} or \textbf{support} example result:
+\begin{lstlisting}
+{
+  "total_rows": 1,
+  "offset": 0,
+  "rows": [
+    {
+      "_id": "dl1abc",
+      "_rev": "1-44182aeb25815b19babe1c0a6bb95e68",
+      "description": "Peter",
+      "pagers": [
+        {
+          "ric": 123456,
+          "function": 3,
+          "name": "Peters Alphapoc",
+          "type": "alphaPpoc",
+          "enabled": true
+        }
+      ],
+      "third_party_services": [
+        "APRS",
+        "BM"
+      ],
+      "owner": [
+        "dh3wr",
+        "dl1abc"
+      ]
+   }
+  ]
+}
+\end{lstlisting}
+
+Role \textbf{user} example result. If the user is one of the owners of a the subscribere, display also the detail-Information, like in the in the second array entry. Here dh3wr is requesting.
+\begin{lstlisting}
+
+{
+  "total_rows": 2,
+  "offset": 0,
+  "rows": [
+    {
+      "_id": "dl1abc",
+      "description": "Peter",
+      "pagers": [
+        {
+          "ric": 123456,
+          "function": 3,
+          "name": "Peters Alphapoc",
+          "type": "alphaPpoc",
+          "enabled": true
+        }
+      ],
+      "owner": [
+        "dl1abc"
+      ]
+    },
+    {
+      "_id": "dh3wr",
+      "_rev": "1-44182aeb25815b19babe1c0a6bb95e68",
+      "description": "Ralf",
+      "pagers": [
+        {
+          "ric": 123456,
+          "function": 3,
+          "name": "Ralfs Skyper",
+          "type": "skyper",
+          "enabled": false
+        }
+      ],
+      "third_party_services": [
+        "APRS",
+        "BM"
+      ],
+      "owner": [
+        "dl1abc",
+        "dh3wr"
+      ]
+   }
+  ]
+}
+\end{lstlisting}
+
 
 \subsubsection{GET /subscribers/<subscribername>}
-Return all details just of <subscribername> in JSON format.
+\label{protocoldef:microservicesapi:database:getrubricname}
+Return all setting details just of <subscribername> in JSON format. \ref{protocoldef:microservicesapi:database:subscribername}.
 
-\subsubsection{GET /subscribers/subscribernames}
-Return just an JSON array of all subscribernames and their description. Used where selections have to be done on the website.
+Mapping to CouchDB :\\
+\verb|GET /subscribers/<subscribername>|
 
-\subsubsection{PUT /subscribers/<subscribername>}
-Add or if existent edit the subscriber <subscribername>. If it's existing before, just the changed values have to be sent.
+Filter output according to role as in section \ref{protocoldef:microservicesapi:database:subscribers}.
 
-\subsubsection{DELETE /subscribers/<subscribername>}
+\subsubsection{GET /subscribers/\_subscribernames}
+Return just an JSON array of all subscribers. Used where selections have to be done on the website.\\
+Mapping to CouchDB with filtering in microservice:\\
+\verb|GET /subscribers/_all_docs?include_docs=false|
+
+All roles example result:
+\begin{lstlisting}
+{
+  ["dh3wr","dl2ic"]
+}
+\end{lstlisting}
+
+\subsubsection{GET /subscribers/\_subscribernamesdetails}
+Return just an JSON array of all subscribers and their description. Used where selections have to be done on the website.\\
+Mapping to CouchDB with filtering in microservice:\\
+\verb|GET /subscribers/_all_docs?include_docs=false|
+
+All roles example result:
+\begin{lstlisting}
+{
+  [
+    {
+      "_id": "dh3wr,
+      "description: "Ralf"
+    },
+    {
+      "_id": "dl2ic,
+      "description: "Thomas"
+    }
+  ]
+}
+\end{lstlisting}
+
+
+\subsubsection{PUT /subscribers - Add new subscriber}
+
+Role \textbf{user} gets \verb|403 Forbidden|, if not part of owner array.
+
+Only role \textbf{admin} and \textbf{support} is allowed.\\
+Example POST message to send:
+\begin{lstlisting}
+{
+  "_id": "dl1abc",
+  "description": "Peter",
+  "pagers": [
+    {
+      "ric": 123456,
+      "function": 3,
+      "name": "Peters Alphapoc",
+      "type": "alphaPpoc",
+      "enabled": true
+    }
+  ],
+  third_party_services": [
+   "APRS",
+   "BM"
+  ],
+  "owner": [
+    "dh3wr",
+    "dl1abc"
+  ]
+}
+\end{lstlisting}
+
+\subsubsection{PUT /subscribers - Edit existing subscriber}
+Role \textbf{admin} and \textbf{support} are allowed to do changes.\\
+Role \textbf{user} gets returned \verb|403 Forbidden|, if not in owner array.
+
+First get subscriber like in section \ref{protocoldef:microservicesapi:database:getsubscribername} to get the revision. Then send the PUT request with just the changed values. The \verb|_id| and \verb|_rev| must be sent always.
+
+Example POST message to send:
+\begin{lstlisting}
+{
+  "_id": "dl1abc",
+  "description": "Peter",
+  "pagers": [
+    {
+      "ric": 65432,
+      "function": 2,
+      "name": "Peters Alphapoc, heute mal anders",
+      "type": "alphaPpoc",
+      "enabled": true
+    }
+  ]
+}
+\end{lstlisting}
+
+
+\subsubsection{DELETE /subscribers/<subscribername>?rev=}
 Delete subscriber <subscribername>. If must be also deleted from any subscriber\_group that is containing it. If it is the only one subscriber on a subscriber\_group also delete that subscriber\_group.
+
+Role \textbf{admin} and \textbf{support} are allowed to do so.\\
+Role \textbf{user} gets returned \verb|403 Forbidden|, if not in owner array.
 
 \subsubsection{GET /subscriber\_groups}
 Returns all subscribers\_goups with all details in JSON format.
@@ -1911,7 +2089,6 @@ The format of the updates is:
     {
       "ric": 123456,
       "function": 0 .. 3,
-      "uuid": "0023-1233-aefe-1234-3423-9812",
       "name": "Peters Alphapoc",
       "type" : "UNKNOWN" | "Skyper" | "AlphaPoc" | "QUIX" | "Swissphone" | "SCALL_XT" | "Birdy"
       "enabled" : true
