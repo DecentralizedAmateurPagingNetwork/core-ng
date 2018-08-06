@@ -765,121 +765,110 @@ Role \textbf{admin} and \textbf{support} are allowed to do so.\\
 Role \textbf{user} gets returned \verb|403 Forbidden|, if not in owner array.
 
 \subsubsection{GET /subscriber\_groups}
-Returns all subscribers\_goups with all details in JSON format.
+Returns an array of existing subscribers\_goups tags in JSON format.
+This is allowed for \textbf{all} roles.
 
-If role \textbf{admin} or \textbf{support} or \textbf{user} but in owner array example output:
 \begin{lstlisting}
 {
-  "total_rows": 2,
-  "offset": 0,
-  "rows": [
-    {
-      "_id": "OV-G01",
-      "_rev": "1-b3c5f37d949d87ecc1758a2f3c2479f4",
-      "description": "Ortverband Aachen",
-      "owner":["dh3wr"]
-    },
-    {
-      "_id": "rwth-afu",
-      "_rev": "1-8388367522d75bca44aff40a3b6bdf40",
-      "description": "RWTH Aachen Amateur Radop Group",
-      "owner":["dh3wr"]
-    }
-  ]
+  ["dl.OV-G01","dl.rwth-afu"]
 }
 \end{lstlisting}
-
-If role \textbf{user} and not owner, filter out the \verb|_rev| key/value. 
-
-\subsubsection{GET /subscriber\_groups/<subscriber\_groupname>}
-\label{protocoldef:microservicesapi:database:getsubscribergroupname}
-Return all details just of <subscriber\_groupname> in JSON format.
-
-If role \textbf{admin} or \textbf{support} or \textbf{user} but in owner array example output:
-\begin{lstlisting}
-{
-  "_id": "OV-G01",
-  "_rev": "1-b3c5f37d949d87ecc1758a2f3c2479f4",
-  "description": "Ortverband Aachen",
-  "owner":["dh3wr"]
-}
-\end{lstlisting}
-
-If role \textbf{user} and not owner, filter out the \verb|_rev| key/value. 
-
-\subsubsection{GET /subscriber\_groups/subscriber\_groupsnames}
-Return just an JSON array of all subscriber\_groupnames. Used where selections have to be done on the website.
-\begin{lstlisting}
-{
-  {"OV-G01", "rwth-afu"]
-}
-\end{lstlisting}
-
-\subsubsection{GET /subscriber\_groups/subscriber\_groupsnamesdescription}
-Return just an JSON array of all subscriber\_groupnames and their description. Used where selections have to be done on the website.
-\begin{lstlisting}
-{
-  [
-    {
-      "_id": "OV-G01",
-      "description": "Ortverband Aachen"
-    },
-    {
-      "_id: "rwth-afu",
-      "description": "RWTH Aachen Amateur Radio Group"
-    }
-  ]      
-}
-\end{lstlisting}
-
-\subsubsection{PUT /subscribers\_groups - Add new subscriber group}
-
-Role \textbf{user} gets \verb|403 Forbidden|
-
-Only role \textbf{admin} and \textbf{support} is allowed.\\
-Example POST message to send:
-\begin{lstlisting}
-{
-  "_id": "OV-G01",
-  "description": "Ortverband Aachen",
-  "owner": [
-    "dh3wr"
-  ]
-}
-\end{lstlisting}
-
-\subsubsection{PUT /subscribers\_groups - Edit existing subscriber group}
-Role \textbf{admin} and \textbf{support} are allowed to do changes.\\
-Role \textbf{user} gets returned \verb|403 Forbidden|, if not in owner array.
-
-First get subscriber\_group like in section \ref{protocoldef:microservicesapi:database:getsubscribergroupname} to get the revision. Then send the PUT request with just the changed values. The \verb|_id| and \verb|_rev| must be sent always.
-
-Example POST message to send:
-\begin{lstlisting}
-{
-  "_id": "OV-G01",
-  "_rev": "2-31d4571746a0b805384c9be93e5b20b4",
-  "description": "Ortverband Aachen",
-  "owner": [
-    "dh3wr",
-    "dl9kaw"
-  ]
-}
-\end{lstlisting}
-
-\subsubsection{DELETE /subscriber\_groups/<subscriber\_groupname>?ref=}
-Delete subscriber\_group <subscriber\_groupname>. Check in all subscribers, that this group is not any longer part of the \textit{groups} array.
-Mapping to CouchDB: direct forward of request
 
 \subsubsection{GET /transmitters/\_view/groups}
 Returns a JSON array of used transmitter groups tags from all known transmitters. Used for a suggestion of already existing transmitter group tags on the website.
 
-\subsubsection{DELETE /transmitters/<transmittername>}
-Delete the transmitter <transmittername>. Also delete the transmitter from explicit entries on rubrics
+\subsubsection{DELETE /transmitters/<transmittername>?rev=}
+Delete the transmitter <transmittername>. Also delete the transmitter from explicit entries on rubrics.
 
-\subsubsection{PUT /transmitters/<transmittername>}
-Add or if existent edit the transmitter <transmittername>. If it's existing before, just the changed values have to be sent.
+First get transmitter revision as defined in section \ref{protocoldef:microservicesapi:database:gettransmittername}. Then send the request with the revision.
+
+\subsubsection{PUT /transmitters - Add new transmitter}
+Add a new the transmitter.
+
+Allowed roles are \textbf{admin} and \textbf{support}. Role \textbf{user} will get \verb|403 Forbidden|
+Example data to send:
+\begin{lstlisting}
+{
+  "_id": "db0wa",
+  "usage": "widerange",
+  "timeslots": [
+    true,
+    true,
+    false,
+    true,
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    false,
+    true,
+    true,
+    false
+  ],
+  "power": 20,
+  "owners": [
+    "dh3wr"
+  ],
+  "groups": [
+    "dl.nw.koeln.aachen"
+  ],
+  "emergency_power": {
+    "available": true,
+    "infinite": false,
+    "duration": 7200
+  },
+  "coordinates": [
+    50.71613,
+    6.165481
+  ],
+
+  "aprs_broadcast": false,
+  "enabled": true,
+  "auth_key": "Arj39135jAKS",
+  "antenna": {
+    "type": "omni",
+    "gain": 0,
+    "direction": 0,
+    "agl": 1
+  }
+}
+\end{lstlisting}
+
+The MS has to add 
+\begin{lstlisting}
+  "created_on": "2018-07-03T08:00:52.786458Z",
+  "created_by": "dh3wr",
+\end{lstlisting}
+and add it to the REST PUT call.
+
+
+\subsubsection{PUT /transmitters - Edit existing transmitter}
+Edit an existing transmitter.\\
 \todo{Is an active connection reset to that transmitter necessary? If the Authkey changes, an already established connection will keep working? And what about timeslot changes? They have to be applied immediately to the transmitter.}
+
+Allowed roles are \textbf{admin} and \textbf{support}. Role \textbf{user} will get \verb|403 Forbidden|
+\verb|_id| and \verb|_rev| have to be send always. So first get the current revision of the transmitter with a \verb|GET /transmitters/<transmittername>|.
+
+Example data to send:
+\begin{lstlisting}
+{
+
+  "_id": "db0wa",
+  "_rev": "3-212820d0a75061289c8fbe39192fde22",
+  "usage": "widerange"
+}
+\end{lstlisting}
+
+The MS has to add or change the keys
+\begin{lstlisting}
+  "changed_on": "2018-07-03T08:00:52.786458Z",
+  "changed_by": "dh3wr",
+\end{lstlisting}
+and add them to the REST PUT call.
 
 \subsection{Call Service}
 
@@ -948,16 +937,16 @@ Returns just the content of <rubricname> content in JSON format.
 \subsubsection{GET /news/\_view/byRubric/message\_no>}
 Returns just the content of <rubricname> content and message number <message\_no> in JSON format.
 
-\subsubsection{PUT /rubrics/content/<rubricname>}
+\subsubsection{PUT /rubrics/content}
 Add content to rubric <rubricname> on the first message slot and move the existing message one to the end. The 10th. entry will be lost. An automated resend of all rubric content slots will be necessary.
 
 \subsubsection{PUT /rubrics/content/<rubricname>/<message\_no>}
 Add or override the content of rubric <rubricname> on the message slot <message\_no>. An automated resend of just this message slot will be necessary.
 
-\subsubsection{DELETE /rubrics/content/<rubricname>}
+\subsubsection{DELETE /rubrics/content/<rubricname>?rev=}
 Delete all content in rubric <rubricname>. The content will be still on Skypers that have received it before, but it will not be transmitted periodically any more. No dependency check necessary.
 
-\subsubsection{DELETE /rubrics/content/<rubricname>/<message\_no>}
+\subsubsection{DELETE /rubrics/content/<rubricname>/<message\_no>?rev=}
 Delete the content in rubric <rubricname> with message slot <message\_no>. The content will be still on Skypers that have received it before, but it will not be transmitted periodically any more. No dependency check necessary.
 
 \subsection{Transmitter Service}
@@ -966,6 +955,7 @@ Delete the content in rubric <rubricname> with message slot <message\_no>. The c
 Return all transmitters with all details in JSON format.
 
 \subsubsection{GET /transmitter/<transmittername>}
+\label{protocoldef:microservicesapi:database:gettransmittername}
 Return all details just of transmitter <transmittername>.
 
 \subsubsection{GET /transmitters/transmitternames}
@@ -2175,22 +2165,6 @@ The format of the updates is:
 }
 \end{lstlisting}
 
-\subsection{transmitter\_groups}
-\label{protocoldef:couchdb:transmitter_groups}
-\begin{lstlisting}
-{
-  "_id" : "dl-hh",
-  "description" : "Germany, Hamburg",
-  "borders": [
-  51.23,23.12,
-  51.3,23.1,
-  50.1,20,
-  52,20
-  ]
-{
-\end{lstlisting}
-
-
 
 \subsection{Subscribers}
 \label{protocoldef:couchdb:subscribers}
@@ -2216,15 +2190,6 @@ The format of the updates is:
 }
 \end{lstlisting}
 
-\subsection{Subscriber Groups}
-
-\begin{lstlisting}
-{
-  "_id" : "OV-G01",
-  "description": "Ortverband Aachen",
-  "owner":["dh3wr"]
-}
-\end{lstlisting}
 
 \subsection{Rubrics}
 \label{rubrics}
