@@ -1203,7 +1203,169 @@ Answer:
 
 \todo{On the calls and rubric content changes: Always increasing counter link traffic on network device or reset at 00:00 am?}
 
+
+\subsection{Auth Service}
+\label{protocoldef:Auth}
+The auth service provides authentication information to all other services. It works on the CouchDB and reads information from there.
+
+\subsubsection{Role definition}
+The following roles are available:
+\begin{description}
+\item[user] This is a normal user with the possibility of being owner of a subscriber association and transmitters.
+\item[support] Trustworthy volunteer that is working on the user support, e.g. the ticket system. Can manage user, transmitter, subscriber and rubric settings.
+\item[admin] Can to everything, especially create new nodes.
+\item[thirdparty.<X>] A machine interface user being able to subscribe to the third party MQTT topics for service <X>. Examples are APRS or Brandmeister.
+\end{description}
+
+A user can be part of multiple roles. The Auth service as to check for each permission, if at least one of the roles allows it. Otherwise it is denied.
+
+A JSON array of available roles can be obtained by:
+
+\subsubsection{GET /auth/roles}
+Returns a JSON array of roles, that are places in some of the users database documents.
+Example output:
+\begin{lstlisting}
+{
+  ["user","support","admin","thirdparty.brandmeister","thirdparty.aprs"]
+}
+\end{lstlisting}
+
+\subsubsection{Permission matrix}
+The following table defines for each role which actions are permitted.
+
+
+\begin{table}[htbp]
+\label{tab:protocoldef:permissionmatrix:usersdb}
+  \begin{tabular}{|l|c|c|c|c|c|} \hline
+    action                  & admin & support & user      & guest & thirdparty.<X> \\ \hline \hline
+    \verb|user.list|        & all   & all     & all       & none  & all       \\ \hline
+    \verb|user.read|        & all   & all     & if\_owner & none  & if\_owner \\ \hline
+    \verb|user.create|      & all   & all     & none      & none  & none      \\ \hline
+    \verb|user.update|      & all   & all     & if\_owner & none  & if\_owner \\ \hline
+    \verb|user.delete|      & all   & all     & if\_owner & none  & if\_owner \\ \hline
+    \verb|user.change_role| & all   & none    & none      & none  & none      \\ \hline
+  \end{tabular}
+  \caption{Role's permissions for users database}
+\end{table}
+
+\begin{table}[htbp]
+\label{tab:protocoldef:permissionmatrix:transmittersdb}
+  \begin{tabular}{|l|c|c|c|c|c|} \hline
+    action                         & admin & support & user      & guest    & thirdparty.<X> \\ \hline \hline
+    \verb|transmitter.list|        & all   & all     & all       & limited & all       \\ \hline
+    \verb|transmitter.read|        & all   & all     & if\_owner & none     & if\_owner \\ \hline
+    \verb|transmitter.create|      & all   & all     & none      & none     & none      \\ \hline
+    \verb|transmitter.update|      & all   & all     & if\_owner & none     & if\_owner \\ \hline
+    \verb|transmitter.delete|      & all   & all     & if\_owner & none     & if\_owner \\ \hline \hline
+    \verb|transmitter_groups.list| & all   & all     & all       & none     & all       \\ \hline
+  \end{tabular}
+  \caption{Role's permissions for transmitters database}
+\textbf{limited}: Just \_id, name, location, type, timeslots, owner, power for map display
+\end{table}
+
+
+\begin{table}[htbp]
+\label{tab:protocoldef:permissionmatrix:transmitters}
+  \begin{tabular}{|l|p{7cm}|} \hline
+    action                                & comment \\ \hline \hline
+    \verb|transmitter.new_conn_post|      & if transmitter credentials are ok\\ \hline
+    \verb|transmitter.rabbitmq.subscribe| & if transmitter credentials are ok, for both RX of messages and TX of telemetry \\ \hline
+  \end{tabular}
+  \caption{Role's permissions for transmitters}
+\end{table}
+
+\begin{table}[htbp]
+\label{tab:protocoldef:permissionmatrix:subscribersdb}
+  \begin{tabular}{|l|c|c|c|c|c|} \hline
+    action                        & admin & support & user      & guest & thirdparty.<X> \\ \hline \hline
+    \verb|subscriber.list|        & all   & all     & all       & none  & all       \\ \hline
+    \verb|subscriber.read|        & all   & all     & if\_owner & none  & if\_owner \\ \hline
+    \verb|subscriber.create|      & all   & all     & none      & none  & none      \\ \hline
+    \verb|subscriber.update|      & all   & all     & if\_owner & none  & if\_owner \\ \hline
+    \verb|subscriber.delete|      & all   & all     & if\_owner & none  & if\_owner \\ \hline
+    \verb|subscriber_groups.list| & all   & all     & all       & none  & all      \\ \hline
+  \end{tabular}
+  \caption{Role's permissions for subscribers database}
+\end{table}
+
+\begin{table}[htbp]
+\label{tab:protocoldef:permissionmatrix:nodessdb}
+  \begin{tabular}{|l|c|c|c|c|c|} \hline
+    action             & admin & support & user & guest   & thirdparty.<X> \\ \hline \hline
+    \verb|node.list|   & all   & all     & all  & limited & all  \\ \hline
+    \verb|node.read|   & all   & all     & all  & none    & all  \\ \hline
+    \verb|node.create| & all   & all     & none & none    & none \\ \hline
+    \verb|node.update| & all   & all     & none & none    & none \\ \hline
+    \verb|node.delete| & all   & all     & none & none    & none \\ \hline
+  \end{tabular}
+  \caption{Role's permissions for nodess database}
+\textbf{limited}: only \_id and location for map display
+\end{table}
+
+
+\begin{table}[htbp]
+\label{tab:protocoldef:permissionmatrix:rubricdb}
+  \begin{tabular}{|l|c|c|c|c|c|} \hline
+    action               & admin & support & user & guest & thirdparty.<X> \\ \hline \hline
+    \verb|rubric.list|   & all   & all     & all  & none  & all  \\ \hline
+    \verb|rubric.read|   & all   & all     & all  & none  & all  \\ \hline
+    \verb|rubric.create| & all   & all     & none & none  & none \\ \hline
+    \verb|rubric.update| & all   & all     & none & none  & none \\ \hline
+    \verb|rubric.delete| & all   & all     & none & none  & none \\ \hline
+  \end{tabular}
+  \caption{Role's permissions for rubrics database}
+\end{table}
+
+\begin{table}[htbp]
+\label{tab:protocoldef:permissionmatrix:newsdb}
+  \begin{tabular}{|l|c|c|c|c|c|} \hline
+    action             & admin & support & user      & guest & thirdparty.<X> \\ \hline \hline
+    \verb|news.read|   & all   & all     & all       & none  & all       \\ \hline
+    \verb|news.create| & all   & all     & if\_owner & none  & if\_owner \\ \hline
+    \verb|news.update| & all   & all     & if\_owner & none  & if\_owner \\ \hline
+    \verb|news.delete| & all   & all     & if\_owner & none  & if\_owner \\ \hline
+  \end{tabular}
+  \caption{Role's permissions for news database}
+\end{table}
+
+\begin{table}[htbp]
+\label{tab:protocoldef:permissionmatrix:websocket}
+  \begin{tabular}{|l|c|c|c|c|c|} \hline
+    action                              & admin & support & user    & guest & thirdparty.<X> \\ \hline \hline
+    \verb|ws.telemetry.subscribe|       & all   & all     & all     & all   & all    \\ \hline
+    \verb|ws.database_change.subscribe| & all   & all     & limited & none  & limited \\ \hline
+  \end{tabular}
+  \caption{Role's permissions for websocket}
+\textbf{limited}: Just same content as permitted over http. Websocket authentication like in unipager.
+\end{table}
+
+\begin{table}[htbp]
+\label{tab:protocoldef:permissionmatrix:statusandstats}
+  \begin{tabular}{|l|c|c|c|c|c|} \hline
+    action                 & admin & support & user & guest & thirdparty.<X> \\ \hline \hline
+    \verb|status.read|     & all   & all     & all  & all   & all    \\ \hline
+    \verb|statistics.read| & all   & all     & all  & all   & all \\ \hline
+  \end{tabular}
+  \caption{Role's permissions for status and statistics}
+\end{table}
+
+\begin{table}[htbp]
+\label{tab:protocoldef:permissionmatrix:mqtt}
+  \begin{tabular}{|l|c|c|c|c|c|} \hline
+    action                                   & admin & support & user & guest & thirdparty.<X> \\ \hline \hline
+    \verb|thirdparty.subscribe.aprs|         & all   & none    & none  & none & if\_<X>=aprs         \\ \hline
+    \verb|thirdparty.subscribe.brandmeister| & all   & none    & none  & none & if\_<X>=brandmeister \\ \hline
+  \end{tabular}
+  \caption{Role's permissions for MQTT subscription}
+\end{table}
+
+\newpage
+\subsection{GET /auth/users/dl1abc/can/user.update?user=dl1abc}
+\todo{weitermachen}
+
+
 \subsection{RabbitMQ Service}
+\label{protocoldef:RabbitMQ}
 
 \subsubsection{GET /rabbitmq/*}
 
@@ -2046,7 +2208,7 @@ The format of the updates is:
   \_id & string & & dl1abc \\
   password & string & bcrypt hash & --- \\
   email & string & & dl1abc@darc.de \\
-  role & string & "admin"|"support"|"user" & true \\
+  role & string & "admin"|"support"|"user"|"thirdparty.[aprs|brandmeister]" & true \\
   enabled & boolean & & true \\
   created\_on & string & ISO8601 & 2018-07-08T11:50:02.168325Z \\
   changed\_on & string & ISO8601 & 2018-07-08T11:50:02.168325Z \\
