@@ -27,7 +27,7 @@ Role \textbf{admin} or \textbf{support} example result:
       "_id": "dh3wr",
       "_rev": "1-09352254509c9ddf86e80fd83868d557",
       "email": "ralf@secret.com",
-      "role": "user",
+      "roles": "user",
       "enabled": true,
       "created_on": "2018-07-08T11:50:02.168325Z",
       "created_by": "dl2ic"
@@ -36,7 +36,7 @@ Role \textbf{admin} or \textbf{support} example result:
       "_id": "dl2ic",
       "_rev": "1-c0a6ecb1a60b58254e808fc68d61ec00",
       "email": "mail@secret.de",
-      "role": "admin",
+      "roles": "admin",
       "enabled": true,
       "created_on": "2018-07-08T11:50:02.168325Z",
       "created_by": "dh3wr"
@@ -78,7 +78,7 @@ Role \textbf{user} example result asking for her/himself or role \textbf{admin} 
   "_id": "dh3wr",
   "_rev": "1-09352254509c9ddf86e80fd83868d557",
   "email": "ralf@secret.com",
-  "role": "user",
+  "roles": "user",
   "enabled": true,
   "created_on": "2018-07-08T11:50:02.168325Z",
   "created_by": "dl2ic"
@@ -109,7 +109,7 @@ User to API: Example content to add user dl6pt
   "_id" : "dl6pt",
   "password": "$2y$12$lqUueRVo94f439Tt7zqrZOHPfm6YoBzNawWLLIykF3nMip3L6mxLK",
   "email": "ralf@secret.com",
-  "role": "admin",
+  "roles": "admin",
   "enabled": true,
 }
 \end{lstlisting}
@@ -146,7 +146,7 @@ Then generate \verb|PUT| request with content:
   "_rev": "1-09352254509c9ddf86e80fd83868d557",
   "password": "$2y$12$lqUueRVo94f439Tt7zqrZOHPfm6YoBzNawWLLIykF3nMip3L6mxLK",
   "email": "ralf@secret.com",
-  "role": "support",
+  "roles": "support",
   "enabled": true,
 }
 \end{lstlisting}
@@ -159,7 +159,7 @@ Mapping to CouchDB with adding information by microservice:\\
   "_rev": "1-09352254509c9ddf86e80fd83868d557",
   "password": "$2y$12$lqUueRVo94f439Tt7zqrZOHPfm6YoBzNawWLLIykF3nMip3L6mxLK",
   "email": "ralf@secret.com",
-  "role": "support",
+  "roles": "support",
   "enabled": true,
   "created_on": "2018-07-08T11:50:02.168325Z",
   "created_by": "dl2ic"
@@ -1208,6 +1208,10 @@ Answer:
 \label{protocoldef:Auth}
 The auth service provides authentication information to all other services. It works on the CouchDB and reads information from there.
 
+\subsubsection{Password hashed}
+In version 1, the used hashing algorithm was \verb|PBKDF2WithHmacSHA1|. In DAPNET 2, the preferred algorithm is \verb|BCrypt|. In order not to send emails to every already registered user to update her/his password, both hashing algorithms are supported by the Auth Service. Anyway, as soon as a user sends its credentials and in the database, still the \verb|PBKDF\ hash is stored, it is updated with the corresponding hash in \verb|BCrypt| format.\\
+The format of the hash can be distinguished by the \verb|$2a$, $2b$| or \verb|$2y$|-Prefix. With this method, the transition happens transparently regarding the user.
+
 \subsubsection{Role definition}
 The following roles are available:
 \begin{description}
@@ -1449,7 +1453,6 @@ The value in \verb|< >| is always the resource to be accessed.\\
   \caption{Auth REST API endpoint and references}
 \end{table}
 
-\todo{limited felder definieren}
 \newpage
 
 \subsection{RabbitMQ Service}
@@ -1757,18 +1760,16 @@ The statistic and telemetry REST API provides up-to-date information regarding t
 
 
 \subsection{Telemetry from Transmitters}
-
+For authentication refer to section \hyperref[protocoldef:Auth]{Auth Service}.
 \texttt{GET /telemetry/transmitters}
-
-No authentication required. Here all stored telemetry from all transmitters is provided.
+Here all stored telemetry from all transmitters is provided.
 
 Answer:
 \texttt{200 OK}
 See \ref{protocoldef:telemetrytx}\\\\
 
 \texttt{GET /telemetry/transmitters/<transmittername>}
-
-No authentication required. Here all stored telemetry from the specified transmitter is provided.
+Here all stored telemetry from the specified transmitter is provided.
 
 Answer:
 \texttt{200 OK}
@@ -1776,10 +1777,7 @@ Answer:
 See \ref{protocoldef:telemetrytx}\\\\
 
 \texttt{GET /telemetry/transmitters/<transmittername>/<section\_of\_telemetry>}
-
-No authentication required. Here all stored telemetry within the telemetry
-section from the specified transmitter is provided. Possible sections are 2.
-Level JSON groups, see \ref{protocoldef:telemetrytx}.
+Here all stored telemetry within the telemetry section from the specified transmitter is provided. Possible sections are 2. Level JSON groups, see \ref{protocoldef:telemetrytx}.
 
 Examples: onair, telemetry, transmitter\_configuration
 
@@ -1791,16 +1789,14 @@ See \ref{protocoldef:telemetrytx}
 \subsection{Telemetry from Nodes}
 
 \texttt{GET /telemetry/nodes}
-
-No authentication required. Here all stored telemetry from all nodes is provided.
+Here all stored telemetry from all nodes is provided.
 
 Answer:
 \texttt{200 OK}
 See \ref{protocoldef:telemetrynodes}\\\\
 
 \texttt{GET /telemetry/nodes/<nodename>}
-
-No authentication required. Here all stored telemetry from the specified node is provided.
+Here all stored telemetry from the specified node is provided.
 
 Answer:
 \texttt{200 OK}
@@ -1819,22 +1815,24 @@ HAMNET.
 The data is taken from the \textbf{dapnet.telemetry} exchange
 from the RabbitMQ instance and further other sources if necessary.
 
-\todo{Define if authentication is necessary of some endpoints?}
+For authentication refer to section \hyperref[protocoldef:Auth]{Auth Service}.
 
-There are 5 main endpoints in the websocket interface:
+Table \ref{tab:protocoldef:websocketapi} lists the main endpoints in the websocket interface:
 
-
-\begin{center}
-  \begin{tabular}{|l|l|} \hline
-    Endpoint & Microservice \\ \hline \hline
-    \verb|WS     /telemetry/transmitters| & Summary data of all TX \\ \hline
-    \verb|WS     /telemetry/transmitters/<TxName>| & Details for TX <TxName>\\ \hline
-    \verb|WS     /telemetry/nodes| & Summary data of all Nodes\\ \hline
-    \verb|WS     /telemetry/nodes/<NodeName>| & Details for Node <NodeName>\\ \hline
-    \verb|WS     /changes| & Database changes\\ \hline
-
-  \end{tabular}
-\end{center}
+\begin{table}[htbp]
+  \label{tab:protocoldef:websocketapi}
+  \begin{center}
+    \begin{tabular}{|l|l|} \hline
+      Endpoint & Microservice \\ \hline \hline
+      \verb|WS /telemetry/transmitters| & Summary data of all TX \\ \hline
+      \verb|WS /telemetry/transmitters/<TxName>| & Details for TX <TxName>\\ \hline
+      \verb|WS /telemetry/nodes| & Summary data of all Nodes\\ \hline
+      \verb|WS /telemetry/nodes/<NodeName>| & Details for Node <NodeName>\\ \hline
+      \verb|WS /changes| & Database changes\\ \hline
+    \end{tabular}
+  \end{center}
+  \caption{Websocket endpoints}
+\end{table}
 
 
 \subsection{Telemetry from Transmitters - Summary of all TX}
@@ -2312,7 +2310,7 @@ The format of the updates is:
   "_id": "dl1abc",
   "password": "<bcrypt hash>",
   "email": "dl1abc@darc.de",
-  "role": "admin",
+  "roles": "admin",
   "enabled": true,
   "created_on": "2018-07-03T08:00:52.786458Z",
   "created_by": "dh3wr",
