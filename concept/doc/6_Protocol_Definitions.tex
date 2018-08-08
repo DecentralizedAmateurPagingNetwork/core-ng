@@ -938,16 +938,16 @@ Returns just the content of <rubricname> content in JSON format.
 \subsubsection{GET /news/\_view/byRubric/message\_no>}
 Returns just the content of <rubricname> content and message number <message\_no> in JSON format.
 
-\subsubsection{PUT /rubrics/content}
+\subsubsection{PUT /news/<rubricname>}
 Add content to rubric <rubricname> on the first message slot and move the existing message one to the end. The 10th. entry will be lost. An automated resend of all rubric content slots will be necessary.
 
-\subsubsection{PUT /rubrics/content/<rubricname>/<message\_no>}
+\subsubsection{PUT /news/<rubricname>/<message\_no>}
 Add or override the content of rubric <rubricname> on the message slot <message\_no>. An automated resend of just this message slot will be necessary.
 
-\subsubsection{DELETE /rubrics/content/<rubricname>?rev=}
+\subsubsection{DELETE /news/<rubricname>?rev=}
 Delete all content in rubric <rubricname>. The content will be still on Skypers that have received it before, but it will not be transmitted periodically any more. No dependency check necessary.
 
-\subsubsection{DELETE /rubrics/content/<rubricname>/<message\_no>?rev=}
+\subsubsection{DELETE /news/<rubricname>/<message\_no>?rev=}
 Delete the content in rubric <rubricname> with message slot <message\_no>. The content will be still on Skypers that have received it before, but it will not be transmitted periodically any more. No dependency check necessary.
 
 \subsection{Transmitter Service}
@@ -1219,16 +1219,6 @@ The following roles are available:
 
 A user can be part of multiple roles. The Auth service as to check for each permission, if at least one of the roles allows it. Otherwise it is denied.
 
-A JSON array of available roles can be obtained by:
-
-\subsubsection{GET /auth/roles}
-Returns a JSON array of roles, that are places in some of the users database documents.
-Example output:
-\begin{lstlisting}
-{
-  ["user","support","admin","thirdparty.brandmeister","thirdparty.aprs"]
-}
-\end{lstlisting}
 
 \subsubsection{Permission matrix}
 The following table defines for each role which actions are permitted.
@@ -1360,9 +1350,107 @@ The following table defines for each role which actions are permitted.
 \end{table}
 
 \newpage
-\subsection{GET /auth/users/dl1abc/can/user.update?user=dl1abc}
-\todo{weitermachen}
+\subsubsection{Auth API calls}
+The following table states all Auth Service API calls and their description. The POST request has to come always with a POST content of:
+\begin{lstlisting}
+ {"username": "<asking_user>", "password": "<asking_user's_password>"}
+\end{lstlisting}
 
+If the access is granted completely, the answer is:\\
+\verb| { "access": true }|
+
+If the access is forbidden completely, the answer is:\\
+\verb| { "access": false }|
+
+If the access granted, but limited to a subset of data, the answer is:\\
+\begin{lstlisting}
+{
+  "access": false,
+  "limited_to": ["<field_id1>",...,"<field_idn>"]
+}
+\end{lstlisting}
+
+
+A JSON array of available roles can be obtained without authentication by:\\
+\verb|GET /auth/roles|\\
+
+Returns a JSON array of roles, that are places in some of the users database documents.
+Example output:
+\begin{lstlisting}
+{
+  ["user","support","admin","thirdparty.brandmeister","thirdparty.aprs"]
+}
+\end{lstlisting}
+
+In order to shorten the table, the abbreviation \textbf{/a/u/p} is used to represent\\
+\textbf{/auth/users/permission}.\\
+
+The value in \verb|< >| is always the resource to be accessed.\\
+
+\begin{table}[htbp]
+\label{tab:protocoldef:auth:API}
+  \begin{tabular}{|l|l|r|} \hline
+    \textbf{Auth REST endpoint}                    & \textbf{Referring to}                & \textbf{Section}\\ \hline \hline
+    \verb|POST /a/u/p/user.list|                   & \verb|GET    /users/_usernames|      & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/user.read/<username>|        & \verb|GET    /users/<username>|      & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/user.read|                   & \verb|GET    /users[?*]|             & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/user.create|                 & \verb|PUT    /users|                 & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/user.update/<username>|      & \verb|PUT    /users|                 & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/user.delete/<username>|      & \verb|DELETE /users/<username>?rev=| & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/user.change_role/<username>| & \verb|PUT    /users|                 & \ref{pr} \\ \hline
+    \hline
+    \verb|POST /a/u/p/transmitter.list|               & \verb|GET    /transmitters/_transmitternames| & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/transmitter.read/<txname>|      & \verb|GET    /transmitters/<txname>|          & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/transmitter.read|               & \verb|GET    /transmitters[?*]|               & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/transmitter.create|             & \verb|PUT    /transmitters|                   & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/transmitter.update/<txname>|    & \verb|PUT    /transmitters|                   & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/transmitter.delete/<txname>|    & \verb|DELETE /transmitters/<txname>?rev=|     & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/transmitter_groups.list|        & \verb|GET    /transmitters/_groups|           & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/transmitter.new_conn_post|      & \verb|POST   /transmitters/bootstrap|        & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/transmitter.rabbitmq.subscribe| & \textit{RabbitMQ Auth}                        & \ref{pr} \\ \hline
+    \hline
+    \verb|POST /a/u/p/subscriber.list|               & \verb|GET    /subscribers/_subscribernames| & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/subscriber.read/<subscname>|   & \verb|GET    /subscribers/<subscname>|      & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/subscriber.read|               & \verb|GET    /subscribers[?*]|              & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/subscriber.create|             & \verb|PUT    /subscribers|                  & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/subscriber.update/<subscname>| & \verb|PUT    /subscribers|                  & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/subscriber.delete/<subcname>|  & \verb|DELETE /subscribers/<subscname>?rev=| & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/subscriber_groups.list|        & \verb|GET    /subscribers/_groups|          & \ref{pr} \\ \hline
+    \hline
+    \verb|POST /a/u/p/node.list|              & \verb|GET    /nodes/_nodenames|      & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/node.read/<nodename>|   & \verb|GET    /nodes/<nodename>|      & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/node.read|              & \verb|GET    /nodes[?*]|             & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/node.create|            & \verb|PUT    /nodes|                 & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/node.update/<nodename>| & \verb|PUT    /nodes|                 & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/node.delete/<nodename>| & \verb|DELETE /nodes/<nodename>?rev=| & \ref{pr} \\ \hline
+    \hline
+    \verb|POST /a/u/p/rubric.list|                & \verb|GET    /rubrics/_rubricnames|       & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/rubric.read/<rubricname>|   & \verb|GET    /rubrics/<rubricsame>|       & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/rubric.read|                & \verb|GET    /rubrics[?*]|                & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/rubric.create|              & \verb|PUT    /rubrics|                    & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/rubric.update/<rubricname>| & \verb|PUT    /rubrics|                    & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/rubric.delete/<rubricname>| & \verb|DELETE /rubrics/<rubricsname>?rev=| & \ref{pr} \\ \hline
+    \hline    
+    \verb|POST /a/u/p/news.read|                & \verb|GET    /news[?*]|                        & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/news.create|              & \verb|PUT    /news|                            & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/news.update/<rubricname>| & \verb|PUT    /news/<rubricname>|               & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/news.delete/<rubricname>| & \verb|DELETE /news/<rubricname>?rev=|          & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/news.delete/<rubricname>| & \verb|DELETE /news/<rubricname>/<msg_no>?rev=| & \ref{pr} \\ \hline
+    \hline
+    \verb|POST /a/u/p/ws.telemetry.subscribe|       & \verb|ws://FQDN/telemetry/*| & \ref{pr} \\ 
+    \verb|POST /a/u/p/ws.database_change.subscribe| & \verb|ws://FQDN/changes/*|   & \ref{pr} \\ \hline
+    \hline    
+    \verb|POST /a/u/p/status.read|     & \verb|GET    /status/*|     & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/statistics.read| & \verb|GET    /statistics/*| & \ref{pr} \\ \hline
+    \hline
+    \verb|POST /a/u/p/thirdparty.subscribe.<service>| & \textit{MQTT Auth} to subscribe to topic <service> & \ref{pr} \\
+    \hline
+  \end{tabular}
+  \caption{Auth REST API endpoint and references}
+\end{table}
+
+\todo{limited felder definieren}
+\newpage
 
 \subsection{RabbitMQ Service}
 \label{protocoldef:RabbitMQ}
