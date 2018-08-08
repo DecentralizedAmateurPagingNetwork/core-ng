@@ -19,8 +19,15 @@ Type & Port & Application\\
 \hline
 TCP & 80 & HTTP Webinterface and Websocket\\
 TCP & 443 & HTTPS Webinterface  and Websocket\\
+TCP & 4369 & RabbitMQ peer discovery\\
 TCP & 5672 & RabbitMQ Client connection\\
+TCP & 5671 & RabbitMQ-TLS Client connection\\
+TCP & 25672 & RabbitMQ Federation Internode Connection\\
+TCP & 1883 & MQTT Third Party clients\\
+TCP & 8883 & MQTT-TLS Third Party clients\\
 \end{tabular}
+
+\todo{check if TCP/25672 is correct for federation}
 
 \subsection{Load balancing and high availability}
 \textbf{Internet-based}\\
