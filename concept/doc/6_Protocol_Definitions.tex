@@ -89,7 +89,7 @@ Role \textbf{user} example result asking for her/himself or role \textbf{admin} 
 \subsubsection{GET /users/\_usernames}
 Return just an JSON array of all usernames. Used where selections have to be done on the website.\\
 Mapping to CouchDB with filtering in microservice:\\
-\verb|GET /users/_all_docs?include_docs=false|
+\verb|GET /users/_design/users/_list/usernames/_all_docs|
 
 All roles example result:
 \begin{lstlisting}
@@ -321,6 +321,8 @@ Role \textbf{user} example result if owner of node or role \textbf{admin} or \te
 \subsubsection{GET /nodes/\_nodenames}
 Return just an JSON array of all nodenames. Used where selections have to be done on the website.
 For all roles example result:
+
+Mapping to CouchDB: \verb|GET /nodes/_design/nodes/_list/nodesnames/_all_docs|
 \begin{lstlisting}
 {
   ["db0sda-dc1", "db0sda-dc2"]
@@ -481,6 +483,7 @@ Mapping to CouchDB :\\
 
 \subsubsection{GET /rubrics/\_rubricnames}
 Return just an JSON array of all rubricnames in a JSON Array. Allowed with all roles. Used where selections have to be done on the website.
+Mapping to CouchDB: \verb|GET /rubrics/_design/rubrics/_list/rubricsnames/_all_docs|
 
 For all roles example result:
 \begin{lstlisting}
@@ -491,6 +494,7 @@ For all roles example result:
 
 \subsubsection{GET /rubrics/\_rubricnamesdescription}
 Return just an JSON array of all rubricnames and their description in a JSON Array. Allowed with all roles. Used where selections have to be done on the website.
+Mapping to CouchDB: \verb|GET /rubrics/_design/rubrics/_list/rubricsnamesdescription/_all_docs|
 
 For all roles example result:
 \begin{lstlisting}
@@ -672,7 +676,7 @@ Filter output according to role as in section \ref{protocoldef:microservicesapi:
 \subsubsection{GET /subscribers/\_subscribernames}
 Return just an JSON array of all subscribers. Used where selections have to be done on the website.\\
 Mapping to CouchDB with filtering in microservice:\\
-\verb|GET /subscribers/_all_docs?include_docs=false|
+\verb|GET /subscribers/_design/subscribers/_list/subscribernames/_all_docs|
 
 All roles example result:
 \begin{lstlisting}
@@ -681,10 +685,10 @@ All roles example result:
 }
 \end{lstlisting}
 
-\subsubsection{GET /subscribers/\_subscribernamesdetails}
+\subsubsection{GET /subscribers/\_subscribernamesdescription}
 Return just an JSON array of all subscribers and their description. Used where selections have to be done on the website.\\
 Mapping to CouchDB with filtering in microservice:\\
-\verb|GET /subscribers/_all_docs?include_docs=false|
+\verb|GET /subscribers/_design/subscribers/_list/subscribernamesdescription/_all_docs|
 
 All roles example result:
 \begin{lstlisting}
