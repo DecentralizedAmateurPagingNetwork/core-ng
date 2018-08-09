@@ -25,7 +25,7 @@ For the endpoints \verb|GET /users|, \verb|GET /nodes|, \verb|GET /transmitters|
   \caption{Pagination and filtering syntax}
 \end{table}
 
-\textbf{Attention:} The parameter \verb|?include_docs=true| has to be included by the Microservice where is is stated in the detailed description below.\\
+\textbf{Attention:} The parameter \verb|?include_docs=true| has to be included by the Microservice where it is stated in the detailed description below.\\
 
 \subsection{Database Service}
 \subsubsection{GET /users}
@@ -67,7 +67,7 @@ Role \textbf{admin} or \textbf{support} example result:
 Role \textbf{user} example result: \verb|403 Forbidden|
 
 \subsubsection{GET /users/<username>}
-\label{protocoldef:microservicesapi:database:getusername}
+\label{protocoldef:microservicesapi:database:getusers/username}
 Return details of <username> in JSON format.\\
 Mapping to CouchDB :\\
 \verb|GET /users/<username>|
@@ -89,6 +89,7 @@ Role \textbf{user} example result asking for her/himself or role \textbf{admin} 
 
 
 \subsubsection{GET /users/\_usernames}
+\label{protocoldef:microservicesapi:database:getusers/_usernames}
 Return just an JSON array of all usernames. Used where selections have to be done on the website.\\
 Mapping to CouchDB with filtering in microservice:\\
 \verb|GET /users/_design/users/_list/usernames/_all_docs|
@@ -101,6 +102,7 @@ All roles example result:
 \end{lstlisting}
 
 \subsubsection{PUT /users - Add new user}
+\label{protocoldef:microservicesapi:database:putusers/username_create}
 Add the user <username>.
 
 Role \textbf{admin} or \textbf{support} or editing the requestor's own entry are the only allowed roles.
@@ -134,12 +136,13 @@ The \verb|created_by| and \verb|created_on| content has to be added by the micro
 
 
 \subsubsection{PUT /users - Edit existing user}
+\label{protocoldef:microservicesapi:database:putusers/username_update}
 Edit the existing user <username>. Just the changed values have to be sent. The \verb|_id| and \verb|_rev| must be sent always.
 
 Role \textbf{admin} or \textbf{support} or editing the requestor's own entry are the only allowed roles. Other requests result in returning \verb|403 Forbidden|.
 
 User to API: Example content to edit user:\\
-First get the user's revision as in \ref{protocoldef:microservicesapi:database:getusername}.
+First get the user's revision as in \ref{protocoldef:microservicesapi:database:getusers/username}.
 
 Then generate \verb|PUT| request with content:
 \begin{lstlisting}
@@ -169,6 +172,7 @@ Mapping to CouchDB with adding information by microservice:\\
 \end{lstlisting}
 
 \subsubsection{DELETE /users/<username>?rev=}
+\label{protocoldef:microservicesapi:database:deleteusers}
 Delete user <username>. The Database Service has be make sure that all dependencies of a user account are deleted as well, for example transmitters subscribers or rubrics, that contain \textbf{just} this <username> as owner as the only one entry (left).
 
 Role \textbf{admin} or \textbf{support} or deleting the requestor's own entry are the only allowed roles. Others get as return message \verb|403 Forbidden|.
@@ -265,7 +269,7 @@ Role \textbf{user} example result. If the user is one of the owners of a node, d
 
 
 \subsubsection{GET /nodes/<nodename>}
-\label{protocoldef:microservicesapi:database:getnodename}
+\label{protocoldef:microservicesapi:database:getnodes/nodename}
 
 Return details of <nodename> in JSON format.\\
 Mapping to CouchDB :\\
@@ -306,6 +310,7 @@ Role \textbf{user} example result if owner of node or role \textbf{admin} or \te
 \end{lstlisting}
 
 \subsubsection{GET /nodes/\_nodenames}
+\label{protocoldef:microservicesapi:database:getnodes/_nodenames}
 Return just an JSON array of all nodenames. Used where selections have to be done on the website.
 For all roles example result:
 
@@ -317,6 +322,7 @@ Mapping to CouchDB: \verb|GET /nodes/_design/nodes/_list/nodesnames/_all_docs|
 \end{lstlisting}
 
 \subsubsection{GET /nodes/\_nodenamedescription}
+\label{protocoldef:microservicesapi:database:getnodes/_nodenamesdescription}
 Return just an JSON array of all nodenames and their description. Used where selections have to be done on the website.
 For all roles example result:
 \begin{lstlisting}
@@ -337,6 +343,7 @@ For all roles example result:
 
 
 \subsubsection{PUT /nodes - Add new node}
+\label{protocoldef:microservicesapi:database:putnodes/node_create}
 Role \textbf{user} and \textbf{support} get \verb|403 Forbidden|.
 
 Only role \textbf{admin} is allowed. Example POST message to send:
@@ -357,9 +364,10 @@ Only role \textbf{admin} is allowed. Example POST message to send:
 \end{lstlisting}
 
 \subsubsection{PUT /nodes - Edit existing node}
+\label{protocoldef:microservicesapi:database:putnodes/node_update}
 Role \textbf{user} and \textbf{support} get returned \verb|403 Forbidden|.
 
-First get node like in section \ref{protocoldef:microservicesapi:database:getusername} to get the revision. Then send the PUT request with just the changed values. The \verb|_id| and \verb|_rev| must be sent always.
+First get node like in section \ref{protocoldef:microservicesapi:database:getnodes/nodename} to get the revision. Then send the PUT request with just the changed values. The \verb|_id| and \verb|_rev| must be sent always.
 Only role \textbf{admin} is allowed.
 Example POST message to send:
 
@@ -374,6 +382,7 @@ Example POST message to send:
 \end{lstlisting}
 
 \subsubsection{DELETE /nodes/<nodename>?rev=}
+\label{protocoldef:microservicesapi:database:deletenodes}
 Delete node <nodename>. No dependency check necessary.
 \todo{Maybe the transmitter service should inform the connected transmitters to the now deleted node to do a switch-over?}
 
@@ -384,7 +393,7 @@ User to API: \verb|DELETE /node/<node>?rev=1-09352254509c9ddf86e80fd83868d557|
 
 
 \subsubsection{GET /rubrics}
-\label{protocoldef:microservicesapi:database:rubrics}
+\label{protocoldef:microservicesapi:database:getrubrics}
 Returns all rubrics with all setting details in JSON format. This does \textbf{not} include the content of the 10 rubric message slots.
 
 Mapping to CouchDB:\\
@@ -451,17 +460,17 @@ Role \textbf{user} example result. All details but the \verb|_rev| are also give
 \subsubsection{GET /rubrics/\_view/byNumber?startkey=<n>\&endkey=<m>}
 Just get the output as in section \ref{protocoldef:microservicesapi:database:rubrics}, but just for rubric numbers between <n> and <m>. Check before passing the request to CouchDB, that neither <n> nor <m> are higher then 95.
 
-\subsubsection{GET /rubrics/\_view/byTransmitter?startkey="db0abc"\&endkey="db0abc"}
+\subsubsection{GET /rubrics/\_view/byTransmitter?key="db0abc"}
 Just get the output as in section \ref{protocoldef:microservicesapi:database:rubrics}, but just for rubric that contain \textit{db0abc} in the \verb|"transmitters"| array.
 
-\subsubsection{GET /rubrics/\_view/byTransmitterGroup?startkey="dh-hh"\&endkey="dh-hh"}
+\subsubsection{GET /rubrics/\_view/byTransmitterGroup?key="dh-hh"}
 Just get the output as in section \ref{protocoldef:microservicesapi:database:rubrics}, but just for rubric that contain \textit{dl-hh} in the \verb|"transmitter_groups"| array.
 
 \subsubsection{GET /rubrics/\_view/withCyclicTransmit}
 Just get the output as in section \ref{protocoldef:microservicesapi:database:rubrics}, but just for rubric that have the cyclic transmit flag enabled.
 
 \subsubsection{GET /rubrics/<rubricname>}
-\label{protocoldef:microservicesapi:database:getrubricname}
+\label{protocoldef:microservicesapi:database:getrubrics/rubricname}
 Return all setting details just of <rubricname> in JSON format. This does \textbf{not} include the content of the 10 rubric message slots. Output as in section \ref{protocoldef:microservicesapi:database:rubrics}.
 
 Mapping to CouchDB :\\
@@ -469,6 +478,7 @@ Mapping to CouchDB :\\
 
 
 \subsubsection{GET /rubrics/\_rubricnames}
+\label{protocoldef:microservicesapi:database:getrubrics/_rubricnames}
 Return just an JSON array of all rubricnames in a JSON Array. Allowed with all roles. Used where selections have to be done on the website.
 Mapping to CouchDB: \verb|GET /rubrics/_design/rubrics/_list/rubricsnames/_all_docs|
 
@@ -500,6 +510,7 @@ For all roles example result:
 \end{lstlisting}
 
 \subsubsection{PUT /rubrics - Add new rubric}
+\label{protocoldef:microservicesapi:database:putrubrics/rubrics_create}
 Role \textbf{user} gets \verb|403 Forbidden|.
 
 Only role \textbf{admin} and \textbf{support} is allowed.\\
@@ -526,6 +537,7 @@ Example POST message to send:
 \end{lstlisting}
 
 \subsubsection{PUT /rubrics - Edit existing rubric}
+\label{protocoldef:microservicesapi:database:putrubrics/rubrics_update}
 This is just about the rubrics details, and does \textbf{not} include the content of the 10 rubric message slots.
 
 Role \textbf{admin} and \textbf{support} are allowed to do changes.\\
@@ -544,6 +556,7 @@ Example POST message to send:
 
 
 \subsubsection{DELETE /rubrics/<rubricname>?rev=}
+\label{protocoldef:microservicesapi:database:deleterubrics}
 Delete rubric <rubricname>.\\
 \textbf{Also delete content of this rubric.}
 \todo{Noch herausfinden, wie das genau geht.}
@@ -1384,15 +1397,22 @@ The value in \verb|< >| is always the resource to be accessed.\\
 
 \begin{table}[htbp]
 \label{tab:protocoldef:auth:API}
-  \begin{tabular}{|l|l|r|} \hline
+  \begin{tabular}{|l|l|l|} \hline
     \textbf{Auth REST endpoint}                    & \textbf{Referring to}                & \textbf{Section}\\ \hline \hline
-    \verb|POST /a/u/p/user.list|                   & \verb|GET    /users/_usernames|      & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/user.read/<username>|        & \verb|GET    /users/<username>|      & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/user.read|                   & \verb|GET    /users[?*]|             & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/user.create|                 & \verb|PUT    /users|                 & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/user.update/<username>|      & \verb|PUT    /users|                 & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/user.delete/<username>|      & \verb|DELETE /users/<username>?rev=| & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/user.change_role/<username>| & \verb|PUT    /users|                 & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/user.list|                   & \verb|GET    /users/_usernames|      &
+        \ref{protocoldef:microservicesapi:database:getusers/_usernames} \\ \hline
+    \verb|POST /a/u/p/user.read/<username>|        & \verb|GET    /users/<username>|      &
+        \ref{protocoldef:microservicesapi:database:getusers/username} \\ \hline
+    \verb|POST /a/u/p/user.read|                   & \verb|GET    /users[?*]|             &
+        \ref{protocoldef:microservicesapi:database:getusers} \\ \hline
+    \verb|POST /a/u/p/user.create|                 & \verb|PUT    /users|                 &
+        \ref{protocoldef:microservicesapi:database:putusers/username_create} \\ \hline
+    \verb|POST /a/u/p/user.update/<username>|      & \verb|PUT    /users|                 &
+        \ref{protocoldef:microservicesapi:database:putusers/username_update} \\ \hline
+    \verb|POST /a/u/p/user.delete/<username>|      & \verb|DELETE /users/<username>?rev=| &
+        \ref{protocoldef:microservicesapi:database:deleteusers/username} \\ \hline
+    \verb|POST /a/u/p/user.change_role/<username>| & \verb|PUT    /users|                 &
+        \ref{protocoldef:microservicesapi:database:putusers/username_update} \\ \hline
     \hline
     \verb|POST /a/u/p/transmitter.list|               & \verb|GET    /transmitters/_transmitternames| & \ref{pr} \\ \hline
     \verb|POST /a/u/p/transmitter.read/<txname>|      & \verb|GET    /transmitters/<txname>|          & \ref{pr} \\ \hline
@@ -1412,19 +1432,33 @@ The value in \verb|< >| is always the resource to be accessed.\\
     \verb|POST /a/u/p/subscriber.delete/<subcname>|  & \verb|DELETE /subscribers/<subscname>?rev=| & \ref{pr} \\ \hline
     \verb|POST /a/u/p/subscriber_groups.list|        & \verb|GET    /subscribers/_groups|          & \ref{pr} \\ \hline
     \hline
-    \verb|POST /a/u/p/node.list|              & \verb|GET    /nodes/_nodenames|      & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/node.read/<nodename>|   & \verb|GET    /nodes/<nodename>|      & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/node.read|              & \verb|GET    /nodes[?*]|             & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/node.create|            & \verb|PUT    /nodes|                 & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/node.update/<nodename>| & \verb|PUT    /nodes|                 & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/node.delete/<nodename>| & \verb|DELETE /nodes/<nodename>?rev=| & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/node.list|              & \verb|GET    /nodes/_nodenames|        &
+        \ref{protocoldef:microservicesapi:database:getnodes/_nodenames} \\
+                                              & \verb|GET /nodes/_nodenamedescription| &
+        \ref{protocoldef:microservicesapi:database:getnodes/_nodenamesdescription} \\  \hline
+    \verb|POST /a/u/p/node.read/<nodename>|   & \verb|GET    /nodes/<nodename>|        &
+        \ref{protocoldef:microservicesapi:database:getnodes/nodename} \\               \hline
+    \verb|POST /a/u/p/node.read|              & \verb|GET    /nodes[?*]|               &
+        \ref{protocoldef:microservicesapi:database:getnodes} \\                        \hline
+    \verb|POST /a/u/p/node.create|            & \verb|PUT    /nodes|                   &
+        \ref{protocoldef:microservicesapi:database:putnodes/node_create} \\            \hline
+    \verb|POST /a/u/p/node.update/<nodename>| & \verb|PUT    /nodes|                   &
+        \ref{protocoldef:microservicesapi:database:putnodes/node_update} \\            \hline
+    \verb|POST /a/u/p/node.delete/<nodename>| & \verb|DELETE /nodes/<nodename>?rev=|   &
+        \ref{protocoldef:microservicesapi:database:deletenodes} \\                \hline
     \hline
-    \verb|POST /a/u/p/rubric.list|                & \verb|GET    /rubrics/_rubricnames|       & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/rubric.read/<rubricname>|   & \verb|GET    /rubrics/<rubricsame>|       & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/rubric.read|                & \verb|GET    /rubrics[?*]|                & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/rubric.create|              & \verb|PUT    /rubrics|                    & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/rubric.update/<rubricname>| & \verb|PUT    /rubrics|                    & \ref{pr} \\ \hline
-    \verb|POST /a/u/p/rubric.delete/<rubricname>| & \verb|DELETE /rubrics/<rubricsname>?rev=| & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/rubric.list|                & \verb|GET    /rubrics/_rubricnames|       &
+        \ref{protocoldef:microservicesapi:database:getrubrics/_rubricnames} \\ \hline
+    \verb|POST /a/u/p/rubric.read/<rubricname>|   & \verb|GET    /rubrics/<rubricsame>|       &
+        \ref{protocoldef:microservicesapi:database:getrubrics/rubricname} \\ \hline
+    \verb|POST /a/u/p/rubric.read|                & \verb|GET    /rubrics[?*]|                &
+        \ref{protocoldef:microservicesapi:database:getrubrics} \\ \hline
+    \verb|POST /a/u/p/rubric.create|              & \verb|PUT    /rubrics|                    &
+        \ref{protocoldef:microservicesapi:database:putrubrics/rubrics_create} \\ \hline
+    \verb|POST /a/u/p/rubric.update/<rubricname>| & \verb|PUT    /rubrics|                    &
+        \ref{protocoldef:microservicesapi:database:putrubrics/rubrics_update} \\ \hline
+    \verb|POST /a/u/p/rubric.delete/<rubricname>| & \verb|DELETE /rubrics/<rubricsname>?rev=| &
+        \ref{protocoldef:microservicesapi:database:deleterubrics} \\ \hline
     \hline    
     \verb|POST /a/u/p/news.read|                & \verb|GET    /news[?*]|                        & \ref{pr} \\ \hline
     \verb|POST /a/u/p/news.create|              & \verb|PUT    /news|                            & \ref{pr} \\ \hline
@@ -1432,8 +1466,8 @@ The value in \verb|< >| is always the resource to be accessed.\\
     \verb|POST /a/u/p/news.delete/<rubricname>| & \verb|DELETE /news/<rubricname>?rev=|          & \ref{pr} \\ \hline
     \verb|POST /a/u/p/news.delete/<rubricname>| & \verb|DELETE /news/<rubricname>/<msg_no>?rev=| & \ref{pr} \\ \hline
     \hline
-    \verb|POST /a/u/p/ws.telemetry.subscribe|       & \verb|ws://FQDN/telemetry/*| & \ref{pr} \\ 
-    \verb|POST /a/u/p/ws.database_change.subscribe| & \verb|ws://FQDN/changes/*|   & \ref{pr} \\ \hline
+    \verb|POST /a/u/p/ws.telemetry.subscribe|       & \verb|WS /telemetry/*| & \ref{pr} \\ 
+    \verb|POST /a/u/p/ws.database_change.subscribe| & \verb|WS /changes/*|   & \ref{pr} \\ \hline
     \hline    
     \verb|POST /a/u/p/status.read|     & \verb|GET    /status/*|     & \ref{pr} \\ \hline
     \verb|POST /a/u/p/statistics.read| & \verb|GET    /statistics/*| & \ref{pr} \\ \hline
