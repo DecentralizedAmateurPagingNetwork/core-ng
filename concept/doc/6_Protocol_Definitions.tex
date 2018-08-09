@@ -8,6 +8,25 @@ All HTTP(s) communication should be compress with gzip to reduce network load. T
 
 See \hyperref[internalprog:microservices]{Microservices definition}.
 
+\subsection{Filtering and pagination in detailed lists}
+For the endpoints \verb|GET /users|, \verb|GET /nodes|, \verb|GET /transmitters| and \verb|GET /rubrics|, there are the following GET parameters available for pagination and filtering.
+
+\begin{table}[htbp]
+\label{tab:protocoldef:permissionmatrix:usersdb}
+  \begin{tabular}{|l|p{8.5cm}|} \hline
+    Parameter                                & Description  \\ \hline \hline
+    \verb|?skip=<n>&limit=<m>|               & Used for pagination, just output <m> entries and skip the first <n> ones. \\
+                                             & Mapping to CouchDB: transparent \\ \hline
+    \verb|?startkey="dh3wr"\&endkey="dl2ic"| & Get all entries with an \verb|_id| between \verb|dh3wr| and \verb|dl2ic|. \\
+                                             & Mapping to CouchDB: transparent \\ \hline
+    \verb|?startswith="dh3"|                 & Get all entries where the \verb|_id| starts with \verb|dh3|. Used for AJAX based search in tables on website. \\
+                                             & Mapping to CouchDB: \verb|?"dh3"&endkey="dh3\ufff0"| \\ \hline
+  \end{tabular}
+  \caption{Pagination and filtering syntax}
+\end{table}
+
+\textbf{Attention:} The parameter \verb|?include_docs=true| has to be included by the Microservice where is is stated in the detailed description below.\\
+
 \subsection{Database Service}
 \subsubsection{GET /users}
 \label{protocoldef:microservicesapi:database:getusers}
@@ -46,23 +65,6 @@ Role \textbf{admin} or \textbf{support} example result:
 \end{lstlisting}
 
 Role \textbf{user} example result: \verb|403 Forbidden|
-
-
-
-\subsubsection{GET /users?startkey="dh3wr"\&endkey="dl2ic"}
-\label{protocoldef:microservicesapi:database:filterusername}
-Just for role \textbf{admin} or \textbf{support}. Role \textbf{user} will get\verb|403 Forbidden|.
-
-Return all details of all users in alphabetical order between dh3wr and dl2ic in JSON format.\\
-Mapping to CouchDB:\\
-\verb|GET /users/_all_docs?startkey="dh3wr"&endkey="dl2ic"&include_docs=true|
-
-Output filtering is the same as \hyperref[protocoldef:microservicesapi:database:getusers]{for single user request} regarding output content and requestor's role
-
-\subsubsection{GET /users?limit=<n>\&skip=<m>}
-Skip the first <n> entries and output just <m> entries. Used for pagination. Can be combined with the filtering from section \ref{protocoldef:microservicesapi:database:filterusername}.
-
-The \verb|limit| and \verb|skip| parameters are passed as they to the CouchDB REST API.
 
 \subsubsection{GET /users/<username>}
 \label{protocoldef:microservicesapi:database:getusername}
@@ -260,21 +262,6 @@ Role \textbf{user} example result. If the user is one of the owners of a node, d
   ]
 }
 \end{lstlisting}
-
-\subsubsection{GET /nodes?startkey="db0sda-dc1"\&endkey="db0sda-dc3"}
-\label{protocoldef:microservicesapi:database:filternodename}
-Just for role \textbf{admin} or \textbf{support}. Role \textbf{user} will get\verb|403 Forbidden|.
-
-Return all details of all users in alphabetical order between db0sda-dc1 and db0sda-dc3 in JSON format.\\
-Mapping to CouchDB:\\
-\verb|GET /nodes/_all_docs?startkey="db0sda-dc1"&endkey="db0sda-dc2"&include_docs=true|
-
-Output filtering is the same as \hyperref[protocoldef:microservicesapi:database:getnodes](for single user request) regarding output content and requestor's role
-
-\subsubsection{GET /users?limit=<n>\&skip=<m>}
-Skip the first <n> entries and output just <m> entries. Used for pagination. Can be combined with the filtering from section \ref{protocoldef:microservicesapi:database:filternodename}.
-
-The \verb|limit| and \verb|skip| parameters are passed as they to the CouchDB REST API.
 
 
 \subsubsection{GET /nodes/<nodename>}
