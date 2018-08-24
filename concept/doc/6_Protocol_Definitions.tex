@@ -20,7 +20,7 @@ For the endpoints \verb|GET /users|, \verb|GET /nodes|, \verb|GET /transmitters|
     \verb|?startkey="dh3wr"\&endkey="dl2ic"| & Get all entries with an \verb|_id| between \verb|dh3wr| and \verb|dl2ic|. \\
                                              & Mapping to CouchDB: transparent \\ \hline
     \verb|?startswith="dh3"|                 & Get all entries where the \verb|_id| starts with \verb|dh3|. Used for AJAX based search in tables on website. \\
-                                             & Mapping to CouchDB: \verb|?"dh3"&endkey="dh3\ufff0"| \\ \hline
+                                             & Mapping to CouchDB: \verb|?startkey="dh3"&endkey="dh3\ufff0"| \\ \hline
   \end{tabular}
   \caption{Pagination and filtering syntax}
 \end{table}
@@ -931,6 +931,7 @@ Insert call to the system. Send in POST content:
 
 \subsubsection{GET /news}
 Returns an array of all rubrics and their content in JSON format.
+\todo{zu bedenken}
 
 \subsubsection{GET /news/\_view/byRubric}
 \begin{verbatim}
